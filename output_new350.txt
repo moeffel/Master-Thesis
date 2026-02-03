@@ -1,0 +1,1011 @@
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - <module>                  [N/A] - Defining helper functions...
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - <module>                  [N/A] - Changed working directory to: /Users/moe/Downloads/THESIS_try-main
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - --- Starting Multi-Coin ARIMA-GARCH Analysis (v28.5 - English Output / Vertical Summary) ---
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Analyzing Coins: bitcoin, ethereum, dogecoin, solana
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Forecast Mode: backtest
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  Backtest Params: Window=350 days, Refit Interval=1 days
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  DM Test (Price, AG vs Naive): Loss='Squared Error', Alpha=0.05
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  DM Test (Variance, AG vs EWMA): Loss='QLIKE', Alpha=0.05
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  Risk Metric Alpha: 0.05
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Auto-Tune Enabled: True (Criterion: BIC, Sig. Level: 0.1)
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  GARCH Types for Tuning: ['GARCH', 'FIGARCH', 'GJR']
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Max Differencing Order: 0
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - EWMA Lambda: 0.94
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Output Directory Base: thesis_results
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: BITCOIN =====
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- Starting Analysis for BITCOIN ---
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Fetching data (2023-06-01 to 2025-04-01)...
+2025-06-25 17:56:34 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [bitcoin] - Fetching data for bitcoin from Yahoo (2023-06-01 to 2025-04-01)...
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [bitcoin] - 670 rows fetched and prepared for bitcoin.
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [bitcoin] - Preprocessing data...
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [bitcoin] - Preprocessing finished. Final shape: (669, 3)
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Data fetched/preprocessed: 669 rows.
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [bitcoin] - Splitting 669 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [bitcoin] - Ratio-based split meets minimum test size requirement.
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [bitcoin] - Final split result: Train=468, Val=100, Test=101
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Data split: Train=468, Val=100, Test=101
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Performing initial stationarity check (on Train+Val log returns)...
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [bitcoin] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [bitcoin] - KPSS Test (reg='c', lags=18): p-value=0.1000, Stationary=True (alpha=0.05)
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=True (p=0.1000)
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Determining model structure using Train+Val data (568 points)...
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Starting Auto-Tuning (Criterion: BIC, Sig Level: 0.1)...
+2025-06-25 17:56:35 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] - Auto-Tuning ~324 valid combinations (Criterion: BIC, Sig Level: <0.1)...
+2025-06-25 17:57:35 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -  Tuning: 324/324 (100.0%) | Testing: ARIMA(2,1,2) + GJR(2,2) (t) | Best (BIC): 2623.42
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] - Auto-Tuning finished. Evaluated 324/324 combinations. Successful Fits: 324
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:309, CriterionErr:0
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] - --- Best Model Found (Criterion: BIC=2623.42, Sig p<0.1) ---
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Auto-Tune recommended additional differencing d=0
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [bitcoin] - Final differencing order d=0 determined by: Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0)
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Performing initial fit of final model (ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Initial fit successful.
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [bitcoin] - Parameter table PNG saved: thesis_results/bitcoin/bitcoin_params_initial_fit_d0.png
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-06-25 17:57:36 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - ACF plot saved: thesis_results/bitcoin/bitcoin_acf_init_d0.png
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - PACF plot saved: thesis_results/bitcoin/bitcoin_pacf_init_d0.png
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Q-Q plot saved: thesis_results/bitcoin/bitcoin_qq_init_logret.png
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- [bitcoin] Starting Rolling 1-Step Forecast (Backtest) ---
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  Fitting Window: 350 days, Refit Interval: 1 days
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  EWMA Lambda (Benchmark): 0.94
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  Variance DM Test Loss: QLIKE
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  VaR/ES/Backtest Alpha: 5.00%
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling forecast over 101 steps in the test set, starting from 2024-12-21
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  Using model: ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+2025-06-25 17:57:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 1/101 (Forecasting for 2024-12-21)...
+2025-06-25 17:57:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 10/101 (Forecasting for 2024-12-30)...
+2025-06-25 17:57:39 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 20/101 (Forecasting for 2025-01-09)...
+2025-06-25 17:57:41 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 30/101 (Forecasting for 2025-01-19)...
+2025-06-25 17:57:42 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 40/101 (Forecasting for 2025-01-29)...
+2025-06-25 17:57:44 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 50/101 (Forecasting for 2025-02-08)...
+2025-06-25 17:57:45 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 60/101 (Forecasting for 2025-02-18)...
+2025-06-25 17:57:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 70/101 (Forecasting for 2025-02-28)...
+2025-06-25 17:57:47 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 80/101 (Forecasting for 2025-03-10)...
+2025-06-25 17:57:49 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 90/101 (Forecasting for 2025-03-20)...
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 100/101 (Forecasting for 2025-03-30)...
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling Backtest: Step 101/101 (Forecasting for 2025-03-31)...
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- Rolling 1-Step Forecast Finished: 0.22 min ---
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Evaluating 1-step price forecasts over 101 valid steps.
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=0.9175, p-value(less)=0.8195, N=101
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=0.8979, p-value(less)=0.8143, N=101
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=0.1521, p-value(less)=0.5603, N=101
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Diagnosing 101 standardized 1-step AG residuals...
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - ljung_box_test            [bitcoin] - Ljung-Box Test (Lag=20): p=0.6076, White Noise=True
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - arch_test                 [bitcoin] - ARCH LM Test (Lag=12): p=0.0422, Heteroskedastic=True
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling residuals plot saved: thesis_results/bitcoin/bitcoin_residuals_roll_std_d0.png
+2025-06-25 17:57:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Generating parameter stability plot...
+2025-06-25 17:57:51 - ARIMA_GARCH_Analysis - INFO     - plot_parameter_stability  [bitcoin] - Stability plot saved: thesis_results/bitcoin/bitcoin_param_stab_d0.png
+2025-06-25 17:57:51 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling 1-step results CSV saved: thesis_results/bitcoin/bitcoin_rolling_1step_results_d0.csv
+2025-06-25 17:57:51 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling 1-step price plot saved: thesis_results/bitcoin/bitcoin_roll_1step_price_fc_d0.png
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling 1-step volatility plot (AG vs EWMA) saved: thesis_results/bitcoin/bitcoin_roll_1step_vol_fc_ag_vs_ewma_d0.png
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Rolling 1-step VaR plot saved: thesis_results/bitcoin/bitcoin_roll_1step_var_thresh_d0.png
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - ========== BITCOIN Analysis Finished in 1.30 min (Status: OK) ==========
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: ETHEREUM =====
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- Starting Analysis for ETHEREUM ---
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Fetching data (2023-06-01 to 2025-04-01)...
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [ethereum] - Fetching data for ethereum from Yahoo (2023-06-01 to 2025-04-01)...
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [ethereum] - 670 rows fetched and prepared for ethereum.
+2025-06-25 17:57:52 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [ethereum] - Preprocessing data...
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [ethereum] - Preprocessing finished. Final shape: (669, 3)
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Data fetched/preprocessed: 669 rows.
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [ethereum] - Splitting 669 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [ethereum] - Ratio-based split meets minimum test size requirement.
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [ethereum] - Final split result: Train=468, Val=100, Test=101
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Data split: Train=468, Val=100, Test=101
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Performing initial stationarity check (on Train+Val log returns)...
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [ethereum] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [ethereum] - KPSS Test (reg='c', lags=18): p-value=0.1000, Stationary=True (alpha=0.05)
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=True (p=0.1000)
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Determining model structure using Train+Val data (568 points)...
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Starting Auto-Tuning (Criterion: BIC, Sig Level: 0.1)...
+2025-06-25 17:57:53 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] - Auto-Tuning ~324 valid combinations (Criterion: BIC, Sig Level: <0.1)...
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -  Tuning: 324/324 (100.0%) | Testing: ARIMA(2,1,2) + GJR(2,2) (t) | Best (BIC): 2788.59
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] - Auto-Tuning finished. Evaluated 324/324 combinations. Successful Fits: 324
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:317, CriterionErr:0
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] - --- Best Model Found (Criterion: BIC=2788.59, Sig p<0.1) ---
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Auto-Tune recommended additional differencing d=0
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [ethereum] - Final differencing order d=0 determined by: Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0)
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-06-25 17:58:37 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Performing initial fit of final model (ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Initial fit successful.
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [ethereum] - Parameter table PNG saved: thesis_results/ethereum/ethereum_params_initial_fit_d0.png
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - ACF plot saved: thesis_results/ethereum/ethereum_acf_init_d0.png
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - PACF plot saved: thesis_results/ethereum/ethereum_pacf_init_d0.png
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Q-Q plot saved: thesis_results/ethereum/ethereum_qq_init_logret.png
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- [ethereum] Starting Rolling 1-Step Forecast (Backtest) ---
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  Fitting Window: 350 days, Refit Interval: 1 days
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  EWMA Lambda (Benchmark): 0.94
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  Variance DM Test Loss: QLIKE
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  VaR/ES/Backtest Alpha: 5.00%
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling forecast over 101 steps in the test set, starting from 2024-12-21
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  Using model: ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+2025-06-25 17:58:38 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 1/101 (Forecasting for 2024-12-21)...
+2025-06-25 17:58:40 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 10/101 (Forecasting for 2024-12-30)...
+2025-06-25 17:58:41 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 20/101 (Forecasting for 2025-01-09)...
+2025-06-25 17:58:43 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 30/101 (Forecasting for 2025-01-19)...
+2025-06-25 17:58:44 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 40/101 (Forecasting for 2025-01-29)...
+2025-06-25 17:58:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 50/101 (Forecasting for 2025-02-08)...
+2025-06-25 17:58:47 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 60/101 (Forecasting for 2025-02-18)...
+2025-06-25 17:58:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 70/101 (Forecasting for 2025-02-28)...
+2025-06-25 17:58:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 80/101 (Forecasting for 2025-03-10)...
+2025-06-25 17:58:51 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 90/101 (Forecasting for 2025-03-20)...
+2025-06-25 17:58:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 100/101 (Forecasting for 2025-03-30)...
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling Backtest: Step 101/101 (Forecasting for 2025-03-31)...
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- Rolling 1-Step Forecast Finished: 0.24 min ---
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Evaluating 1-step price forecasts over 101 valid steps.
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=0.1827, p-value(less)=0.5723, N=101
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=-0.2880, p-value(less)=0.3870, N=101
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=-1.1796, p-value(less)=0.1205, N=101
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Diagnosing 101 standardized 1-step AG residuals...
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - ljung_box_test            [ethereum] - Ljung-Box Test (Lag=20): p=0.6109, White Noise=True
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - arch_test                 [ethereum] - ARCH LM Test (Lag=12): p=0.2038, Heteroskedastic=False
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling residuals plot saved: thesis_results/ethereum/ethereum_residuals_roll_std_d0.png
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Generating parameter stability plot...
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - plot_parameter_stability  [ethereum] - Stability plot saved: thesis_results/ethereum/ethereum_param_stab_d0.png
+2025-06-25 17:58:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling 1-step results CSV saved: thesis_results/ethereum/ethereum_rolling_1step_results_d0.csv
+2025-06-25 17:58:54 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling 1-step price plot saved: thesis_results/ethereum/ethereum_roll_1step_price_fc_d0.png
+2025-06-25 17:58:54 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling 1-step volatility plot (AG vs EWMA) saved: thesis_results/ethereum/ethereum_roll_1step_vol_fc_ag_vs_ewma_d0.png
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Rolling 1-step VaR plot saved: thesis_results/ethereum/ethereum_roll_1step_var_thresh_d0.png
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - ========== ETHEREUM Analysis Finished in 1.04 min (Status: OK) ==========
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: DOGECOIN =====
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- Starting Analysis for DOGECOIN ---
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Fetching data (2023-06-01 to 2025-04-01)...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [dogecoin] - Fetching data for dogecoin from Yahoo (2023-06-01 to 2025-04-01)...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [dogecoin] - 670 rows fetched and prepared for dogecoin.
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [dogecoin] - Preprocessing data...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [dogecoin] - Preprocessing finished. Final shape: (669, 3)
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Data fetched/preprocessed: 669 rows.
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [dogecoin] - Splitting 669 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [dogecoin] - Ratio-based split meets minimum test size requirement.
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [dogecoin] - Final split result: Train=468, Val=100, Test=101
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Data split: Train=468, Val=100, Test=101
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Performing initial stationarity check (on Train+Val log returns)...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [dogecoin] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [dogecoin] - KPSS Test (reg='c', lags=18): p-value=0.1000, Stationary=True (alpha=0.05)
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=True (p=0.1000)
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Determining model structure using Train+Val data (568 points)...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Starting Auto-Tuning (Criterion: BIC, Sig Level: 0.1)...
+2025-06-25 17:58:55 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] - Auto-Tuning ~324 valid combinations (Criterion: BIC, Sig Level: <0.1)...
+2025-06-25 18:00:05 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -  Tuning: 324/324 (100.0%) | Testing: ARIMA(2,1,2) + GJR(2,2) (t) | Best (BIC): 3193.08
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] - Auto-Tuning finished. Evaluated 324/324 combinations. Successful Fits: 324
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:267, CriterionErr:0
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] - --- Best Model Found (Criterion: BIC=3193.08, Sig p<0.1) ---
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -   GARCH Type: GJR, Order (gp,gq): (1, 1), Dist: t
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Auto-Tune recommended additional differencing d=0
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [dogecoin] - Final differencing order d=0 determined by: Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0)
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - GJR(1,1) - Dist='t' ---
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Performing initial fit of final model (ARIMA(0,0,0) - GJR(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-06-25 18:00:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Initial fit successful.
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [dogecoin] - Parameter table PNG saved: thesis_results/dogecoin/dogecoin_params_initial_fit_d0.png
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - ACF plot saved: thesis_results/dogecoin/dogecoin_acf_init_d0.png
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - PACF plot saved: thesis_results/dogecoin/dogecoin_pacf_init_d0.png
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Q-Q plot saved: thesis_results/dogecoin/dogecoin_qq_init_logret.png
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- [dogecoin] Starting Rolling 1-Step Forecast (Backtest) ---
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  Fitting Window: 350 days, Refit Interval: 1 days
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  EWMA Lambda (Benchmark): 0.94
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  Variance DM Test Loss: QLIKE
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  VaR/ES/Backtest Alpha: 5.00%
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling forecast over 101 steps in the test set, starting from 2024-12-21
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  Using model: ARIMA(0,0,0) - GJR(1,1) - Dist='t'
+2025-06-25 18:00:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 1/101 (Forecasting for 2024-12-21)...
+2025-06-25 18:00:08 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 10/101 (Forecasting for 2024-12-30)...
+2025-06-25 18:00:08 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 20/101 (Forecasting for 2025-01-09)...
+2025-06-25 18:00:09 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 30/101 (Forecasting for 2025-01-19)...
+2025-06-25 18:00:09 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 40/101 (Forecasting for 2025-01-29)...
+2025-06-25 18:00:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 50/101 (Forecasting for 2025-02-08)...
+2025-06-25 18:00:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 60/101 (Forecasting for 2025-02-18)...
+2025-06-25 18:00:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 70/101 (Forecasting for 2025-02-28)...
+2025-06-25 18:00:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 80/101 (Forecasting for 2025-03-10)...
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 90/101 (Forecasting for 2025-03-20)...
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 100/101 (Forecasting for 2025-03-30)...
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling Backtest: Step 101/101 (Forecasting for 2025-03-31)...
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- Rolling 1-Step Forecast Finished: 0.08 min ---
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Evaluating 1-step price forecasts over 101 valid steps.
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=1.0253, p-value(less)=0.8461, N=101
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=1.2503, p-value(less)=0.8930, N=101
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=-0.5041, p-value(less)=0.3077, N=101
+Matplotlib backend set to 'Agg'. Plotting to file enabled.
+dieboldmariano library found.
+dataframe_image library found, PNG table export enabled.
+
+[BITCOIN] --- Descriptive Statistics (Full Period) ---
+  price_mean          :      58711.3442
+  price_std           :      23681.1840
+  price_min           :      25124.6758
+  price_max           :     106146.2656
+  price_skew          :          0.2577
+  price_kurtosis      :         -0.9894
+  price_jb_stat       :         34.6909
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0017
+  logret_std          :          0.0256
+  logret_min          :         -0.0908
+  logret_max          :          0.1146
+  logret_skew         :          0.3073
+  logret_kurtosis     :          2.2445
+  logret_jb_stat      :        150.9611
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [BITCOIN (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+         coef  std err       z  P>|z| Sig.
+const  0.2253   0.1090  2.0750  0.038  ** 
+sigma2 6.4746   0.2650 24.3890  0.000  ***
+
+  LLF: -1334.082, AIC: 2672.164, BIC: 2680.844
+
+GARCH Parameters:
+        coef  std err
+omega 0.9705   0.4950
+phi   0.3426   0.1180
+d     0.3147   0.1040
+beta  0.5528   0.1400
+
+  Distribution Parameters:
+     coef  std err      t  P>|t| 95.0% Conf. Int.
+nu 3.2020   0.3820 8.3800 0.0000  [ 2.453, 3.951]
+
+  LLF: -1289.513, AIC: 2589.026, BIC: 2610.737
+--- End Parameter Summary ---
+
+--- Rolling 1-Step Performance (Test Set, d=0) ---
+  1-Step Price Accuracy:
+    AG    MAE:1,796.7452 RMSE:2,441.7633 MAPE:1.94%
+    Naive MAE:1,767.8007 RMSE:2,427.4215 MAPE:1.91%
+
+--- Diebold-Mariano Test for Prices (Backtest, h=1, Compare AG vs. Naive) ---
+  Loss='Squared Error' | N=101   | DM Stat=   0.918 | p-value=  0.8195 | No significant difference (p=0.8195 >= 0.05)
+
+  1-Step Log Return Accuracy:
+    AG    MAE:0.019344 RMSE:0.026515
+    Naive MAE:0.019055 RMSE:0.026381 (vs. 0 Forecast)
+
+--- Diebold-Mariano Test for Log Returns (Backtest, h=1, Compare AG vs. Naive=0) ---
+  Loss='Squared Error' | N=101   | DM Stat=   0.898 | p-value=  0.8143 | No significant difference (p=0.8143 >= 0.05)
+
+  1-Step Variance Accuracy (vs Proxy=LogRet^2):
+    AG    RMSE:0.00135086 QLIKE:1.990743 (101 steps)
+    EWMA  RMSE:0.00133844 QLIKE:1.981164 (101 steps)
+
+--- Diebold-Mariano Test for Variance (Backtest, h=1, Compare AG vs. EWMA) ---
+  Loss='QLIKE' | N=101   | DM Stat=   0.152 | p-value=  0.5603 | No significant difference (p=0.5603 >= 0.05)
+
+--- VaR Backtesting (Backtest, alpha=5.00%) ---
+  AG Model: Violations=5/101 (Expected: 5.1)
+    Kupiec p=0.9818, Christoffersen p=0.7681
+  EWMA Benchmark: Violations=5/101 (Expected: 5.1)
+    Kupiec p=0.9818, Christoffersen p=0.7681
+  Avg VaR AG=-0.0399, Avg ES AG=-0.0585
+  Avg VaR EWMA=-0.0428, Avg ES EWMA=-0.0536
+
+  Rolling 1-Step Residual Diagnostics (Standardized, AG Model):
+    Ljung-Box p=0.6076 (Lag=20, White Noise=True)
+    ARCH LM   p=0.0422 (Lag=12, Heteroskedastic=True)
+
+[ETHEREUM] --- Descriptive Statistics (Full Period) ---
+  price_mean          :       2616.7556
+  price_std           :        696.2998
+  price_min           :       1539.6124
+  price_max           :       4066.4451
+  price_skew          :          0.1932
+  price_kurtosis      :         -1.2025
+  price_jb_stat       :         44.4686
+  price_jb_pvalue     :          0.0000
+  logret_mean         :         -0.0000
+  logret_std          :          0.0318
+  logret_min          :         -0.1607
+  logret_max          :          0.1762
+  logret_skew         :          0.1854
+  logret_kurtosis     :          4.0448
+  logret_jb_stat      :        459.8713
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [ETHEREUM (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+         coef  std err       z  P>|z| Sig.
+const  0.1057   0.1300  0.8150  0.415     
+sigma2 9.0475   0.3180 28.4730  0.000  ***
+
+  LLF: -1428.945, AIC: 2861.889, BIC: 2870.570
+
+GARCH Parameters:
+        coef  std err
+omega 0.8983   0.9080
+phi   0.3080   0.0943
+d     0.3840   0.2190
+beta  0.6311   0.2580
+
+  Distribution Parameters:
+     coef  std err      t  P>|t| 95.0% Conf. Int.
+nu 3.2802   0.3780 8.6670 0.0000  [ 2.538, 4.022]
+
+  LLF: -1372.096, AIC: 2754.192, BIC: 2775.903
+--- End Parameter Summary ---
+
+--- Rolling 1-Step Performance (Test Set, d=0) ---
+  1-Step Price Accuracy:
+    AG    MAE:78.8280 RMSE:106.9613 MAPE:2.93%
+    Naive MAE:78.9012 RMSE:106.9043 MAPE:2.93%
+
+--- Diebold-Mariano Test for Prices (Backtest, h=1, Compare AG vs. Naive) ---
+  Loss='Squared Error' | N=101   | DM Stat=   0.183 | p-value=  0.5723 | No significant difference (p=0.5723 >= 0.05)
+
+  1-Step Log Return Accuracy:
+    AG    MAE:0.028950 RMSE:0.039676
+    Naive MAE:0.028994 RMSE:0.039709 (vs. 0 Forecast)
+
+--- Diebold-Mariano Test for Log Returns (Backtest, h=1, Compare AG vs. Naive=0) ---
+  Loss='Squared Error' | N=101   | DM Stat=  -0.288 | p-value=  0.3870 | No significant difference (p=0.3870 >= 0.05)
+
+  1-Step Variance Accuracy (vs Proxy=LogRet^2):
+    AG    RMSE:0.00345314 QLIKE:1.457449 (101 steps)
+    EWMA  RMSE:0.00350540 QLIKE:1.536452 (101 steps)
+
+--- Diebold-Mariano Test for Variance (Backtest, h=1, Compare AG vs. EWMA) ---
+  Loss='QLIKE' | N=101   | DM Stat=  -1.180 | p-value=  0.1205 | No significant difference (p=0.1205 >= 0.05)
+
+--- VaR Backtesting (Backtest, alpha=5.00%) ---
+  AG Model: Violations=10/101 (Expected: 5.1)
+    Kupiec p=0.0449, Christoffersen p=0.0804
+  EWMA Benchmark: Violations=6/101 (Expected: 5.1)
+    Kupiec p=0.6732, Christoffersen p=0.5777
+  Avg VaR AG=-0.0552, Avg ES AG=-0.0829
+  Avg VaR EWMA=-0.0625, Avg ES EWMA=-0.0784
+
+  Rolling 1-Step Residual Diagnostics (Standardized, AG Model):
+    Ljung-Box p=0.6109 (Lag=20, White Noise=True)
+    ARCH LM   p=0.2038 (Lag=12, Heteroskedastic=False)
+
+[DOGECOIN] --- Descriptive Statistics (Full Period) ---
+  price_mean          :          0.1472
+  price_std           :          0.0976
+  price_min           :          0.0579
+  price_max           :          0.4673
+  price_skew          :          1.5067
+  price_kurtosis      :          1.3220
+  price_jb_stat       :        301.8502
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0013
+  logret_std          :          0.0470
+  logret_min          :         -0.1839
+  logret_max          :          0.2436
+  logret_skew         :          0.3358
+  logret_kurtosis     :          3.3864
+  logret_jb_stat      :        332.2449
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [DOGECOIN (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+          coef  std err       z  P>|z| Sig.
+const   0.2603   0.1980  1.3120  0.190     
+sigma2 21.0174   0.7610 27.6040  0.000  ***
+
+  LLF: -1667.883, AIC: 3339.767, BIC: 3348.447
+
+GARCH Parameters:
+            coef  std err
+omega     0.1563   0.1560
+alpha[1]  0.1377   0.0504
+gamma[1] -0.1377   0.0394
+beta[1]   0.9311   0.0479
+
+  Distribution Parameters:
+     coef  std err      t  P>|t| 95.0% Conf. Int.
+nu 4.1570   0.6280 6.6160 0.0000  [ 2.926, 5.389]
+
+  LLF: -1574.340, AIC: 3158.680, BIC: 3180.391
+--- End Parameter Summary ---
+
+--- Rolling 1-Step Performance (Test Set, d=0) ---
+  1-Step Price Accuracy:
+    AG    MAE:0.0105 RMSE:0.0146 MAPE:3.97%
+    Naive MAE:0.0104 RMSE:0.0145 MAPE:3.92%
+
+--- Diebold-Mariano Test for Prices (Backtest, h=1, Compare AG vs. Naive) ---
+  Loss='Squared Error' | N=101   | DM Stat=   1.025 | p-value=  0.8461 | No significant difference (p=0.8461 >= 0.05)
+
+  1-Step Log Return Accuracy:
+    AG    MAE:0.039157 RMSE:0.052886
+    Naive MAE:0.038762 RMSE:0.052530 (vs. 0 Forecast)
+
+--- Diebold-Mariano Test for Log Returns (Backtest, h=1, Compare AG vs. Naive=0) ---
+  Loss='Squared Error' | N=101   | DM Stat=   1.250 | p-value=  0.8930 | No significant difference (p=0.8930 >= 0.05)
+
+  1-Step Variance Accuracy (vs Proxy=LogRet^2):
+    AG    RMSE:0.00544732 QLIKE:1.608596 (101 steps)
+    EWMA  RMSE:0.00545249 QLIKE:1.637853 (101 steps)
+
+--- Diebold-Mariano Test for Variance (Backtest, h=1, Compare AG vs. EWMA) ---
+  Loss='QLIKE' | N=101   | DM Stat=  -0.504 | p-value=  0.3077 | No significant difference (p=0.3077 >= 0.05)2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Diagnosing 101 standardized 1-step AG residuals...
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - ljung_box_test            [dogecoin] - Ljung-Box Test (Lag=20): p=0.5866, White Noise=True
+2025-06-25 18:00:12 - ARIMA_GARCH_Analysis - INFO     - arch_test                 [dogecoin] - ARCH LM Test (Lag=12): p=0.1287, Heteroskedastic=False
+2025-06-25 18:00:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling residuals plot saved: thesis_results/dogecoin/dogecoin_residuals_roll_std_d0.png
+2025-06-25 18:00:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Generating parameter stability plot...
+2025-06-25 18:00:13 - ARIMA_GARCH_Analysis - INFO     - plot_parameter_stability  [dogecoin] - Stability plot saved: thesis_results/dogecoin/dogecoin_param_stab_d0.png
+2025-06-25 18:00:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling 1-step results CSV saved: thesis_results/dogecoin/dogecoin_rolling_1step_results_d0.csv
+2025-06-25 18:00:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling 1-step price plot saved: thesis_results/dogecoin/dogecoin_roll_1step_price_fc_d0.png
+2025-06-25 18:00:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling 1-step volatility plot (AG vs EWMA) saved: thesis_results/dogecoin/dogecoin_roll_1step_vol_fc_ag_vs_ewma_d0.png
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Rolling 1-step VaR plot saved: thesis_results/dogecoin/dogecoin_roll_1step_var_thresh_d0.png
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - ========== DOGECOIN Analysis Finished in 1.34 min (Status: OK) ==========
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: SOLANA =====
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- Starting Analysis for SOLANA ---
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Fetching data (2023-06-01 to 2025-04-01)...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [solana] - Fetching data for solana from Yahoo (2023-06-01 to 2025-04-01)...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [solana] - 670 rows fetched and prepared for solana.
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [solana] - Preprocessing data...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [solana] - Preprocessing finished. Final shape: (669, 3)
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Data fetched/preprocessed: 669 rows.
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [solana] - Splitting 669 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [solana] - Ratio-based split meets minimum test size requirement.
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [solana] - Final split result: Train=468, Val=100, Test=101
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Data split: Train=468, Val=100, Test=101
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Performing initial stationarity check (on Train+Val log returns)...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [solana] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [solana] - KPSS Test (reg='c', lags=18): p-value=0.1000, Stationary=True (alpha=0.05)
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=True (p=0.1000)
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Determining model structure using Train+Val data (568 points)...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Starting Auto-Tuning (Criterion: BIC, Sig Level: 0.1)...
+2025-06-25 18:00:15 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] - Auto-Tuning ~324 valid combinations (Criterion: BIC, Sig Level: <0.1)...
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -  Tuning: 324/324 (100.0%) | Testing: ARIMA(2,1,2) + GJR(2,2) (t) | Best (BIC): 3331.19
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] - Auto-Tuning finished. Evaluated 324/324 combinations. Successful Fits: 324
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:291, CriterionErr:0
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] - --- Best Model Found (Criterion: BIC=3331.19, Sig p<0.1) ---
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Auto-Tune recommended additional differencing d=0
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [solana] - Final differencing order d=0 determined by: Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.100)) = 0)
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-06-25 18:01:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Performing initial fit of final model (ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Initial fit successful.
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [solana] - Parameter table PNG saved: thesis_results/solana/solana_params_initial_fit_d0.png
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - ACF plot saved: thesis_results/solana/solana_acf_init_d0.png
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - PACF plot saved: thesis_results/solana/solana_pacf_init_d0.png
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Q-Q plot saved: thesis_results/solana/solana_qq_init_logret.png
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- [solana] Starting Rolling 1-Step Forecast (Backtest) ---
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  Fitting Window: 350 days, Refit Interval: 1 days
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  EWMA Lambda (Benchmark): 0.94
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  Variance DM Test Loss: QLIKE
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  VaR/ES/Backtest Alpha: 5.00%
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling forecast over 101 steps in the test set, starting from 2024-12-21
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  Using model: ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+2025-06-25 18:01:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 1/101 (Forecasting for 2024-12-21)...
+2025-06-25 18:01:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 10/101 (Forecasting for 2024-12-30)...
+2025-06-25 18:01:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 20/101 (Forecasting for 2025-01-09)...
+2025-06-25 18:01:16 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 30/101 (Forecasting for 2025-01-19)...
+2025-06-25 18:01:17 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 40/101 (Forecasting for 2025-01-29)...
+2025-06-25 18:01:18 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 50/101 (Forecasting for 2025-02-08)...
+2025-06-25 18:01:20 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 60/101 (Forecasting for 2025-02-18)...
+2025-06-25 18:01:21 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 70/101 (Forecasting for 2025-02-28)...
+2025-06-25 18:01:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 80/101 (Forecasting for 2025-03-10)...
+2025-06-25 18:01:24 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 90/101 (Forecasting for 2025-03-20)...
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 100/101 (Forecasting for 2025-03-30)...
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling Backtest: Step 101/101 (Forecasting for 2025-03-31)...
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- Rolling 1-Step Forecast Finished: 0.24 min ---
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Evaluating 1-step price forecasts over 101 valid steps.
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=0.7755, p-value(less)=0.7801, N=101
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=0.8454, p-value(less)=0.8000, N=101
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=-0.4327, p-value(less)=0.3331, N=101
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Diagnosing 101 standardized 1-step AG residuals...
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - ljung_box_test            [solana] - Ljung-Box Test (Lag=20): p=0.8983, White Noise=True
+2025-06-25 18:01:26 - ARIMA_GARCH_Analysis - INFO     - arch_test                 [solana] - ARCH LM Test (Lag=12): p=0.6309, Heteroskedastic=False
+2025-06-25 18:01:27 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling residuals plot saved: thesis_results/solana/solana_residuals_roll_std_d0.png
+2025-06-25 18:01:27 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Generating parameter stability plot...
+2025-06-25 18:01:28 - ARIMA_GARCH_Analysis - INFO     - plot_parameter_stability  [solana] - Stability plot saved: thesis_results/solana/solana_param_stab_d0.png
+2025-06-25 18:01:28 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling 1-step results CSV saved: thesis_results/solana/solana_rolling_1step_results_d0.csv
+2025-06-25 18:01:28 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling 1-step price plot saved: thesis_results/solana/solana_roll_1step_price_fc_d0.png
+2025-06-25 18:01:28 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling 1-step volatility plot (AG vs EWMA) saved: thesis_results/solana/solana_roll_1step_vol_fc_ag_vs_ewma_d0.png
+2025-06-25 18:01:29 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Rolling 1-step VaR plot saved: thesis_results/solana/solana_roll_1step_var_thresh_d0.png
+2025-06-25 18:01:29 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - ========== SOLANA Analysis Finished in 1.24 min (Status: OK) ==========
+2025-06-25 18:01:29 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - --- Aggregating Results from All Coins ---
+
+
+--- VaR Backtesting (Backtest, alpha=5.00%) ---
+  AG Model: Violations=10/101 (Expected: 5.1)
+    Kupiec p=0.0449, Christoffersen p=0.0804
+  EWMA Benchmark: Violations=6/101 (Expected: 5.1)
+    Kupiec p=0.6732, Christoffersen p=0.6234
+  Avg VaR AG=-0.0768, Avg ES AG=-0.1063
+  Avg VaR EWMA=-0.0864, Avg ES EWMA=-0.1084
+
+  Rolling 1-Step Residual Diagnostics (Standardized, AG Model):
+    Ljung-Box p=0.5866 (Lag=20, White Noise=True)
+    ARCH LM   p=0.1287 (Lag=12, Heteroskedastic=False)
+
+[SOLANA] --- Descriptive Statistics (Full Period) ---
+  price_mean          :        120.2710
+  price_std           :         68.0352
+  price_min           :         14.4866
+  price_max           :        261.8698
+  price_skew          :         -0.1560
+  price_kurtosis      :         -1.0398
+  price_jb_stat       :         32.8515
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0027
+  logret_std          :          0.0470
+  logret_min          :         -0.2286
+  logret_max          :          0.2203
+  logret_skew         :          0.2843
+  logret_kurtosis     :          2.3257
+  logret_jb_stat      :        159.7852
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [SOLANA (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+          coef  std err       z  P>|z| Sig.
+const   0.3902   0.1940  2.0100  0.044  ** 
+sigma2 20.3436   0.9770 20.8140  0.000  ***
+
+  LLF: -1658.658, AIC: 3321.316, BIC: 3329.996
+
+GARCH Parameters:
+        coef  std err
+omega 6.6678   5.5660
+phi   0.0259   0.4170
+d     0.1362   0.0604
+beta  0.0000   0.5040
+
+  Distribution Parameters:
+     coef  std err      t  P>|t|  95.0% Conf. Int.
+nu 9.3811   3.5860 2.6160 0.0089  [ 2.353, 16.409]
+
+  LLF: -1643.395, AIC: 3296.791, BIC: 3318.502
+--- End Parameter Summary ---
+
+--- Rolling 1-Step Performance (Test Set, d=0) ---
+  1-Step Price Accuracy:
+    AG    MAE:7.0762 RMSE:10.0736 MAPE:3.99%
+    Naive MAE:7.0336 RMSE:10.0452 MAPE:3.97%
+
+--- Diebold-Mariano Test for Prices (Backtest, h=1, Compare AG vs. Naive) ---
+  Loss='Squared Error' | N=101   | DM Stat=   0.776 | p-value=  0.7801 | No significant difference (p=0.7801 >= 0.05)
+
+  1-Step Log Return Accuracy:
+    AG    MAE:0.039670 RMSE:0.056313
+    Naive MAE:0.039468 RMSE:0.056191 (vs. 0 Forecast)
+
+--- Diebold-Mariano Test for Log Returns (Backtest, h=1, Compare AG vs. Naive=0) ---
+  Loss='Squared Error' | N=101   | DM Stat=   0.845 | p-value=  0.8000 | No significant difference (p=0.8000 >= 0.05)
+
+  1-Step Variance Accuracy (vs Proxy=LogRet^2):
+    AG    RMSE:0.00786679 QLIKE:1.906283 (101 steps)
+    EWMA  RMSE:0.00801425 QLIKE:1.940265 (101 steps)
+
+--- Diebold-Mariano Test for Variance (Backtest, h=1, Compare AG vs. EWMA) ---
+  Loss='QLIKE' | N=101   | DM Stat=  -0.433 | p-value=  0.3331 | No significant difference (p=0.3331 >= 0.05)
+
+--- VaR Backtesting (Backtest, alpha=5.00%) ---
+  AG Model: Violations=6/101 (Expected: 5.1)
+    Kupiec p=0.6732, Christoffersen p=0.6657
+  EWMA Benchmark: Violations=4/101 (Expected: 5.1)
+    Kupiec p=0.6194, Christoffersen p=0.7481
+  Avg VaR AG=-0.0737, Avg ES AG=-0.0985
+  Avg VaR EWMA=-0.0869, Avg ES EWMA=-0.1090
+
+  Rolling 1-Step Residual Diagnostics (Standardized, AG Model):
+    Ljung-Box p=0.8983 (Lag=20, White Noise=True)
+    ARCH LM   p=0.6309 (Lag=12, Heteroskedastic=False)
+
+DEBUG: summary_df columns: ['coin_id', 'status', 'error_message', 'total_runtime_min', 'total_rows_preprocessed', 'train_size', 'val_size', 'test_size', 'desc_logret_jb_pvalue', 'desc_logret_jb_stat', 'desc_logret_kurtosis', 'desc_logret_max', 'desc_logret_mean', 'desc_logret_min', 'desc_logret_skew', 'desc_logret_std', 'desc_price_jb_pvalue', 'desc_price_jb_stat', 'desc_price_kurtosis', 'desc_price_max', 'desc_price_mean', 'desc_price_min', 'desc_price_skew', 'desc_price_std', 'initial_adf_is_stationary', 'initial_kpss_is_stationary', 'applied_differencing_order', 'selection_method', 'tuning_criterion', 'autotune_criterion_value', 'param_significance_level', 'garch_type', 'garch_distribution', 'arima_order_p', 'arima_order_q', 'garch_order_p', 'garch_order_q', 'final_model_description', 'arima_initial_aic', 'arima_initial_bic', 'arima_initial_llf', 'garch_initial_aic', 'garch_initial_bic', 'garch_initial_llf', 'bt_avg_es_ag', 'bt_avg_es_ewma', 'bt_avg_var_ag', 'bt_avg_var_ewma', 'bt_christ_p_ag', 'bt_christ_p_ewma', 'bt_christ_stat_ag', 'bt_christ_stat_ewma', 'bt_dm_lr_err', 'bt_dm_lr_loss', 'bt_dm_lr_n', 'bt_dm_lr_pval', 'bt_dm_lr_sig', 'bt_dm_lr_stat', 'bt_dm_p_err', 'bt_dm_p_loss', 'bt_dm_p_n', 'bt_dm_p_pval', 'bt_dm_p_sig', 'bt_dm_p_stat', 'bt_dm_v_err', 'bt_dm_v_loss', 'bt_dm_v_n', 'bt_dm_v_pval', 'bt_dm_v_sig', 'bt_dm_v_stat', 'bt_kupiec_p_ag', 'bt_kupiec_p_ewma', 'bt_kupiec_stat_ag', 'bt_kupiec_stat_ewma', 'bt_n_obs_var', 'bt_violations_ag', 'bt_violations_ewma', 'bt_vol_qlike_ewma', 'bt_vol_rmse_ewma', 'logret_mae_ag', 'logret_mae_naive', 'logret_rmse_ag', 'logret_rmse_naive', 'price_mae_ag', 'price_mae_naive', 'price_mape_ag', 'price_mape_naive', 'price_rmse_ag', 'price_rmse_naive', 'resid_arch_het', 'resid_arch_pvalue', 'resid_lb_pvalue', 'resid_lb_wn', 'rolling_fit_errors', 'rolling_forecast_duration_min', 'rolling_results_csv_path', 'rolling_skipped_steps', 'rolling_valid_steps_lr', 'rolling_valid_steps_price', 'rolling_valid_steps_variance', 'vol_qlike_ag', 'vol_rmse_ag', 'mh_duration_min', 'mh_ewma_errors', 'mh_fc_errors', 'mh_inv_errors', 'mh_n_eval_points', 'thesis_reco_price_dm', 'thesis_reco_var_dm', 'thesis_reco_var_backtest']
+DEBUG: Example reco_price_dm from summary_df: Diebold-Mariano Test (Price, AG vs Naive, h=1, alpha=5.00%, H1: AG better, Loss=Squared Error):
+- No significant difference (p=0.819).
+
+
+
+================================================================================
+--- FINAL SUMMARY (Console - Coin by Coin) ---
+================================================================================
+
+----- Coin: BITCOIN -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 101
+    Total Rows Preprocessed                  : 669
+    Total Runtime Min                        : 1.30
+    Train Size                               : 468
+    Val Size                                 : 100
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 150.961
+    Logret Kurtosis                          : 2.2445
+    Logret Max                               : 0.1146
+    Logret Mean                              : 0.0017
+    Logret Min                               : -0.0908
+    Logret Skew                              : 0.3073
+    Logret Std                               : 0.0256
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 34.691
+    Price Kurtosis                           : -0.9894
+    Price Max                                : 106146.2656
+    Price Mean                               : 58711.3442
+    Price Min                                : 25124.6758
+    Price Skew                               : 0.2577
+    Price Std                                : 23681.1840
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 2623.42
+    Final Model Description                  : ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : Yes
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : BIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 2672.16
+    Arima Initial Bic                        : 2680.84
+    Arima Initial Llf                        : -1334.08
+    Garch Initial Aic                        : 2589.03
+    Garch Initial Bic                        : 2610.74
+    Garch Initial Llf                        : -1289.51
+
+  Backtest Results (1-Step Rolling, Alpha=5%):
+    Valid Steps (Price): 101 | (Variance): 101 | (VaR Backtest): 101
+
+    --- Price Accuracy (AG vs Naive) ---
+      Metric      AG Model        Naive Model    
+      MAE         1796.7452       1767.8007      
+      RMSE        2441.7633       2427.4215      
+      MAPE        1.94%           1.91%          
+
+    --- Price DM Test (AG vs Naive, H1: AG better) ---
+      Loss='Squared Error' N=101   Stat=   0.918 p-value=  0.819 Significant=No
+
+    --- Variance Accuracy (AG vs EWMA) ---
+      Metric      AG Model        EWMA Model     
+      RMSE        0.0014          0.0013         
+      QLIKE       1.990743        1.981164       
+
+    --- Variance DM Test (AG vs EWMA, H1: AG better) ---
+      Loss='QLIKE' N=101   Stat=   0.152 p-value=  0.560 Significant=No
+
+    --- VaR Backtesting ---
+      Metric             AG Model        EWMA Model     
+      Violations         5               5              
+      Kupiec p-val       0.982           0.982          
+      Christoff. p-val   0.768           N/A            
+      Avg VaR (5%)      -0.0399         -0.0428        
+      Avg ES (5%)       -0.0585         -0.0536        
+
+    --- Residual Diagnostics (AG Model Std. Residuals) ---
+      Ljung-Box White Noise? Yes   (p=0.608)
+      ARCH LM Heteroskedastic? Yes   (p=0.042)
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.819).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.560).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, h=1, alpha=5.00%):
+      - - AG Model: Kupiec OK (p=N/A), Christoffersen OK (p=N/A).
+      - - EWMA Model: Kupiec OK (p=N/A).
+
+----- Coin: ETHEREUM -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 101
+    Total Rows Preprocessed                  : 669
+    Total Runtime Min                        : 1.04
+    Train Size                               : 468
+    Val Size                                 : 100
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 459.871
+    Logret Kurtosis                          : 4.0448
+    Logret Max                               : 0.1762
+    Logret Mean                              : -0.0000
+    Logret Min                               : -0.1607
+    Logret Skew                              : 0.1854
+    Logret Std                               : 0.0318
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 44.469
+    Price Kurtosis                           : -1.2025
+    Price Max                                : 4066.4451
+    Price Mean                               : 2616.7556
+    Price Min                                : 1539.6124
+    Price Skew                               : 0.1932
+    Price Std                                : 696.2998
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 2788.59
+    Final Model Description                  : ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : Yes
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : BIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 2861.89
+    Arima Initial Bic                        : 2870.57
+    Arima Initial Llf                        : -1428.94
+    Garch Initial Aic                        : 2754.19
+    Garch Initial Bic                        : 2775.90
+    Garch Initial Llf                        : -1372.10
+
+  Backtest Results (1-Step Rolling, Alpha=5%):
+    Valid Steps (Price): 101 | (Variance): 101 | (VaR Backtest): 101
+
+    --- Price Accuracy (AG vs Naive) ---
+      Metric      AG Model        Naive Model    
+      MAE         78.8280         78.9012        
+      RMSE        106.9613        106.9043       
+      MAPE        2.93%           2.93%          
+
+    --- Price DM Test (AG vs Naive, H1: AG better) ---
+      Loss='Squared Error' N=101   Stat=   0.183 p-value=  0.572 Significant=No
+
+    --- Variance Accuracy (AG vs EWMA) ---
+      Metric      AG Model        EWMA Model     
+      RMSE        0.0035          0.0035         
+      QLIKE       1.457449        1.536452       
+
+    --- Variance DM Test (AG vs EWMA, H1: AG better) ---
+      Loss='QLIKE' N=101   Stat=  -1.180 p-value=  0.120 Significant=No
+
+    --- VaR Backtesting ---
+      Metric             AG Model        EWMA Model     
+      Violations         10              6              
+      Kupiec p-val       0.045           0.673          
+      Christoff. p-val   0.080           N/A            
+      Avg VaR (5%)      -0.0552         -0.0625        
+      Avg ES (5%)       -0.0829         -0.0784        
+
+    --- Residual Diagnostics (AG Model Std. Residuals) ---
+      Ljung-Box White Noise? Yes   (p=0.611)
+      ARCH LM Heteroskedastic? No    (p=0.204)
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.572).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.120).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, h=1, alpha=5.00%):
+      - - AG Model: Kupiec OK (p=N/A), Christoffersen OK (p=N/A).
+      - - EWMA Model: Kupiec OK (p=N/A).
+
+----- Coin: DOGECOIN -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 101
+    Total Rows Preprocessed                  : 669
+    Total Runtime Min                        : 1.34
+    Train Size                               : 468
+    Val Size                                 : 100
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 332.245
+    Logret Kurtosis                          : 3.3864
+    Logret Max                               : 0.2436
+    Logret Mean                              : 0.0013
+    Logret Min                               : -0.1839
+    Logret Skew                              : 0.3358
+    Logret Std                               : 0.0470
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 301.850
+    Price Kurtosis                           : 1.3220
+    Price Max                                : 0.4673
+    Price Mean                               : 0.1472
+    Price Min                                : 0.0579
+    Price Skew                               : 1.5067
+    Price Std                                : 0.0976
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 3193.08
+    Final Model Description                  : ARIMA(0,0,0) - GJR(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : GJR
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : Yes
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune2025-06-25 18:01:29 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - FINAL SUMMARY CSV saved: thesis_results/FINAL_SUMMARY_All_Coins_backtest.csv
+2025-06-25 18:01:29 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - FINAL SUMMARY PNG saved: thesis_results/FINAL_SUMMARY_All_Coins_backtest.png
+2025-06-25 18:01:29 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - --- Multi-Coin Analysis Finished. Total Duration: 4.92 Minutes ---
+
+    Tuning Criterion                         : BIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 3339.77
+    Arima Initial Bic                        : 3348.45
+    Arima Initial Llf                        : -1667.88
+    Garch Initial Aic                        : 3158.68
+    Garch Initial Bic                        : 3180.39
+    Garch Initial Llf                        : -1574.34
+
+  Backtest Results (1-Step Rolling, Alpha=5%):
+    Valid Steps (Price): 101 | (Variance): 101 | (VaR Backtest): 101
+
+    --- Price Accuracy (AG vs Naive) ---
+      Metric      AG Model        Naive Model    
+      MAE         0.0105          0.0104         
+      RMSE        0.0146          0.0145         
+      MAPE        3.97%           3.92%          
+
+    --- Price DM Test (AG vs Naive, H1: AG better) ---
+      Loss='Squared Error' N=101   Stat=   1.025 p-value=  0.846 Significant=No
+
+    --- Variance Accuracy (AG vs EWMA) ---
+      Metric      AG Model        EWMA Model     
+      RMSE        0.0054          0.0055         
+      QLIKE       1.608596        1.637853       
+
+    --- Variance DM Test (AG vs EWMA, H1: AG better) ---
+      Loss='QLIKE' N=101   Stat=  -0.504 p-value=  0.308 Significant=No
+
+    --- VaR Backtesting ---
+      Metric             AG Model        EWMA Model     
+      Violations         10              6              
+      Kupiec p-val       0.045           0.673          
+      Christoff. p-val   0.080           N/A            
+      Avg VaR (5%)      -0.0768         -0.0864        
+      Avg ES (5%)       -0.1063         -0.1084        
+
+    --- Residual Diagnostics (AG Model Std. Residuals) ---
+      Ljung-Box White Noise? Yes   (p=0.587)
+      ARCH LM Heteroskedastic? No    (p=0.129)
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.846).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.308).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, h=1, alpha=5.00%):
+      - - AG Model: Kupiec OK (p=N/A), Christoffersen OK (p=N/A).
+      - - EWMA Model: Kupiec OK (p=N/A).
+
+----- Coin: SOLANA -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 101
+    Total Rows Preprocessed                  : 669
+    Total Runtime Min                        : 1.24
+    Train Size                               : 468
+    Val Size                                 : 100
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 159.785
+    Logret Kurtosis                          : 2.3257
+    Logret Max                               : 0.2203
+    Logret Mean                              : 0.0027
+    Logret Min                               : -0.2286
+    Logret Skew                              : 0.2843
+    Logret Std                               : 0.0470
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 32.851
+    Price Kurtosis                           : -1.0398
+    Price Max                                : 261.8698
+    Price Mean                               : 120.2710
+    Price Min                                : 14.4866
+    Price Skew                               : -0.1560
+    Price Std                                : 68.0352
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 3331.19
+    Final Model Description                  : ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : Yes
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : BIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 3321.32
+    Arima Initial Bic                        : 3330.00
+    Arima Initial Llf                        : -1658.66
+    Garch Initial Aic                        : 3296.79
+    Garch Initial Bic                        : 3318.50
+    Garch Initial Llf                        : -1643.40
+
+  Backtest Results (1-Step Rolling, Alpha=5%):
+    Valid Steps (Price): 101 | (Variance): 101 | (VaR Backtest): 101
+
+    --- Price Accuracy (AG vs Naive) ---
+      Metric      AG Model        Naive Model    
+      MAE         7.0762          7.0336         
+      RMSE        10.0736         10.0452        
+      MAPE        3.99%           3.97%          
+
+    --- Price DM Test (AG vs Naive, H1: AG better) ---
+      Loss='Squared Error' N=101   Stat=   0.776 p-value=  0.780 Significant=No
+
+    --- Variance Accuracy (AG vs EWMA) ---
+      Metric      AG Model        EWMA Model     
+      RMSE        0.0079          0.0080         
+      QLIKE       1.906283        1.940265       
+
+    --- Variance DM Test (AG vs EWMA, H1: AG better) ---
+      Loss='QLIKE' N=101   Stat=  -0.433 p-value=  0.333 Significant=No
+
+    --- VaR Backtesting ---
+      Metric             AG Model        EWMA Model     
+      Violations         6               4              
+      Kupiec p-val       0.673           0.619          
+      Christoff. p-val   0.666           N/A            
+      Avg VaR (5%)      -0.0737         -0.0869        
+      Avg ES (5%)       -0.0985         -0.1090        
+
+    --- Residual Diagnostics (AG Model Std. Residuals) ---
+      Ljung-Box White Noise? Yes   (p=0.898)
+      ARCH LM Heteroskedastic? No    (p=0.631)
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.780).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, h=1, alpha=5.00%, H1:
+      - - No significant difference (p=0.333).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, h=1, alpha=5.00%):
+      - - AG Model: Kupiec OK (p=N/A), Christoffersen OK (p=N/A).
+      - - EWMA Model: Kupiec OK (p=N/A).
+
+================================================================================
+
+Analysis complete. Results saved under: /Users/moe/Downloads/THESIS_try-main/thesis_results

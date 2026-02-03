@@ -1,0 +1,1448 @@
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - <module>                  [N/A] - Defining helper functions...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - <module>                  [N/A] - Changed working directory to: /Users/moe/Downloads/THESIS_try-main
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - --- Starting Multi-Coin ARIMA-GARCH Analysis (v28.5 - English Output / Vertical Summary) ---
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Analyzing Coins: bitcoin, ethereum, dogecoin, solana
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Forecast Mode: horizon_evaluation
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  Horizon Eval Params: Horizons=[1, 3, 7, 14, 30]
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  Horizon Eval Params: Min Test Set Size=80
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  DM Test (Price, AG vs Naive): Loss='Squared Error', Alpha=0.05
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  DM Test (Variance, AG vs EWMA): Loss='QLIKE', Alpha=0.05
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  Risk Metric Alpha: 0.05
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Auto-Tune Enabled: True (Criterion: AIC, Sig. Level: 0.1)
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] -  GARCH Types for Tuning: ['GARCH', 'FIGARCH', 'GJR', 'EGARCH']
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Max Differencing Order: 0
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - EWMA Lambda: 0.94
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - Output Directory Base: thesis_results
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: BITCOIN =====
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- Starting Analysis for BITCOIN ---
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Fetching data (2020-05-11 to 2024-04-20)...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [bitcoin] - Fetching data for bitcoin from Yahoo (2020-05-11 to 2024-04-20)...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [bitcoin] - 1440 rows fetched and prepared for bitcoin.
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [bitcoin] - Preprocessing data...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [bitcoin] - Preprocessing finished. Final shape: (1439, 3)
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Data fetched/preprocessed: 1439 rows.
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [bitcoin] - Splitting 1439 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [bitcoin] - Ratio-based split meets minimum test size requirement.
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [bitcoin] - Final split result: Train=1007, Val=216, Test=216
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Data split: Train=1007, Val=216, Test=216
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Performing initial stationarity check (on Train+Val log returns)...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [bitcoin] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [bitcoin] - KPSS Test (reg='c', lags=22): p-value=0.0752, Stationary=True (alpha=0.05)
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=True (p=0.0752)
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Determining model structure using Train+Val data (1223 points)...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - [bitcoin] Starting Auto-Tuning (Criterion: AIC, Sig Level: 0.1)...
+2025-07-23 20:30:46 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] - Auto-Tuning ~416 valid combinations (Criterion: AIC, Sig Level: <0.1)...
+2025-07-23 20:35:42 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -  Tuning: 416/416 (100.0%) | Testing: ARIMA(3,0,3) + EGARCH(2,2) (t) | Best (AIC): 6113.95
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] - Auto-Tuning finished. Evaluated 416/416 combinations. Successful Fits: 416
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:412, CriterionErr:0
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] - --- Best Model Found (Criterion: AIC=6113.95, Sig p<0.1) ---
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [bitcoin] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Auto-Tune recommended additional differencing d=0
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [bitcoin] - Final differencing order d=0 determined by: Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.075)) = 0
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.075)) = 0)
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-07-23 20:35:46 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Performing initial fit of final model (ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-07-23 20:35:47 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Initial fit successful.
+2025-07-23 20:35:47 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [bitcoin] - Parameter table PNG saved: thesis_results/bitcoin/bitcoin_params_initial_fit_d0.png
+2025-07-23 20:35:47 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - ACF plot saved: thesis_results/bitcoin/bitcoin_acf_init_d0.png
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - PACF plot saved: thesis_results/bitcoin/bitcoin_pacf_init_d0.png
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Q-Q plot saved: thesis_results/bitcoin/bitcoin_qq_init_logret.png
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- [bitcoin] Starting Multi-Horizon Evaluation ---
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  VaR/ES/Backtest Alpha: 5.00%
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Empirical Test Set (N=216): VaR(5%)=-0.0427, ES(5%)=-0.0600
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  Evaluation Horizons: [1, 3, 7, 14, 30] days ahead. Model: ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  EWMA Lambda (Benchmark): 0.94
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] -  Variance DM Test Loss: QLIKE
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Evaluating forecasts from 186 points in the test set (indices 1223 to 1408).
+2025-07-23 20:35:48 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 1/186 (Forecasting from 2023-09-17)...
+2025-07-23 20:35:49 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 18/186 (Forecasting from 2023-10-04)...
+2025-07-23 20:35:50 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 36/186 (Forecasting from 2023-10-22)...
+2025-07-23 20:35:52 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 54/186 (Forecasting from 2023-11-09)...
+2025-07-23 20:35:53 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 72/186 (Forecasting from 2023-11-27)...
+2025-07-23 20:35:54 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 90/186 (Forecasting from 2023-12-15)...
+2025-07-23 20:35:54 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 108/186 (Forecasting from 2024-01-02)...
+2025-07-23 20:35:55 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 126/186 (Forecasting from 2024-01-20)...
+2025-07-23 20:35:56 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 144/186 (Forecasting from 2024-02-07)...
+2025-07-23 20:35:57 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 162/186 (Forecasting from 2024-02-25)...
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 180/186 (Forecasting from 2024-03-14)...
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-Horizon Eval: Step 186/186 (Forecasting from 2024-03-20)...
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Forecasts generated from 186 origin points.
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=-1.3641, p-value(less)=0.0871, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=0.7982, p-value(less)=0.7871, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=3, loss='Squared Error', var='bartlett'): Stat=-1.9223, p-value(less)=0.0281, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=3, loss='QLIKE', var='bartlett'): Stat=0.2375, p-value(less)=0.5937, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=7, loss='Squared Error', var='bartlett'): Stat=-2.0102, p-value(less)=0.0229, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=7, loss='QLIKE', var='bartlett'): Stat=-0.1008, p-value(less)=0.4599, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=14, loss='Squared Error', var='bartlett'): Stat=-2.1676, p-value(less)=0.0157, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=14, loss='QLIKE', var='bartlett'): Stat=-0.3460, p-value(less)=0.3649, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=30, loss='Squared Error', var='bartlett'): Stat=-1.9423, p-value(less)=0.0268, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [bitcoin] - DM Test ('dieboldmariano' lib, h=30, loss='QLIKE', var='bartlett'): Stat=-1.9237, p-value(less)=0.0280, N=186
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - --- Multi-Horizon Evaluation Finished: 0.17 min ---
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - Multi-horizon details saved: thesis_results/bitcoin/bitcoin_multi_horizon_eval_details_d0.csv
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [bitcoin] - ========== BITCOIN Analysis Finished in 5.21 min (Status: OK) ==========
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: ETHEREUM =====
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- Starting Analysis for ETHEREUM ---
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Fetching data (2020-05-11 to 2024-04-20)...
+2025-07-23 20:35:58 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [ethereum] - Fetching data for ethereum from Yahoo (2020-05-11 to 2024-04-20)...
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [ethereum] - 1440 rows fetched and prepared for ethereum.
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [ethereum] - Preprocessing data...
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [ethereum] - Preprocessing finished. Final shape: (1439, 3)
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Data fetched/preprocessed: 1439 rows.
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [ethereum] - Splitting 1439 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [ethereum] - Ratio-based split meets minimum test size requirement.
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [ethereum] - Final split result: Train=1007, Val=216, Test=216
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Data split: Train=1007, Val=216, Test=216
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Performing initial stationarity check (on Train+Val log returns)...
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [ethereum] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [ethereum] - KPSS Test (reg='c', lags=22): p-value=0.0238, Stationary=False (alpha=0.05)
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=False (p=0.0238)
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Determining model structure using Train+Val data (1223 points)...
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - [ethereum] Starting Auto-Tuning (Criterion: AIC, Sig Level: 0.1)...
+2025-07-23 20:35:59 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] - Auto-Tuning ~416 valid combinations (Criterion: AIC, Sig Level: <0.1)...
+2025-07-23 20:38:02 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -  Tuning: 416/416 (100.0%) | Testing: ARIMA(3,0,3) + EGARCH(2,2) (t) | Best (AIC): 6793.36
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] - Auto-Tuning finished. Evaluated 416/416 combinations. Successful Fits: 416
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:386, CriterionErr:0
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] - --- Best Model Found (Criterion: AIC=6793.36, Sig p<0.1) ---
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -   ARIMA (p,q): (1,0), Recommended additional d: 0
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [ethereum] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Auto-Tune recommended additional differencing d=0
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - WARNING  - handle_differencing       [ethereum] - ADF/KPSS tests conflict. Defaulting to base d=1.
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [ethereum] - Final differencing order d=0 determined by: Base d=1 (Conflict: ADF Stat=True(p=0.000), KPSS Stat=False(p=0.024)) = 1 (limited to 0 by max_d=0)
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=1 (Conflict: ADF Stat=True(p=0.000), KPSS Stat=False(p=0.024)) = 1 (limited to 0 by max_d=0))
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- Final Model Structure (Auto-Tune): ARIMA(1,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Performing initial fit of final model (ARIMA(1,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-07-23 20:38:03 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Initial fit successful.
+2025-07-23 20:38:04 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [ethereum] - Parameter table PNG saved: thesis_results/ethereum/ethereum_params_initial_fit_d0.png
+2025-07-23 20:38:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-07-23 20:38:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - ACF plot saved: thesis_results/ethereum/ethereum_acf_init_d0.png
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - PACF plot saved: thesis_results/ethereum/ethereum_pacf_init_d0.png
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Q-Q plot saved: thesis_results/ethereum/ethereum_qq_init_logret.png
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- [ethereum] Starting Multi-Horizon Evaluation ---
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  VaR/ES/Backtest Alpha: 5.00%
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Empirical Test Set (N=216): VaR(5%)=-0.0439, ES(5%)=-0.0651
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  Evaluation Horizons: [1, 3, 7, 14, 30] days ahead. Model: ARIMA(1,0,0) - FIGARCH(1,1) - Dist='t'
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  EWMA Lambda (Benchmark): 0.94
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] -  Variance DM Test Loss: QLIKE
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Evaluating forecasts from 186 points in the test set (indices 1223 to 1408).
+2025-07-23 20:38:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 1/186 (Forecasting from 2023-09-17)...
+2025-07-23 20:38:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 18/186 (Forecasting from 2023-10-04)...
+2025-07-23 20:38:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 36/186 (Forecasting from 2023-10-22)...
+2025-07-23 20:38:08 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 54/186 (Forecasting from 2023-11-09)...
+2025-07-23 20:38:09 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 72/186 (Forecasting from 2023-11-27)...
+2025-07-23 20:38:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 90/186 (Forecasting from 2023-12-15)...
+2025-07-23 20:38:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 108/186 (Forecasting from 2024-01-02)...
+2025-07-23 20:38:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 126/186 (Forecasting from 2024-01-20)...
+2025-07-23 20:38:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 144/186 (Forecasting from 2024-02-07)...
+2025-07-23 20:38:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 162/186 (Forecasting from 2024-02-25)...
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 180/186 (Forecasting from 2024-03-14)...
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-Horizon Eval: Step 186/186 (Forecasting from 2024-03-20)...
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Forecasts generated from 186 origin points.
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=-1.0195, p-value(less)=0.1546, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=0.6421, p-value(less)=0.7392, N=186
+Matplotlib backend set to 'Agg'. Plotting to file enabled.
+dieboldmariano library found.
+dataframe_image library found, PNG table export enabled.
+
+[BITCOIN] --- Descriptive Statistics (Full Period) ---
+  price_mean          :      32859.3623
+  price_std           :      15552.6410
+  price_min           :       8790.3682
+  price_max           :      73083.5000
+  price_skew          :          0.4303
+  price_kurtosis      :         -0.6002
+  price_jb_stat       :         66.0098
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0014
+  logret_std          :          0.0327
+  logret_min          :         -0.1741
+  logret_max          :          0.1718
+  logret_skew         :         -0.2033
+  logret_kurtosis     :          3.4456
+  logret_jb_stat      :        721.7425
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [BITCOIN (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+          coef  std err       z  P>|z| Sig.
+const   0.0904   0.0960  0.9370  0.349     
+sigma2 11.2821   0.2780 40.5580  0.000  ***
+
+  LLF: -3214.526, AIC: 6433.052, BIC: 6443.268
+
+GARCH Parameters:
+        coef  std err
+omega 0.0920   0.3300
+phi   0.0000   0.3370
+d     1.0000   0.5060
+beta  0.9349   0.1790
+
+  Distribution Parameters:
+     coef  std err       t  P>|t| 95.0% Conf. Int.
+nu 3.2707   0.2820 11.5970 0.0000  [ 2.718, 3.823]
+
+  LLF: -3049.974, AIC: 6109.948, BIC: 6135.493
+--- End Parameter Summary ---
+
+--- Multi-Horizon Evaluation Results (Test Set, d=0) ---
+  Horizon h=1 : Valid Pairs=186  
+    Price  MAPE AG=    1.83% | MAPE Naive=    1.84%
+    Var    RMSE AG=0.00158195 | QLIKE AG=2.175922
+    Var    RMSE EWMA=0.00153162 | QLIKE EWMA=2.072902
+    VaR Backtest (h=1, alpha=5.00%):
+      AG Model: N=186 | Violations=11 (Expected: 9.3)
+        Kupiec p=0.5778 | Christoffersen p=0.4557
+      EWMA Bench: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.6277
+      Avg VaR AG=-0.0294, ES AG=-0.0474
+      Avg VaR EWMA=-0.0389, ES EWMA=-0.0488
+    DM Price (h=1): N=186   | Loss='Squared Error' | p=  0.0871 | No Diff. (p=0.0871)
+    DM Var   (h=1): N=186   | Loss='QLIKE' | p=  0.7871 | No Diff. (p=0.7871)
+  Horizon h=3 : Valid Pairs=186  
+    Price  MAPE AG=    3.18% | MAPE Naive=    3.23%
+    Var    RMSE AG=0.00157908 | QLIKE AG=2.160226
+    Var    RMSE EWMA=0.00155270 | QLIKE EWMA=2.127280
+    VaR Backtest (h=3, alpha=5.00%):
+      AG Model: N=186 | Violations=11 (Expected: 9.3)
+        Kupiec p=0.5778 | Christoffersen p=0.4270
+      EWMA Bench: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.6277
+      Avg VaR AG=-0.0300, ES AG=-0.0483
+      Avg VaR EWMA=-0.0389, ES EWMA=-0.0488
+    DM Price (h=3): N=186   | Loss='Squared Error' | p=  0.0281 | AG better (p=0.0281)
+    DM Var   (h=3): N=186   | Loss='QLIKE' | p=  0.5937 | No Diff. (p=0.5937)
+  Horizon h=7 : Valid Pairs=186  
+    Price  MAPE AG=    5.36% | MAPE Naive=    5.54%
+    Var    RMSE AG=0.00158132 | QLIKE AG=2.083556
+    Var    RMSE EWMA=0.00157267 | QLIKE EWMA=2.096142
+    VaR Backtest (h=7, alpha=5.00%):
+      AG Model: N=186 | Violations=11 (Expected: 9.3)
+        Kupiec p=0.5778 | Christoffersen p=0.4270
+      EWMA Bench: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.6277
+      Avg VaR AG=-0.0311, ES AG=-0.0501
+      Avg VaR EWMA=-0.0389, ES EWMA=-0.0488
+    DM Price (h=7): N=186   | Loss='Squared Error' | p=  0.0229 | AG better (p=0.0229)
+    DM Var   (h=7): N=186   | Loss='QLIKE' | p=  0.4599 | No Diff. (p=0.4599)
+  Horizon h=14: Valid Pairs=186  
+    Price  MAPE AG=    7.55% | MAPE Naive=    8.11%
+    Var    RMSE AG=0.00158795 | QLIKE AG=1.979868
+    Var    RMSE EWMA=0.00156508 | QLIKE EWMA=2.036842
+    VaR Backtest (h=14, alpha=5.00%):
+      AG Model: N=186 | Violations=12 (Expected: 9.3)
+        Kupiec p=0.3837 | Christoffersen p=0.2974
+      EWMA Bench: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.6277
+      Avg VaR AG=-0.0331, ES AG=-0.0532
+      Avg VaR EWMA=-0.0389, ES EWMA=-0.0488
+    DM Price (h=14): N=186   | Loss='Squared Error' | p=  0.0157 | AG better (p=0.0157)
+    DM Var   (h=14): N=186   | Loss='QLIKE' | p=  0.3649 | No Diff. (p=0.3649)
+  Horizon h=30: Valid Pairs=186  
+    Price  MAPE AG=   13.29% | MAPE Naive=   14.45%
+    Var    RMSE AG=0.00158088 | QLIKE AG=1.801873
+    Var    RMSE EWMA=0.00162677 | QLIKE EWMA=2.073814
+    VaR Backtest (h=30, alpha=5.00%):
+      AG Model: N=186 | Violations=14 (Expected: 9.3)
+        Kupiec p=0.1399 | Christoffersen p=0.3356
+      EWMA Bench: N=186 | Violations=12 (Expected: 9.3)
+        Kupiec p=0.3837 | Christoffersen p=0.2974
+      Avg VaR AG=-0.0372, ES AG=-0.0599
+      Avg VaR EWMA=-0.0389, ES EWMA=-0.0488
+    DM Price (h=30): N=186   | Loss='Squared Error' | p=  0.0268 | AG better (p=0.0268)
+    DM Var   (h=30): N=186   | Loss='QLIKE' | p=  0.0280 | AG better (p=0.0280)
+
+--- Thesis Recommendations Summary (during run_analysis) ---
+ Price DM Test (AG vs Naive):
+Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1: AG better, Loss=Squared Error):
+- AG significantly better for horizons: [3, 7, 14, 30].
+- No significant difference for horizons [1] (p >= 0.05).
+
+ Variance DM Test (AG vs EWMA):
+Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1: AG better, Loss=QLIKE):
+- AG significantly better for horizons: [30].
+- No significant difference for horizons [1, 3, 7, 14] (p >= 0.05).
+
+ VaR Backtesting:
+VaR Backtesting (AG vs EWMA, alpha=5.00%):
+- Kupiec Test rejects correct AG coverage for horizons: None.
+- Christoffersen Test rejects correct AG coverage/independence for horizons: None.
+- Kupiec Test rejects correct EWMA coverage for horizons: None.
+
+
+[ETHEREUM] --- Descriptive Statistics (Full Period) ---
+  price_mean          :       1953.6795
+  price_std           :       1058.5480
+  price_min           :        189.3125
+  price_max           :       4812.0874
+  price_skew          :          0.3601
+  price_kurtosis      :         -0.3364
+  price_jb_stat       :         37.8757
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0019
+  logret_std          :          0.0426
+  logret_min          :         -0.3175
+  logret_max          :          0.2307
+  logret_skew         :         -0.4052
+  logret_kurtosis     :          5.1051
+  logret_jb_stat      :       1602.0188
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [ETHEREUM (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+          coef  std err       z  P>|z| Sig.
+const   0.1766   0.1250  1.4140  0.157     
+ar.L1  -0.0413   0.0210 -1.9350  0.053  *  
+sigma2 19.7862   0.4400 44.9690  0.000  ***
+
+  LLF: -3557.772, AIC: 7121.543, BIC: 7136.868
+
+GARCH Parameters:
+        coef  std err
+omega 0.4155   0.4520
+phi   0.2295   0.1200
+d     0.5318   0.1230
+beta  0.6382   0.1800
+
+  Distribution Parameters:
+     coef  std err      t  P>|t| 95.0% Conf. Int.
+nu 4.5058   0.4610 9.7710 0.0000  [ 3.602, 5.410]
+
+  LLF: -3388.678, AIC: 6787.355, BIC: 6812.901
+--- End Parameter Summary ---
+
+--- Multi-Horizon Evaluation Results (Test Set, d=0) ---
+  Horizon h=1 : Valid Pairs=186  
+    Price  MAPE AG=    1.98% | MAPE Naive=    2.00%
+    Var    RMSE AG=0.00187367 | QLIKE AG=2.097317
+    Var    RMSE EWMA=0.00183212 | QLIKE EWMA=1.992027
+    VaR Backtest (h=1, alpha=5.00%):
+      AG Model: N=186 | Violations=16 (Expected: 9.3)
+        Kupiec p=0.0400 | Christoffersen p=0.0493
+      EWMA Bench: N=186 | Violations=7 (Expected: 9.3)
+        Kupiec p=0.4193 | Christoffersen p=0.5479
+      Avg VaR AG=-0.0312, ES AG=-0.0466
+      Avg VaR EWMA=-0.0413, ES EWMA=-0.0518
+    DM Price (h=1): N=186   | Loss='Squared Error' | p=  0.1546 | No Diff. (p=0.1546)
+    DM Var   (h=1): N=186   | Loss='QLIKE' | p=  0.7392 | No Diff. (p=0.7392)
+  Horizon h=3 : Valid Pairs=186  
+    Price  MAPE AG=    3.50% | MAPE Naive=    3.56%
+    Var    RMSE AG=0.00187051 | QLIKE AG=2.062181
+    Var    RMSE EWMA=0.00185075 | QLIKE EWMA=1.992522
+    VaR Backtest (h=3, alpha=5.00%):
+      AG Model: N=186 | Violations=16 (Expected: 9.3)
+        Kupiec p=0.0400 | Christoffersen p=0.10452025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=3, loss='Squared Error', var='bartlett'): Stat=-1.1809, p-value(less)=0.1196, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=3, loss='QLIKE', var='bartlett'): Stat=0.4716, p-value(less)=0.6811, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=7, loss='Squared Error', var='bartlett'): Stat=-1.0789, p-value(less)=0.1410, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=7, loss='QLIKE', var='bartlett'): Stat=-0.1899, p-value(less)=0.4248, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=14, loss='Squared Error', var='bartlett'): Stat=-1.1116, p-value(less)=0.1339, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=14, loss='QLIKE', var='bartlett'): Stat=-1.0177, p-value(less)=0.1551, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=30, loss='Squared Error', var='bartlett'): Stat=-1.0041, p-value(less)=0.1583, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [ethereum] - DM Test ('dieboldmariano' lib, h=30, loss='QLIKE', var='bartlett'): Stat=-1.8036, p-value(less)=0.0365, N=186
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - --- Multi-Horizon Evaluation Finished: 0.15 min ---
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - Multi-horizon details saved: thesis_results/ethereum/ethereum_multi_horizon_eval_details_d0.csv
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [ethereum] - ========== ETHEREUM Analysis Finished in 2.27 min (Status: OK) ==========
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: DOGECOIN =====
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- Starting Analysis for DOGECOIN ---
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Fetching data (2020-05-11 to 2024-04-20)...
+2025-07-23 20:38:14 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [dogecoin] - Fetching data for dogecoin from Yahoo (2020-05-11 to 2024-04-20)...
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [dogecoin] - 1440 rows fetched and prepared for dogecoin.
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [dogecoin] - Preprocessing data...
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [dogecoin] - Preprocessing finished. Final shape: (1439, 3)
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Data fetched/preprocessed: 1439 rows.
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [dogecoin] - Splitting 1439 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [dogecoin] - Ratio-based split meets minimum test size requirement.
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [dogecoin] - Final split result: Train=1007, Val=216, Test=216
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Data split: Train=1007, Val=216, Test=216
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Performing initial stationarity check (on Train+Val log returns)...
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [dogecoin] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [dogecoin] - KPSS Test (reg='c', lags=22): p-value=0.0726, Stationary=True (alpha=0.05)
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=True (p=0.0726)
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Determining model structure using Train+Val data (1223 points)...
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - [dogecoin] Starting Auto-Tuning (Criterion: AIC, Sig Level: 0.1)...
+2025-07-23 20:38:15 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] - Auto-Tuning ~416 valid combinations (Criterion: AIC, Sig Level: <0.1)...
+2025-07-23 20:40:10 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -  Tuning: 416/416 (100.0%) | Testing: ARIMA(3,0,3) + EGARCH(2,2) (t) | Best (AIC): 7115.54
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] - Auto-Tuning finished. Evaluated 416/416 combinations. Successful Fits: 416
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:339, CriterionErr:0
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] - --- Best Model Found (Criterion: AIC=7115.54, Sig p<0.1) ---
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [dogecoin] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Auto-Tune recommended additional differencing d=0
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [dogecoin] - Final differencing order d=0 determined by: Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.073)) = 0
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=0 (ADF Stat=True(p=0.000), KPSS Stat=True(p=0.073)) = 0)
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Performing initial fit of final model (ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Initial fit successful.
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [dogecoin] - Parameter table PNG saved: thesis_results/dogecoin/dogecoin_params_initial_fit_d0.png
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-07-23 20:40:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - ACF plot saved: thesis_results/dogecoin/dogecoin_acf_init_d0.png
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - PACF plot saved: thesis_results/dogecoin/dogecoin_pacf_init_d0.png
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Q-Q plot saved: thesis_results/dogecoin/dogecoin_qq_init_logret.png
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- [dogecoin] Starting Multi-Horizon Evaluation ---
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  VaR/ES/Backtest Alpha: 5.00%
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Empirical Test Set (N=216): VaR(5%)=-0.0726, ES(5%)=-0.1087
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  Evaluation Horizons: [1, 3, 7, 14, 30] days ahead. Model: ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  EWMA Lambda (Benchmark): 0.94
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] -  Variance DM Test Loss: QLIKE
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Evaluating forecasts from 186 points in the test set (indices 1223 to 1408).
+2025-07-23 20:40:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 1/186 (Forecasting from 2023-09-17)...
+2025-07-23 20:40:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 18/186 (Forecasting from 2023-10-04)...
+2025-07-23 20:40:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 36/186 (Forecasting from 2023-10-22)...
+2025-07-23 20:40:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 54/186 (Forecasting from 2023-11-09)...
+2025-07-23 20:40:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 72/186 (Forecasting from 2023-11-27)...
+2025-07-23 20:40:16 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 90/186 (Forecasting from 2023-12-15)...
+2025-07-23 20:40:17 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 108/186 (Forecasting from 2024-01-02)...
+2025-07-23 20:40:18 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 126/186 (Forecasting from 2024-01-20)...
+2025-07-23 20:40:19 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 144/186 (Forecasting from 2024-02-07)...
+2025-07-23 20:40:20 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 162/186 (Forecasting from 2024-02-25)...
+2025-07-23 20:40:21 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 180/186 (Forecasting from 2024-03-14)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-Horizon Eval: Step 186/186 (Forecasting from 2024-03-20)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Forecasts generated from 186 origin points.
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=-0.4413, p-value(less)=0.3298, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=2.9015, p-value(less)=0.9979, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=3, loss='Squared Error', var='bartlett'): Stat=-0.8017, p-value(less)=0.2119, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=3, loss='QLIKE', var='bartlett'): Stat=1.0336, p-value(less)=0.8487, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=7, loss='Squared Error', var='bartlett'): Stat=-0.9636, p-value(less)=0.1682, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=7, loss='QLIKE', var='bartlett'): Stat=-0.4527, p-value(less)=0.3256, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=14, loss='Squared Error', var='bartlett'): Stat=-1.4769, p-value(less)=0.0707, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=14, loss='QLIKE', var='bartlett'): Stat=-0.7308, p-value(less)=0.2329, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=30, loss='Squared Error', var='bartlett'): Stat=-1.2405, p-value(less)=0.1082, N=186
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [dogecoin] - DM Test ('dieboldmariano' lib, h=30, loss='QLIKE', var='bartlett'): Stat=-1.7251, p-value(less)=0.0431, N=186
+
+      EWMA Bench: N=186 | Violations=8 (Expected: 9.3)
+        Kupiec p=0.6544 | Christoffersen p=0.6300
+      Avg VaR AG=-0.0327, ES AG=-0.0487
+      Avg VaR EWMA=-0.0413, ES EWMA=-0.0518
+    DM Price (h=3): N=186   | Loss='Squared Error' | p=  0.1196 | No Diff. (p=0.1196)
+    DM Var   (h=3): N=186   | Loss='QLIKE' | p=  0.6811 | No Diff. (p=0.6811)
+  Horizon h=7 : Valid Pairs=186  
+    Price  MAPE AG=    6.08% | MAPE Naive=    6.27%
+    Var    RMSE AG=0.00185939 | QLIKE AG=1.966051
+    Var    RMSE EWMA=0.00186061 | QLIKE EWMA=1.986059
+    VaR Backtest (h=7, alpha=5.00%):
+      AG Model: N=186 | Violations=14 (Expected: 9.3)
+        Kupiec p=0.1399 | Christoffersen p=0.3356
+      EWMA Bench: N=186 | Violations=8 (Expected: 9.3)
+        Kupiec p=0.6544 | Christoffersen p=0.6300
+      Avg VaR AG=-0.0352, ES AG=-0.0524
+      Avg VaR EWMA=-0.0413, ES EWMA=-0.0518
+    DM Price (h=7): N=186   | Loss='Squared Error' | p=  0.1410 | No Diff. (p=0.1410)
+    DM Var   (h=7): N=186   | Loss='QLIKE' | p=  0.4248 | No Diff. (p=0.4248)
+  Horizon h=14: Valid Pairs=186  
+    Price  MAPE AG=    8.50% | MAPE Naive=    9.06%
+    Var    RMSE AG=0.00186698 | QLIKE AG=1.877612
+    Var    RMSE EWMA=0.00188485 | QLIKE EWMA=1.991912
+    VaR Backtest (h=14, alpha=5.00%):
+      AG Model: N=186 | Violations=13 (Expected: 9.3)
+        Kupiec p=0.2390 | Christoffersen p=0.4976
+      EWMA Bench: N=186 | Violations=11 (Expected: 9.3)
+        Kupiec p=0.5778 | Christoffersen p=0.4270
+      Avg VaR AG=-0.0387, ES AG=-0.0575
+      Avg VaR EWMA=-0.0413, ES EWMA=-0.0518
+    DM Price (h=14): N=186   | Loss='Squared Error' | p=  0.1339 | No Diff. (p=0.1339)
+    DM Var   (h=14): N=186   | Loss='QLIKE' | p=  0.1551 | No Diff. (p=0.1551)
+  Horizon h=30: Valid Pairs=186  
+    Price  MAPE AG=   11.55% | MAPE Naive=   13.51%
+    Var    RMSE AG=0.00195716 | QLIKE AG=1.824181
+    Var    RMSE EWMA=0.00199931 | QLIKE EWMA=2.049817
+    VaR Backtest (h=30, alpha=5.00%):
+      AG Model: N=186 | Violations=12 (Expected: 9.3)
+        Kupiec p=0.3837 | Christoffersen p=0.6616
+      EWMA Bench: N=186 | Violations=13 (Expected: 9.3)
+        Kupiec p=0.2390 | Christoffersen p=0.4976
+      Avg VaR AG=-0.0438, ES AG=-0.0650
+      Avg VaR EWMA=-0.0413, ES EWMA=-0.0518
+    DM Price (h=30): N=186   | Loss='Squared Error' | p=  0.1583 | No Diff. (p=0.1583)
+    DM Var   (h=30): N=186   | Loss='QLIKE' | p=  0.0365 | AG better (p=0.0365)
+
+--- Thesis Recommendations Summary (during run_analysis) ---
+ Price DM Test (AG vs Naive):
+Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1: AG better, Loss=Squared Error):
+- No significant difference for horizons [1, 3, 7, 14, 30] (p >= 0.05).
+
+ Variance DM Test (AG vs EWMA):
+Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1: AG better, Loss=QLIKE):
+- AG significantly better for horizons: [30].
+- No significant difference for horizons [1, 3, 7, 14] (p >= 0.05).
+
+ VaR Backtesting:
+VaR Backtesting (AG vs EWMA, alpha=5.00%):
+- Kupiec Test rejects correct AG coverage for horizons: [1, 3].
+- Christoffersen Test rejects correct AG coverage/independence for horizons: [1].
+- Kupiec Test rejects correct EWMA coverage for horizons: None.
+
+
+[DOGECOIN] --- Descriptive Statistics (Full Period) ---
+  price_mean          :          0.1057
+  price_std           :          0.0951
+  price_min           :          0.0023
+  price_max           :          0.6848
+  price_skew          :          1.7713
+  price_kurtosis      :          4.6230
+  price_jb_stat       :       2033.8834
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0029
+  logret_std          :          0.0791
+  logret_min          :         -0.5151
+  logret_max          :          1.5163
+  logret_skew         :          5.8228
+  logret_kurtosis     :        103.3068
+  logret_jb_stat      :     648024.4464
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [DOGECOIN (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+          coef  std err        z  P>|z| Sig.
+const   0.2642   0.2940   0.8990  0.368     
+sigma2 69.4522   0.4890 142.1720  0.000  ***
+
+  LLF: -4324.973, AIC: 8653.946, BIC: 8664.162
+
+GARCH Parameters:
+        coef  std err
+omega 1.0519   0.9650
+phi   0.3552   0.2510
+d     0.2896   0.0839
+beta  0.2221   0.1910
+
+  Distribution Parameters:
+     coef  std err       t  P>|t| 95.0% Conf. Int.
+nu 3.1218   0.1720 18.1970 0.0000  [ 2.786, 3.458]
+
+  LLF: -3550.772, AIC: 7111.543, BIC: 7137.089
+--- End Parameter Summary ---
+
+--- Multi-Horizon Evaluation Results (Test Set, d=0) ---
+  Horizon h=1 : Valid Pairs=186  
+    Price  MAPE AG=    2.95% | MAPE Naive=    2.96%
+    Var    RMSE AG=0.00546851 | QLIKE AG=3.202512
+    Var    RMSE EWMA=0.00488366 | QLIKE EWMA=1.865934
+    VaR Backtest (h=1, alpha=5.00%):
+      AG Model: N=186 | Violations=22 (Expected: 9.3)
+        Kupiec p=0.0002 | Christoffersen p=0.0012
+      EWMA Bench: N=186 | Violations=8 (Expected: 9.3)
+        Kupiec p=0.6544 | Christoffersen p=0.6300
+      Avg VaR AG=-0.0326, ES AG=-0.0545
+      Avg VaR EWMA=-0.0563, ES EWMA=-0.0706
+    DM Price (h=1): N=186   | Loss='Squared Error' | p=  0.3298 | No Diff. (p=0.3298)
+    DM Var   (h=1): N=186   | Loss='QLIKE' | p=  0.9979 | No Diff. (p=0.9979)
+  Horizon h=3 : Valid Pairs=186  
+    Price  MAPE AG=    4.75% | MAPE Naive=    4.75%
+    Var    RMSE AG=0.00537623 | QLIKE AG=2.437615
+    Var    RMSE EWMA=0.00499874 | QLIKE EWMA=2.085367
+    VaR Backtest (h=3, alpha=5.00%):
+      AG Model: N=186 | Violations=16 (Expected: 9.3)
+        Kupiec p=0.0400 | Christoffersen p=0.1045
+      EWMA Bench: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.6277
+      Avg VaR AG=-0.0415, ES AG=-0.0689
+      Avg VaR EWMA=-0.0563, ES EWMA=-0.0706
+    DM Price (h=3): N=186   | Loss='Squared Error' | p=  0.2119 | No Diff. (p=0.2119)
+    DM Var   (h=3): N=186   | Loss='QLIKE' | p=  0.8487 | No Diff. (p=0.8487)
+  Horizon h=7 : Valid Pairs=186  
+    Price  MAPE AG=    7.42% | MAPE Naive=    7.38%
+    Var    RMSE AG=0.00539334 | QLIKE AG=2.277435
+    Var    RMSE EWMA=0.00523046 | QLIKE EWMA=2.456874
+    VaR Backtest (h=7, alpha=5.00%):
+      AG Model: N=186 | Violations=13 (Expected: 9.3)
+        Kupiec p=0.2390 | Christoffersen p=0.2785
+      EWMA Bench: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.6277
+      Avg VaR AG=-0.0472, ES AG=-0.0782
+      Avg VaR EWMA=-0.0563, ES EWMA=-0.0706
+    DM Price (h=7): N=186   | Loss='Squared Error' | p=  0.1682 | No Diff. (p=0.1682)
+    DM Var   (h=7): N=186   | Loss='QLIKE' | p=  0.3256 | No Diff. (p=0.3256)
+  Horizon h=14: Valid Pairs=186  
+    Price  MAPE AG=   11.46% | MAPE Naive=   11.31%
+    Var    RMSE AG=0.00646658 | QLIKE AG=2.126921
+    Var    RMSE EWMA=0.00542517 | QLIKE EWMA=2.531983
+    VaR Backtest (h=14, alpha=5.00%):
+      AG Model: N=186 | Violations=17 (Expected: 9.3)
+        Kupiec p=0.0196 | Christoffersen p=0.0337
+      EWMA Bench: N=186 | Violations=12 (Expected: 9.3)
+        Kupiec p=0.3837 | Christoffersen p=0.2974
+      Avg VaR AG=-0.0525, ES AG=-0.0867
+      Avg VaR EWMA=-0.0563, ES EWMA=-0.0706
+    DM Price (h=14): N=186   | Loss='Squared Error' | p=  0.0707 | No Diff. (p=0.0707)
+    DM Var   (h=14): N=186   | Loss='QLIKE' | p=  0.2329 | No Diff. (p=0.2329)
+  Horizon h=30: Valid Pairs=186  
+    Price  MAPE AG=   17.70% | MAPE Naive=   19.31%
+    Var    RMSE AG=0.00581486 | QLIKE AG=2.039464
+    Var    RMSE EWMA=0.00595314 | QLIKE EWMA=3.296971
+    VaR Backtest (h=30, alpha=5.00%):
+      AG Model: N=186 | Violations=22 (Expected: 9.3)
+        Kupiec p=0.0002 | Christoffersen p=0.0008
+      EWMA Bench: N=186 | Violations=21 (Expected: 9.3)
+        Kupiec p=0.0007 | Christoffersen p=0.0016
+      Avg VaR AG=-0.0547, ES AG=-0.0903
+      Avg VaR EWMA=-0.0563, ES EWMA=-0.0706
+    DM Price (h=30): N=186   | Loss='Squared Error' | p=  0.1082 | No Diff. (p=0.1082)
+    DM Var   (h=30): N=186   | Loss='QLIKE' | p=  0.0431 | AG better (p=0.0431)
+
+--- Thesis Recommendations Summary (during run_analysis) ---
+ Price DM Test (AG vs Naive):
+Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1: AG better, Loss=Squared Error):
+- No significant difference for horizons [1, 3, 7, 14, 30] (p >= 0.05).
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - --- Multi-Horizon Evaluation Finished: 0.17 min ---
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - Multi-horizon details saved: thesis_results/dogecoin/dogecoin_multi_horizon_eval_details_d0.csv
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [dogecoin] - ========== DOGECOIN Analysis Finished in 2.12 min (Status: OK) ==========
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - ===== Processing Coin: SOLANA =====
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- Starting Analysis for SOLANA ---
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Fetching data (2020-05-11 to 2024-04-20)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [solana] - Fetching data for solana from Yahoo (2020-05-11 to 2024-04-20)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - fetch_data_yahoo          [solana] - 1440 rows fetched and prepared for solana.
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [solana] - Preprocessing data...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - preprocess_data           [solana] - Preprocessing finished. Final shape: (1439, 3)
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Data fetched/preprocessed: 1439 rows.
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [solana] - Splitting 1439 rows, Ratios=(0.7, 0.15, 0.15), min_test_size=80...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [solana] - Ratio-based split meets minimum test size requirement.
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - train_val_test_split      [solana] - Final split result: Train=1007, Val=216, Test=216
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Data split: Train=1007, Val=216, Test=216
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Performing initial stationarity check (on Train+Val log returns)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - adf_test                  [solana] - ADF Test: p-value=0.0000, Stationary=True (alpha=0.05)
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - kpss_test                 [solana] - KPSS Test (reg='c', lags=22): p-value=0.0197, Stationary=False (alpha=0.05)
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Initial Stationarity (Train+Val): ADF Stationary=True (p=0.0000), KPSS Stationary=False (p=0.0197)
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Determining model structure using Train+Val data (1223 points)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - [solana] Starting Auto-Tuning (Criterion: AIC, Sig Level: 0.1)...
+2025-07-23 20:40:22 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] - Auto-Tuning ~416 valid combinations (Criterion: AIC, Sig Level: <0.1)...
+2025-07-23 20:43:03 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -  Tuning: 416/416 (100.0%) | Testing: ARIMA(3,0,3) + EGARCH(2,2) (t) | Best (AIC): 7976.60
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] - Auto-Tuning finished. Evaluated 416/416 combinations. Successful Fits: 416
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -   Skips - Data:0, FitErr:0, Convergence:0, Insignificant:389, CriterionErr:0
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] - --- Best Model Found (Criterion: AIC=7976.60, Sig p<0.1) ---
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -   ARIMA (p,q): (0,0), Recommended additional d: 0
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - auto_tune_arima_garch     [solana] -   GARCH Type: FIGARCH, Order (gp,gq): (1, 1), Dist: t
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Auto-Tune recommended additional differencing d=0
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - WARNING  - handle_differencing       [solana] - ADF/KPSS tests conflict. Defaulting to base d=1.
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - handle_differencing       [solana] - Final differencing order d=0 determined by: Base d=1 (Conflict: ADF Stat=True(p=0.000), KPSS Stat=False(p=0.020)) = 1 (limited to 0 by max_d=0)
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Final differencing order set to d=0. Reason: Applied d=0 (Base d=1 (Conflict: ADF Stat=True(p=0.000), KPSS Stat=False(p=0.020)) = 1 (limited to 0 by max_d=0))
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Skipping Distribution Comparison: Auto-Tune OK. Using distribution 't'.
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- Final Model Structure (Auto-Tune): ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t' ---
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Performing initial fit of final model (ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t') on Train+Val data (using differenced d=0)...
+2025-07-23 20:43:04 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Initial fit successful.
+2025-07-23 20:43:05 - ARIMA_GARCH_Analysis - INFO     - create_parameter_table_png [solana] - Parameter table PNG saved: thesis_results/solana/solana_params_initial_fit_d0.png
+2025-07-23 20:43:05 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Generating initial diagnostic plots using Train+Val data (d=0)...
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - ACF plot saved: thesis_results/solana/solana_acf_init_d0.png
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - PACF plot saved: thesis_results/solana/solana_pacf_init_d0.png
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Q-Q plot saved: thesis_results/solana/solana_qq_init_logret.png
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- [solana] Starting Multi-Horizon Evaluation ---
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  VaR/ES/Backtest Alpha: 5.00%
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Empirical Test Set (N=216): VaR(5%)=-0.0783, ES(5%)=-0.0965
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  Evaluation Horizons: [1, 3, 7, 14, 30] days ahead. Model: ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  EWMA Lambda (Benchmark): 0.94
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] -  Variance DM Test Loss: QLIKE
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Evaluating forecasts from 186 points in the test set (indices 1223 to 1408).
+2025-07-23 20:43:06 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 1/186 (Forecasting from 2023-09-17)...
+2025-07-23 20:43:07 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 18/186 (Forecasting from 2023-10-04)...
+2025-07-23 20:43:08 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 36/186 (Forecasting from 2023-10-22)...
+2025-07-23 20:43:09 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 54/186 (Forecasting from 2023-11-09)...
+2025-07-23 20:43:10 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 72/186 (Forecasting from 2023-11-27)...
+2025-07-23 20:43:11 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 90/186 (Forecasting from 2023-12-15)...
+2025-07-23 20:43:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 108/186 (Forecasting from 2024-01-02)...
+2025-07-23 20:43:12 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 126/186 (Forecasting from 2024-01-20)...
+2025-07-23 20:43:13 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 144/186 (Forecasting from 2024-02-07)...
+2025-07-23 20:43:14 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 162/186 (Forecasting from 2024-02-25)...
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 180/186 (Forecasting from 2024-03-14)...
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-Horizon Eval: Step 186/186 (Forecasting from 2024-03-20)...
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Forecasts generated from 186 origin points.
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=1, loss='Squared Error', var='bartlett'): Stat=-1.1743, p-value(less)=0.1209, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=1, loss='QLIKE', var='bartlett'): Stat=2.3913, p-value(less)=0.9911, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=3, loss='Squared Error', var='bartlett'): Stat=-1.6125, p-value(less)=0.0543, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=3, loss='QLIKE', var='bartlett'): Stat=1.0689, p-value(less)=0.8567, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=7, loss='Squared Error', var='bartlett'): Stat=-1.8947, p-value(less)=0.0298, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=7, loss='QLIKE', var='bartlett'): Stat=-0.7759, p-value(less)=0.2194, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=14, loss='Squared Error', var='bartlett'): Stat=-1.9512, p-value(less)=0.0263, N=186
+2025-07-23 20:43:15 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=14, loss='QLIKE', var='bartlett'): Stat=-1.7687, p-value(less)=0.0393, N=186
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=30, loss='Squared Error', var='bartlett'): Stat=-1.4149, p-value(less)=0.0794, N=186
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - diebold_mariano_test      [solana] - DM Test ('dieboldmariano' lib, h=30, loss='QLIKE', var='bartlett'): Stat=-1.5984, p-value(less)=0.0558, N=186
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - --- Multi-Horizon Evaluation Finished: 0.16 min ---
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - Multi-horizon details saved: thesis_results/solana/solana_multi_horizon_eval_details_d0.csv
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - run_analysis_for_coin     [solana] - ========== SOLANA Analysis Finished in 2.90 min (Status: OK) ==========
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - --- Aggregating Results from All Coins ---
+
+ Variance DM Test (AG vs EWMA):
+Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1: AG better, Loss=QLIKE):
+- AG significantly better for horizons: [30].
+- No significant difference for horizons [1, 3, 7, 14] (p >= 0.05).
+
+ VaR Backtesting:
+VaR Backtesting (AG vs EWMA, alpha=5.00%):
+- Kupiec Test rejects correct AG coverage for horizons: [1, 3, 14, 30].
+- Christoffersen Test rejects correct AG coverage/independence for horizons: [1, 14, 30].
+- Kupiec Test rejects correct EWMA coverage for horizons: [30].
+- Christoffersen Test rejects EWMA independence for horizons: [30].
+
+
+[SOLANA] --- Descriptive Statistics (Full Period) ---
+  price_mean          :         52.7246
+  price_std           :         57.5543
+  price_min           :          0.5386
+  price_max           :        258.9343
+  price_skew          :          1.4252
+  price_kurtosis      :          1.1168
+  price_jb_stat       :        561.9313
+  price_jb_pvalue     :          0.0000
+  logret_mean         :          0.0039
+  logret_std          :          0.0705
+  logret_min          :         -0.5496
+  logret_max          :          0.3872
+  logret_skew         :         -0.2878
+  logret_kurtosis     :          6.6827
+  logret_jb_stat      :       2697.4893
+  logret_jb_pvalue    :          0.0000
+----------------------------------------
+
+--- [SOLANA (INITIAL FIT ON TRAIN+VAL)] Model Parameter Summary ---
+
+ARIMA Parameters:
+          coef  std err       z  P>|z| Sig.
+const   0.2922   0.2110  1.3870  0.165     
+sigma2 53.6301   1.0550 50.8580  0.000  ***
+
+  LLF: -4167.011, AIC: 8338.023, BIC: 8348.239
+
+GARCH Parameters:
+        coef  std err
+omega 2.7026   2.2460
+phi   0.2263   0.2680
+d     0.3722   0.0990
+beta  0.4406   0.3070
+
+  Distribution Parameters:
+     coef  std err      t  P>|t| 95.0% Conf. Int.
+nu 4.7540   0.5880 8.0900 0.0000  [ 3.602, 5.906]
+
+  LLF: -3981.301, AIC: 7972.602, BIC: 7998.147
+--- End Parameter Summary ---
+
+--- Multi-Horizon Evaluation Results (Test Set, d=0) ---
+  Horizon h=1 : Valid Pairs=186  
+    Price  MAPE AG=    3.95% | MAPE Naive=    3.96%
+    Var    RMSE AG=0.00525561 | QLIKE AG=1.928819
+    Var    RMSE EWMA=0.00504785 | QLIKE EWMA=1.631505
+    VaR Backtest (h=1, alpha=5.00%):
+      AG Model: N=186 | Violations=14 (Expected: 9.3)
+        Kupiec p=0.1399 | Christoffersen p=0.3362
+      EWMA Bench: N=186 | Violations=2 (Expected: 9.3)
+        Kupiec p=0.0031 | Christoffersen p=0.0123
+      Avg VaR AG=-0.0556, ES AG=-0.0817
+      Avg VaR EWMA=-0.0802, ES EWMA=-0.1005
+    DM Price (h=1): N=186   | Loss='Squared Error' | p=  0.1209 | No Diff. (p=0.1209)
+    DM Var   (h=1): N=186   | Loss='QLIKE' | p=  0.9911 | No Diff. (p=0.9911)
+  Horizon h=3 : Valid Pairs=186  
+    Price  MAPE AG=    6.73% | MAPE Naive=    6.85%
+    Var    RMSE AG=0.00519339 | QLIKE AG=1.798881
+    Var    RMSE EWMA=0.00509503 | QLIKE EWMA=1.680342
+    VaR Backtest (h=3, alpha=5.00%):
+      AG Model: N=186 | Violations=12 (Expected: 9.3)
+        Kupiec p=0.3837 | Christoffersen p=0.6616
+      EWMA Bench: N=186 | Violations=2 (Expected: 9.3)
+        Kupiec p=0.0031 | Christoffersen p=0.0123
+      Avg VaR AG=-0.0608, ES AG=-0.0893
+      Avg VaR EWMA=-0.0802, ES EWMA=-0.1005
+    DM Price (h=3): N=186   | Loss='Squared Error' | p=  0.0543 | No Diff. (p=0.0543)
+    DM Var   (h=3): N=186   | Loss='QLIKE' | p=  0.8567 | No Diff. (p=0.8567)
+  Horizon h=7 : Valid Pairs=186  
+    Price  MAPE AG=   10.78% | MAPE Naive=   11.25%
+    Var    RMSE AG=0.00512876 | QLIKE AG=1.654127
+    Var    RMSE EWMA=0.00522301 | QLIKE EWMA=1.720635
+    VaR Backtest (h=7, alpha=5.00%):
+      AG Model: N=186 | Violations=10 (Expected: 9.3)
+        Kupiec p=0.8159 | Christoffersen p=0.8136
+      EWMA Bench: N=186 | Violations=3 (Expected: 9.3)
+        Kupiec p=0.0140 | Christoffersen p=0.0466
+      Avg VaR AG=-0.0671, ES AG=-0.0985
+      Avg VaR EWMA=-0.0802, ES EWMA=-0.1005
+    DM Price (h=7): N=186   | Loss='Squared Error' | p=  0.0298 | AG better (p=0.0298)
+    DM Var   (h=7): N=186   | Loss='QLIKE' | p=  0.2194 | No Diff. (p=0.2194)
+  Horizon h=14: Valid Pairs=186  
+    Price  MAPE AG=   15.58% | MAPE Naive=   17.28%
+    Var    RMSE AG=0.00508052 | QLIKE AG=1.554611
+    Var    RMSE EWMA=0.00525119 | QLIKE EWMA=1.707650
+    VaR Backtest (h=14, alpha=5.00%):
+      AG Model: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.7351
+      EWMA Bench: N=186 | Violations=8 (Expected: 9.3)
+        Kupiec p=0.6544 | Christoffersen p=0.5675
+      Avg VaR AG=-0.0734, ES AG=-0.1076
+      Avg VaR EWMA=-0.0802, ES EWMA=-0.1005
+    DM Price (h=14): N=186   | Loss='Squared Error' | p=  0.0263 | AG better (p=0.0263)
+    DM Var   (h=14): N=186   | Loss='QLIKE' | p=  0.0393 | AG better (p=0.0393)
+  Horizon h=30: Valid Pairs=186  
+    Price  MAPE AG=   26.62% | MAPE Naive=   30.39%
+    Var    RMSE AG=0.00509354 | QLIKE AG=1.481844
+    Var    RMSE EWMA=0.00540685 | QLIKE EWMA=1.993141
+    VaR Backtest (h=30, alpha=5.00%):
+      AG Model: N=186 | Violations=9 (Expected: 9.3)
+        Kupiec p=0.9192 | Christoffersen p=0.1665
+      EWMA Bench: N=186 | Violations=10 (Expected: 9.3)
+        Kupiec p=0.8159 | Christoffersen p=0.2396
+      Avg VaR AG=-0.0804, ES AG=-0.1176
+      Avg VaR EWMA=-0.0802, ES EWMA=-0.1005
+    DM Price (h=30): N=186   | Loss='Squared Error' | p=  0.0794 | No Diff. (p=0.0794)
+    DM Var   (h=30): N=186   | Loss='QLIKE' | p=  0.0558 | No Diff. (p=0.0558)
+
+--- Thesis Recommendations Summary (during run_analysis) ---
+ Price DM Test (AG vs Naive):
+Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1: AG better, Loss=Squared Error):
+- AG significantly better for horizons: [7, 14].
+- No significant difference for horizons [1, 3, 30] (p >= 0.05).
+
+ Variance DM Test (AG vs EWMA):
+Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1: AG better, Loss=QLIKE):
+- AG significantly better for horizons: [14].
+- No significant difference for horizons [1, 3, 7, 30] (p >= 0.05).
+
+ VaR Backtesting:
+VaR Backtesting (AG vs EWMA, alpha=5.00%):
+- Kupiec Test rejects correct AG coverage for horizons: None.
+- Christoffersen Test rejects correct AG coverage/independence for horizons: None.
+- Kupiec Test rejects correct EWMA coverage for horizons: [1, 3, 7].
+- Christoffersen Test rejects EWMA independence for horizons: [1, 3, 7].
+
+
+DEBUG: summary_df columns: ['coin_id', 'status', 'error_message', 'total_runtime_min', 'total_rows_preprocessed', 'train_size', 'val_size', 'test_size', 'desc_logret_jb_pvalue', 'desc_logret_jb_stat', 'desc_logret_kurtosis', 'desc_logret_max', 'desc_logret_mean', 'desc_logret_min', 'desc_logret_skew', 'desc_logret_std', 'desc_price_jb_pvalue', 'desc_price_jb_stat', 'desc_price_kurtosis', 'desc_price_max', 'desc_price_mean', 'desc_price_min', 'desc_price_skew', 'desc_price_std', 'initial_adf_is_stationary', 'initial_kpss_is_stationary', 'applied_differencing_order', 'selection_method', 'tuning_criterion', 'autotune_criterion_value', 'param_significance_level', 'garch_type', 'garch_distribution', 'arima_order_p', 'arima_order_q', 'garch_order_p', 'garch_order_q', 'final_model_description', 'arima_initial_aic', 'arima_initial_bic', 'arima_initial_llf', 'garch_initial_aic', 'garch_initial_bic', 'garch_initial_llf', 'bt_avg_es_ag', 'bt_avg_es_ewma', 'bt_avg_var_ag', 'bt_avg_var_ewma', 'bt_christ_p_ag', 'bt_christ_p_ewma', 'bt_christ_stat_ag', 'bt_christ_stat_ewma', 'bt_dm_lr_err', 'bt_dm_lr_loss', 'bt_dm_lr_n', 'bt_dm_lr_pval', 'bt_dm_lr_sig', 'bt_dm_lr_stat', 'bt_dm_p_err', 'bt_dm_p_loss', 'bt_dm_p_n', 'bt_dm_p_pval', 'bt_dm_p_sig', 'bt_dm_p_stat', 'bt_dm_v_err', 'bt_dm_v_loss', 'bt_dm_v_n', 'bt_dm_v_pval', 'bt_dm_v_sig', 'bt_dm_v_stat', 'bt_kupiec_p_ag', 'bt_kupiec_p_ewma', 'bt_kupiec_stat_ag', 'bt_kupiec_stat_ewma', 'bt_n_obs_var', 'bt_violations_ag', 'bt_violations_ewma', 'bt_vol_qlike_ewma', 'bt_vol_rmse_ewma', 'logret_mae_ag', 'logret_mae_naive', 'logret_rmse_ag', 'logret_rmse_naive', 'price_mae_ag', 'price_mae_naive', 'price_mape_ag', 'price_mape_naive', 'price_rmse_ag', 'price_rmse_naive', 'resid_arch_het', 'resid_arch_pvalue', 'resid_lb_pvalue', 'resid_lb_wn', 'rolling_fit_errors', 'rolling_forecast_duration_min', 'rolling_skipped_steps', 'rolling_valid_steps_lr', 'rolling_valid_steps_price', 'rolling_valid_steps_variance', 'vol_qlike_ag', 'vol_rmse_ag', 'h14_avg_es_ag', 'h14_avg_es_ewma', 'h14_avg_var_ag', 'h14_avg_var_ewma', 'h14_christ_p_ag', 'h14_christ_p_ewma', 'h14_dm_p_err', 'h14_dm_p_loss', 'h14_dm_p_n', 'h14_dm_p_pval', 'h14_dm_p_sig', 'h14_dm_p_stat', 'h14_dm_v_err', 'h14_dm_v_loss', 'h14_dm_v_n', 'h14_dm_v_pval', 'h14_dm_v_sig', 'h14_dm_v_stat', 'h14_kupiec_p_ag', 'h14_kupiec_p_ewma', 'h14_mape_ag', 'h14_mape_naive', 'h14_n_backtest_obs', 'h14_qlike_var_ag', 'h14_qlike_var_ewma', 'h14_rmse_price_ag', 'h14_rmse_price_naive', 'h14_rmse_var_ag', 'h14_rmse_var_ewma', 'h14_valid_pairs', 'h14_violations_ag', 'h14_violations_ewma', 'h1_avg_es_ag', 'h1_avg_es_ewma', 'h1_avg_var_ag', 'h1_avg_var_ewma', 'h1_christ_p_ag', 'h1_christ_p_ewma', 'h1_dm_p_err', 'h1_dm_p_loss', 'h1_dm_p_n', 'h1_dm_p_pval', 'h1_dm_p_sig', 'h1_dm_p_stat', 'h1_dm_v_err', 'h1_dm_v_loss', 'h1_dm_v_n', 'h1_dm_v_pval', 'h1_dm_v_sig', 'h1_dm_v_stat', 'h1_kupiec_p_ag', 'h1_kupiec_p_ewma', 'h1_mape_ag', 'h1_mape_naive', 'h1_n_backtest_obs', 'h1_qlike_var_ag', 'h1_qlike_var_ewma', 'h1_rmse_price_ag', 'h1_rmse_price_naive', 'h1_rmse_var_ag', 'h1_rmse_var_ewma', 'h1_valid_pairs', 'h1_violations_ag', 'h1_violations_ewma', 'h30_avg_es_ag', 'h30_avg_es_ewma', 'h30_avg_var_ag', 'h30_avg_var_ewma', 'h30_christ_p_ag', 'h30_christ_p_ewma', 'h30_dm_p_err', 'h30_dm_p_loss', 'h30_dm_p_n', 'h30_dm_p_pval', 'h30_dm_p_sig', 'h30_dm_p_stat', 'h30_dm_v_err', 'h30_dm_v_loss', 'h30_dm_v_n', 'h30_dm_v_pval', 'h30_dm_v_sig', 'h30_dm_v_stat', 'h30_kupiec_p_ag', 'h30_kupiec_p_ewma', 'h30_mape_ag', 'h30_mape_naive', 'h30_n_backtest_obs', 'h30_qlike_var_ag', 'h30_qlike_var_ewma', 'h30_rmse_price_ag', 'h30_rmse_price_naive', 'h30_rmse_var_ag', 'h30_rmse_var_ewma', 'h30_valid_pairs', 'h30_violations_ag', 'h30_violations_ewma', 'h3_avg_es_ag', 'h3_avg_es_ewma', 'h3_avg_var_ag', 'h3_avg_var_ewma', 'h3_christ_p_ag', 'h3_christ_p_ewma', 'h3_dm_p_err', 'h3_dm_p_loss', 'h3_dm_p_n', 'h3_dm_p_pval', 'h3_dm_p_sig', 'h3_dm_p_stat', 'h3_dm_v_err', 'h3_dm_v_loss', 'h3_dm_v_n', 'h3_dm_v_pval', 'h3_dm_v_sig', 'h3_dm_v_stat', 'h3_kupiec_p_ag', 'h3_kupiec_p_ewma', 'h3_mape_ag', 'h3_mape_naive', 'h3_n_backtest_obs', 'h3_qlike_var_ag', 'h3_qlike_var_ewma', 'h3_rmse_price_ag', 'h3_rmse_price_naive', 'h3_rmse_var_ag', 'h3_rmse_var_ewma', 'h3_valid_pairs', 'h3_violations_ag', 'h3_violations_ewma', 'h7_avg_es_ag', 'h7_avg_es_ewma', 'h7_avg_var_ag', 'h7_avg_var_ewma', 'h7_christ_p_ag', 'h7_christ_p_ewma', 'h7_dm_p_err', 'h7_dm_p_loss', 'h7_dm_p_n', 'h7_dm_p_pval', 'h7_dm_p_sig', 'h7_dm_p_stat', 'h7_dm_v_err', 'h7_dm_v_loss', 'h7_dm_v_n', 'h7_dm_v_pval', 'h7_dm_v_sig', 'h7_dm_v_stat', 'h7_kupiec_p_ag', 'h7_kupiec_p_ewma', 'h7_mape_ag', 'h7_mape_naive', 'h7_n_backtest_obs', 'h7_qlike_var_ag', 'h7_qlike_var_ewma', 'h7_rmse_price_ag', 'h7_rmse_price_naive', 'h7_rmse_var_ag', 'h7_rmse_var_ewma', 'h7_valid_pairs', 'h7_violations_ag', 'h7_violations_ewma', 'empirical_es5', 'empirical_var5', 'mh_duration_min', 'mh_ewma_errors', 'mh_fc_errors', 'mh_inv_errors', 'mh_n_eval_points', 'thesis_reco_price_dm', 'thesis_reco_var_dm', 'thesis_reco_var_backtest']
+DEBUG: Example reco_price_dm from summary_df: Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1: AG better, Loss=Squared Error):
+- AG significantly better for horizons: [3, 7, 14, 30].
+- No significant difference for horizons [1] (p >= 0.05).
+
+
+
+================================================================================
+--- FINAL SUMMARY (Console - Coin by Coin) ---
+================================================================================
+
+----- Coin: BITCOIN -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 216
+    Total Rows Preprocessed                  : 1,439
+    Total Runtime Min                        : 5.21
+    Train Size                               : 1007
+    Val Size                                 : 216
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 721.743
+    Logret Kurtosis                          : 3.4456
+    Logret Max                               : 0.1718
+    Logret Mean                              : 0.0014
+    Logret Min                               : -0.1741
+    Logret Skew                              : -0.2033
+    Logret Std                               : 0.0327
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 66.010
+    Price Kurtosis                           : -0.6002
+    Price Max                                : 73083.5000
+    Price Mean                               : 32859.3623
+    Price Min                                : 8790.3682
+    Price Skew                               : 0.4303
+    Price Std                                : 15552.6410
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 6113.95
+    Final Model Description                  : ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : Yes
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : AIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 6433.05
+    Arima Initial Bic                        : 6443.27
+    Arima Initial Llf                        : -3214.53
+    Garch Initial Aic                        : 6109.95
+    Garch Initial Bic                        : 6135.49
+    Garch Initial Llf                        : -3049.97
+
+  Horizon Evaluation Results (Alpha=5%):
+    Evaluation Points: 186
+
+    --- Horizon h=1 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=1375.6591    Naive=1380.7899   
+        MAPE: AG=1.83%        Naive=1.84%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.364 p= 0.087 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0016       EWMA=0.0015      
+        QLIKE: AG=2.175922     EWMA=2.072902    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  0.798 p= 0.787 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      11              9              
+        Kupiec p-val    0.578           0.919          
+        Christ. p-val   0.456           N/A            
+        Avg VaR (5%)   -0.0294         -0.0389        
+        Avg ES (5%)    -0.0474         -0.0488        
+
+    --- Horizon h=3 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=2115.1685    Naive=2144.2329   
+        MAPE: AG=3.18%        Naive=3.23%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.922 p= 0.028 Sig=Yes
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0016       EWMA=0.0016      
+        QLIKE: AG=2.160226     EWMA=2.127280    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  0.237 p= 0.594 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      11              9              
+        Kupiec p-val    0.578           0.919          
+        Christ. p-val   0.427           N/A            
+        Avg VaR (5%)   -0.0300         -0.0389        
+        Avg ES (5%)    -0.0483         -0.0488        
+
+    --- Horizon h=7 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=3566.1469    Naive=3669.0709   
+        MAPE: AG=5.36%        Naive=5.54%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -2.010 p= 0.023 Sig=Yes
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0016       EWMA=0.0016      
+        QLIKE: AG=2.083556     EWMA=2.096142    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -0.101 p= 0.460 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      11              9              
+        Kupiec p-val    0.578           0.919          
+        Christ. p-val   0.427           N/A            
+        Avg VaR (5%)   -0.0311         -0.0389        
+        Avg ES (5%)    -0.0501         -0.0488        
+
+    --- Horizon h=14 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=5232.5646    Naive=5517.7071   
+        MAPE: AG=7.55%        Naive=8.11%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -2.168 p= 0.016 Sig=Yes
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0016       EWMA=0.0016      
+        QLIKE: AG=1.979868     EWMA=2.036842    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -0.346 p= 0.365 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      12              9              
+        Kupiec p-val    0.384           0.919          
+        Christ. p-val   0.297           N/A            
+        Avg VaR (5%)   -0.0331         -0.0389        
+        Avg ES (5%)    -0.0532         -0.0488        
+
+    --- Horizon h=30 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=8788.7252    Naive=9498.4915   
+        MAPE: AG=13.29%       Naive=14.45%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.942 p= 0.027 Sig=Yes
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0016       EWMA=0.0016      
+        QLIKE: AG=1.801873     EWMA=2.073814    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -1.924 p= 0.028 Sig=Yes
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      14              12             
+        Kupiec p-val    0.140           0.384          
+        Christ. p-val   0.336           N/A            
+        Avg VaR (5%)   -0.0372         -0.0389        
+        Avg ES (5%)    -0.0599         -0.0488        
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1:
+      - - AG significantly better for horizons: [3, 7, 14, 30].
+      - - No significant difference for horizons [1] (p >= 0.05).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1:
+      - - AG significantly better for horizons: [30].
+      - - No significant difference for horizons [1, 3, 7, 14] (p >= 0.05).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, alpha=5.00%):
+      - - Kupiec Test rejects correct AG coverage for horizons: None.
+      - - Christoffersen Test rejects correct AG coverage/independence for horizons: None.
+      - - Kupiec Test rejects correct EWMA coverage for horizons: None.
+
+----- Coin: ETHEREUM -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 216
+    Total Rows Preprocessed                  : 1,439
+    Total Runtime Min                        : 2.27
+    Train Size                               : 1007
+    Val Size                                 : 216
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 1602.019
+    Logret Kurtosis                          : 5.1051
+    Logret Max                               : 0.2307
+    Logret Mean                              : 0.0019
+    Logret Min                               : -0.3175
+    Logret Skew                              : -0.4052
+    Logret Std                               : 0.0426
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 37.876
+    Price Kurtosis                           : -0.3364
+    Price Max                                : 4812.0874
+    Price Mean                               : 1953.6795
+    Price Min                                : 189.3125
+    Price Skew                               : 0.3601
+    Price Std                                : 1058.5480
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 1
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 6793.36
+    Final Model Description                  : ARIMA(1,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : No
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : AIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 7121.54
+    Arima Initial Bic                        : 7136.87
+    Arima Initial Llf                        : -3557.77
+    Garch Initial Aic                        : 6787.36
+    Garch Initial Bic                        : 6812.90
+    Garch Initial Llf                        : -3388.68
+
+  Horizon Evaluation Results (Alpha=5%):
+    Evaluation Points: 186
+
+    --- Horizon h=1 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=76.1654      Naive=76.6114     
+        MAPE: AG=1.98%        Naive=2.00%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.020 p= 0.155 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0019       EWMA=0.0018      
+        QLIKE: AG=2.097317     EWMA=1.992027    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  0.642 p= 0.739 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      16              7              
+        Kupiec p-val    0.040           0.419          
+        Christ. p-val   0.049           N/A            
+        Avg VaR (5%)   -0.0312         -0.0413        
+        Avg ES (5%)    -0.0466         -0.0518        
+
+    --- Horizon h=3 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=119.9322     Naive=122.1121    
+        MAPE: AG=3.50%        Naive=3.56%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.181 p= 0.120 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0019       EWMA=0.0019      
+        QLIKE: AG=2.062181     EWMA=1.992522    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  0.472 p= 0.681 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      16              8              
+        Kupiec p-val    0.040           0.654          
+        Christ. p-val   0.105           N/A            
+        Avg VaR (5%)   -0.0327         -0.0413        
+        Avg ES (5%)    -0.0487         -0.0518        
+
+    --- Horizon h=7 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=209.3062     Naive=216.3257    
+        MAPE: AG=6.08%        Naive=6.27%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.079 p= 0.141 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0019       EWMA=0.0019      
+        QLIKE: AG=1.966051     EWMA=1.986059    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -0.190 p= 0.425 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      14              8              
+        Kupiec p-val    0.140           0.654          
+        Christ. p-val   0.336           N/A            
+        Avg VaR (5%)   -0.0352         -0.0413        
+        Avg ES (5%)    -0.0524         -0.0518        
+
+    --- Horizon h=14 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=303.4178     Naive=322.0860    
+        MAPE: AG=8.50%        Naive=9.06%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.112 p= 0.134 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0019       EWMA=0.0019      
+        QLIKE: AG=1.877612     EWMA=1.991912    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -1.018 p= 0.155 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      13              11             
+        Kupiec p-val    0.239           0.578          
+        Christ. p-val   0.498           N/A            
+        Avg VaR (5%)   -0.0387         -0.0413        
+        Avg ES (5%)    -0.0575         -0.0518        
+
+    --- Horizon h=30 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=476.4937     Naive=521.8233    
+        MAPE: AG=11.55%       Naive=13.51%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.004 p= 0.158 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0020       EWMA=0.0020      
+        QLIKE: AG=1.824181     EWMA=2.049817    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -1.804 p= 0.036 Sig=Yes
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      12              13             
+        Kupiec p-val    0.384           0.239          
+        Christ. p-val   0.662           N/A            
+        Avg VaR (5%)   -0.0438         -0.0413        
+        Avg ES (5%)    -0.0650         -0.0518        
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1:
+      - - No significant difference for horizons [1, 3, 7, 14, 30] (p >= 0.05).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1:
+      - - AG significantly better for horizons: [30].
+      - - No significant difference for horizons [1, 3, 7, 14] (p >= 0.05).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, alpha=5.00%):
+      - - Kupiec Test rejects correct AG coverage for horizons: [1, 3].
+      - - Christoffersen Test rejects correct AG coverage/independence for horizons: [1].
+      - - Kupiec Test rejects correct EWMA coverage for horizons: None.
+
+----- Coin: DOGECOIN -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 216
+    Total Rows Preprocessed                  : 1,439
+    Total Runtime Min                        : 2.12
+    Train Size                               : 1007
+    Val Size                                 : 216
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 648024.446
+    Logret Kurtosis                          : 103.3068
+    Logret Max                               : 1.5163
+    Logret Mean                              : 0.0029
+    Logret Min                               : -0.5151
+    Logret Skew                              : 5.8228
+    Logret Std                               : 0.0791
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 2033.883
+    Price Kurtosis                           : 4.6230
+    Price Max                                : 0.6848
+    Price Mean                               : 0.1057
+    Price Min                                : 0.0023
+    Price Skew                               : 1.7713
+    Price Std                                : 0.0951
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 7115.54
+    Final Model Description                  : ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : Yes
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : AIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 8653.95
+    Arima Initial Bic                        : 8664.16
+    Arima Initial Llf                        : -4324.97
+    Garch Initial Aic                        : 7111.54
+    Garch Initial Bic                        : 7137.09
+    Garch Initial Llf                        : -3550.77
+
+  Horizon Evaluation Results (Alpha=5%):
+    Evaluation Points: 186
+
+    --- Horizon h=1 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=0.0058       Naive=0.0058      
+        MAPE: AG=2.95%        Naive=2.96%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -0.441 p= 0.330 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0055       EWMA=0.0049      
+        QLIKE: AG=3.202512     EWMA=1.865934    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  2.902 p= 0.998 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      22              8              
+        Kupiec p-val    0.000           0.654          
+        Christ. p-val   0.001           N/A            
+        Avg VaR (5%)   -0.0326         -0.0563        
+        Avg ES (5%)    -0.0545         -0.0706        
+
+    --- Horizon h=3 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=0.0087       Naive=0.0088      
+        MAPE: AG=4.75%        Naive=4.75%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -0.802 p= 0.212 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0054       EWMA=0.0050      
+        QLIKE: AG=2.437615     EWMA=2.085367    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  1.034 p= 0.849 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      16              9              
+        Kupiec p-val    0.040           0.919          
+        Christ. p-val   0.105           N/A            
+        Avg VaR (5%)   -0.0415         -0.0563        
+        Avg ES (5%)    -0.0689         -0.0706        
+
+    --- Horizon h=7 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=0.0157       Naive=0.0160      
+        MAPE: AG=7.42%        Naive=7.38%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -0.964 p= 0.168 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0054       EWMA=0.0052      
+        QLIKE: AG=2.277435     EWMA=2.456874    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -0.453 p= 0.326 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      13              9              
+        Kupiec p-val    0.239           0.919          
+        Christ. p-val   0.278           N/A            
+        Avg VaR (5%)   -0.0472         -0.0563        
+        Avg ES (5%)    -0.0782         -0.0706        
+
+    --- Horizon h=14 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=0.0234       Naive=0.0246      
+        MAPE: AG=11.46%       Naive=11.31%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.477 p= 0.071 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0065       EWMA=0.0054      
+        QLIKE: AG=2.126921     EWMA=2.531983    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -0.731 p= 0.233 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      17              12             
+        Kupiec p-val    0.020           0.384          
+        Christ. p-val   0.034           N/A            
+        Avg VaR (5%)   -0.0525         -0.0563        
+        Avg ES (5%)    -0.0867         -0.0706        
+
+    --- Horizon h=30 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=0.0336       Naive=0.0368      
+        MAPE: AG=17.70%       Naive=19.31%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.240 p= 0.108 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0058       EWMA=0.0060      
+        QLIKE: AG=2.039464     EWMA=3.296971    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -1.725 p= 0.043 Sig=Yes
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      22              21             
+        Kupiec p-val    0.000           0.001          
+        Christ. p-val   0.001           N/A            
+        Avg VaR (5%)   -0.0547         -0.0563        
+        Avg ES (5%)    -0.0903         -0.0706        
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1:
+      - - No significant difference for horizons [1, 3, 7, 14, 30] (p >= 0.05).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1:
+      - - AG significantly better for horizons: [30].
+      - - No significant difference for horizons [1, 3, 7, 14] (p >= 0.05).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, alpha=5.00%):
+      - - Kupiec Test rejects correct AG coverage for horizons: [1, 3, 14, 30].
+      - - Christoffersen Test rejects correct AG coverage/independence for horizons: [1, 14, 30].
+      - - Kupiec Test rejects correct EWMA coverage for horizons: [30].
+      - - Christoffersen Test rejects EWMA independence for horizons: [30].
+
+----- Coin: SOLANA -----
+
+  Core Info:
+    Status                                   : OK
+    Test Size                                : 216
+    Total Rows Preprocessed                  : 1,439
+    Total Runtime Min                        : 2.90
+    Train Size                               : 1007
+    Val Size                                 : 216
+
+  Descriptive Statistics (Full Period):
+    Logret Jb Pvalue                         : 0.000
+    Logret Jb Stat                           : 2697.489
+    Logret Kurtosis                          : 6.6827
+    Logret Max                               : 0.3872
+    Logret Mean                              : 0.0039
+    Logret Min                               : -0.5496
+    Logret Skew                              : -0.2878
+    Logret Std                               : 0.0705
+    Price Jb Pvalue                          : 0.000
+    Price Jb Stat                            : 561.931
+    Price Kurtosis                           : 1.1168
+    Price Max                                : 258.9343
+    Price Mean                               : 52.72462025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - FINAL SUMMARY CSV saved: thesis_results/FINAL_SUMMARY_All_Coins_horizon_evaluation.csv
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - FINAL SUMMARY PNG saved: thesis_results/FINAL_SUMMARY_All_Coins_horizon_evaluation.png
+2025-07-23 20:43:16 - ARIMA_GARCH_Analysis - INFO     - main                      [N/A] - --- Multi-Coin Analysis Finished. Total Duration: 12.50 Minutes ---
+
+    Price Min                                : 0.5386
+    Price Skew                               : 1.4252
+    Price Std                                : 57.5543
+
+  Model Specification & Initial Stationarity:
+    Applied Differencing Order               : 0
+    Arima Order P                            : 0
+    Arima Order Q                            : 0
+    Autotune Criterion Value                 : 7976.60
+    Final Model Description                  : ARIMA(0,0,0) - FIGARCH(1,1) - Dist='t'
+    Garch Distribution                       : t
+    Garch Order P                            : 1
+    Garch Order Q                            : 1
+    Garch Type                               : FIGARCH
+    Initial Adf Is Stationary                : Yes
+    Initial Kpss Is Stationary               : No
+    Param Significance Level                 : 0.100
+    Selection Method                         : Auto-Tune
+    Tuning Criterion                         : AIC
+
+  Initial Fit (Train+Val) Metrics:
+    Arima Initial Aic                        : 8338.02
+    Arima Initial Bic                        : 8348.24
+    Arima Initial Llf                        : -4167.01
+    Garch Initial Aic                        : 7972.60
+    Garch Initial Bic                        : 7998.15
+    Garch Initial Llf                        : -3981.30
+
+  Horizon Evaluation Results (Alpha=5%):
+    Evaluation Points: 186
+
+    --- Horizon h=1 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=5.0448       Naive=5.0800      
+        MAPE: AG=3.95%        Naive=3.96%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.174 p= 0.121 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0053       EWMA=0.0050      
+        QLIKE: AG=1.928819     EWMA=1.631505    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  2.391 p= 0.991 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      14              2              
+        Kupiec p-val    0.140           0.003          
+        Christ. p-val   0.336           N/A            
+        Avg VaR (5%)   -0.0556         -0.0802        
+        Avg ES (5%)    -0.0817         -0.1005        
+
+    --- Horizon h=3 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=8.2322       Naive=8.4178      
+        MAPE: AG=6.73%        Naive=6.85%       
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.613 p= 0.054 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0052       EWMA=0.0051      
+        QLIKE: AG=1.798881     EWMA=1.680342    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat=  1.069 p= 0.857 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      12              2              
+        Kupiec p-val    0.384           0.003          
+        Christ. p-val   0.662           N/A            
+        Avg VaR (5%)   -0.0608         -0.0802        
+        Avg ES (5%)    -0.0893         -0.1005        
+
+    --- Horizon h=7 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=13.1094      Naive=13.7903     
+        MAPE: AG=10.78%       Naive=11.25%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.895 p= 0.030 Sig=Yes
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0051       EWMA=0.0052      
+        QLIKE: AG=1.654127     EWMA=1.720635    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -0.776 p= 0.219 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      10              3              
+        Kupiec p-val    0.816           0.014          
+        Christ. p-val   0.814           N/A            
+        Avg VaR (5%)   -0.0671         -0.0802        
+        Avg ES (5%)    -0.0985         -0.1005        
+
+    --- Horizon h=14 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=18.8044      Naive=20.7503     
+        MAPE: AG=15.58%       Naive=17.28%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.951 p= 0.026 Sig=Yes
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0051       EWMA=0.0053      
+        QLIKE: AG=1.554611     EWMA=1.707650    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -1.769 p= 0.039 Sig=Yes
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      9               8              
+        Kupiec p-val    0.919           0.654          
+        Christ. p-val   0.735           N/A            
+        Avg VaR (5%)   -0.0734         -0.0802        
+        Avg ES (5%)    -0.1076         -0.1005        
+
+    --- Horizon h=30 (Valid Pairs: 186, VaR N: 186) ---
+      Price Accuracy (AG vs Naive):
+        RMSE: AG=32.5555      Naive=36.2137     
+        MAPE: AG=26.62%       Naive=30.39%      
+      Price DM (AG vs Naive, H1:AG better): Loss='Squared Error' N=186   Stat= -1.415 p= 0.079 Sig=No
+      Variance Accuracy (AG vs EWMA):
+        RMSE: AG=0.0051       EWMA=0.0054      
+        QLIKE: AG=1.481844     EWMA=1.993141    
+      Var DM (AG vs EWMA, H1:AG better):   Loss='QLIKE' N=186   Stat= -1.598 p= 0.056 Sig=No
+      VaR Backtesting (AG vs EWMA):
+        Metric          AG Model        EWMA Model     
+        Violations      9               10             
+        Kupiec p-val    0.919           0.816          
+        Christ. p-val   0.167           N/A            
+        Avg VaR (5%)   -0.0804         -0.0802        
+        Avg ES (5%)    -0.1176         -0.1005        
+
+  Recommendations:
+    Price DM:
+      Diebold-Mariano Test (Price, AG vs Naive, alpha=5.00%, H1:
+      - - AG significantly better for horizons: [7, 14].
+      - - No significant difference for horizons [1, 3, 30] (p >= 0.05).
+    Var DM:
+      Diebold-Mariano Test (Variance, AG vs EWMA, alpha=5.00%, H1:
+      - - AG significantly better for horizons: [14].
+      - - No significant difference for horizons [1, 3, 7, 30] (p >= 0.05).
+    VaR Backtest:
+      VaR Backtesting (AG vs EWMA, alpha=5.00%):
+      - - Kupiec Test rejects correct AG coverage for horizons: None.
+      - - Christoffersen Test rejects correct AG coverage/independence for horizons: None.
+      - - Kupiec Test rejects correct EWMA coverage for horizons: [1, 3, 7].
+      - - Christoffersen Test rejects EWMA independence for horizons: [1, 3, 7].
+
+================================================================================
+
+Analysis complete. Results saved under: /Users/moe/Downloads/THESIS_try-main/thesis_results
