@@ -1,0 +1,136 @@
+Source: Transcript_de_UB 066 915_01051033.pdf
+Type: pdf
+
+UNIVERSITÄT GRAZ
+Universitätsplatz 3, A-8010 Graz
+Transcript of Records
+NAME der*des
+Studierenden:
+   Öffel Vorname: Markus
+Geburtsdatum:         20. August 1989 Akademischer Grad:    BSc MSc
+Datum der Zulassung zum Studium: 19. September 2023 Matrikelnummer:  01051033
+Studium: Masterstudium; Betriebswirtschaft - Spezialisierung (Major) Finance
+Nummer / Studienjahr Titel / Typ / Semesterstunden Dauer / Prüfungs- /
+Anerkennungsdatum
+Note ECTS
+Credits
+(1) (2) (3) (4)
+355577   23/24 Business Intelligence and Analytics (Business Analytics
+ and Data Science); PS; 2,00
+1S / 12.01.2024 1 4,00
+355578   24/25 Case Studies Business Analytics; PS; 2,00 1S / 01.07.2025 1 4,00
+355383   24/25 Computer-basierte Entscheidungsunterstützung 1; PS;
+2,00
+1S / 28.01.2025 3 4,00
+355385   24/25 Computer-basierte Entscheidungsunterstützung 2; PS;
+2,00
+1S / 28.01.2025 1 4,00
+355576   24/25 Data-Driven Decision Support; PS; 2,00 1S / 02.07.2025 1 4,00
+355575   23/24 Data Management for Business Analytics; PS; 2,00 1S / 31.01.2024 3 4,00
+FA9150   25/26 Fachprüfung Business Analytics and Data Sciences;
+FA; 0,00
+1S / 06.10.2025 2 4,00
+FA9154   24/25 Fachprüfung Corporate Finance; FA; 0,00 1S / 03.03.2025 3 4,00
+FA9156   23/24 Fachprüfung Investments; FA; 0,00 1S / 28.06.2024 3 4,00
+328230   23/24 Finanzmanagement 1; PS; 2,00 1S / 05.06.2024 1 4,00
+328231   23/24 Finanzmanagement 2; PS; 2,00 1S / 12.07.2024 2 4,00
+328200   23/24 Finanzmarktanalyse 1 (Fischer); PS; 2,00 1S / 08.02.2024 1 4,00
+328201   23/24 Finanzmarktanalyse 2 (Fischer); PS; 2,00 1S / 11.02.2024 2 4,00
+935018   23/24 Französisch Grundstufe 1, Gruppe A, Niveau A1/1.
+ Phase; KS; 2,00
+1S / 29.01.2024 1 3,00
+935216   23/24 Französisch Grundstufe 2, Gruppe B, Online, Niveau
+ A1/2. Phase; KS; 2,00
+1S / 27.06.2024 3 3,00
+328220   23/24 Investitionsmanagement 1; PS; 2,00 1S / 12.06.2024 3 4,00
+328221   23/24 Investitionsmanagement 2; PS; 2,00 1S / 12.06.2024 1 4,00
+328210   23/24 Investmentanalyse 1 (Fischer); PS; 2,00 1S / 30.01.2024 1 4,00
+328211   23/24 Investmentanalyse 2 (Fischer); PS; 2,00 1S / 17.01.2024 2 4,00
+355560   23/24 Masterkurs Business Analytics; VO; 2,00 1S / 29.01.2024 3 4,00
+333300   23/24 Masterkurs Finance; VO; 2,00 1S / 08.03.2024 4 4,00
+334100   23/24 Masterkurs Management; VO; 2,00 1S / 31.01.2024 3 4,00
+355161   24/25 Masterkurs Wirtschaftsmathematik und Statistik; VO;
+2,00
+1S / 12.05.2025 4 4,00
+328300   24/25 Masterseminar (Investments [Fischer]); SE; 2,00 1S / 27.06.2025 1 4,00
+355579   24/25 Seminar aus Business Analytics; SE; 2,00 1S / 03.02.2025 1 4,00
+328260   24/25 Seminar aus Corporate Finance; SE; 2,00 1S / 28.01.2025 1 4,00
+328262   23/24 Seminar aus Investments (Fischer); SE; 2,00 1S / 12.06.2024 1 4,00
+Notendurchschnitt, gewichtet nach ECTS-Anrechnungspunkte 1,962   
+Masterarbeit:
+Evaluating the ARIMA-GARCH Model's Accuracy Across Diverse Cryptocurrencies: A Case
+Study of BTC, ETH, DOGE, and SOL
+1 20,00
+* ... anerkannt Seite 1 von 3
+
+NAME der*des
+Studierenden:
+   Öffel Vorname: Markus
+Geburtsdatum:         20. August 1989 Akademischer Grad:    BSc MSc
+Datum der Zulassung zum Studium: 19. September 2023 Matrikelnummer:  01051033
+Studium: Masterstudium; Betriebswirtschaft - Spezialisierung (Major) Finance
+Nummer / Studienjahr Titel / Typ / Semesterstunden Dauer / Prüfungs- /
+Anerkennungsdatum
+Note ECTS
+Credits
+(1) (2) (3) (4)
+  126,00
+(1) (2) (3) (4) Erklärungen befinden sich auf der letzten Seite
+Abschluss  (915)  6. Oktober 2025
+ 
+Datum Studienabteilung Stampiglie
+9. Dezember 2025
+* ... anerkannt Seite 2 von 3
+
+ECTS - EUROPEAN CREDIT TRANSFER SYSTEM
+Informationen auf dem Europaserver: http://ec.europa.eu/education/ects/users-guide/index_de.htm
+(1) Nummer / Studienjahr
+Informationen sind über INTERNET verfügbar: http://www.uni-graz.at
+(2) Typ der Lehrveranstaltung
+AE = Anerkannte Leistung AG = Arbeitsgemeinschaft
+DQ = Doktoratskolloquium EX = Exkursion
+FA = Fach FU = Feldübung
+GK = Graduierungskolleg KE = Künstlerischer Einzelunterricht
+KG = Künstlerischer Gruppenunterricht KS = Kurs
+KU = Konstruktionsübung KV = Konversatorium
+KX = Kurs mit Exkursion LU = Laborübung
+OL = Orientierungslehrveranstaltung PK = Portfoliokurs
+PR = Praktikum PS = Proseminar
+PT = Projekt PV = Privatissimum
+RE = Repetitorium SE = Seminar
+SP = Seminar-Projekt SX = Seminar mit Exkursion
+TU = Tutorium UE = Übung
+VC = Vorlesung mit Kurs VI = Vorlesung interaktiv
+VO = Vorlesung VP = Vorlesung und Proseminar
+VS = Vorlesung und Seminar VU = Vorlesung und Übung
+VW = Objekt für Verwaltungszwecke VX = Vorlesung mit Exkursion
+XU = Exkursion mit Übung
+Semesterstunde: 45 Minuten pro Woche durch ein ganzes Semester
+(3) Dauer:
+J = ein volles Studienjahr
+1S = ein Semester
+(4) Beschreibung des Notensystems, das angewendet wird:
+Österreichische Notenskala
+1
+2
+3
+4
+5
+Mit Erfolg teilgenommen
+Ohne Erfolg teilgenommen
+Definition
+SEHR GUT: Hervorragende Leistung
+GUT: Generell gut, einige Fehler
+BEFRIEDIGEND: Ausgewogen, Zahl entscheidender Fehler
+GENÜGEND: Leistung entsprechend den Minimalkriterien
+NICHT GENÜGEND: Erhebliche Verbesserungen erforderlich, Erfordernis weiterer Arbeit
+Positive Leistung, wo eine genaue Differenzierung nicht tunlich ist
+Negative Leistung, wo eine genaue Differenzierung nicht tunlich ist
+Gesamtbeurteilung der Qualifikation:
+"mit Auszeichnung bestanden"
+"bestanden"
+"nicht bestanden"
+bei einer herausragenden Prüfungsleistung
+bei positiver Beurteilung
+bei negativer Beurteilung
+* ... anerkannt Seite 3 von 3

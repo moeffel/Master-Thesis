@@ -1,0 +1,2776 @@
+Source: Masterthesis___ARIMA_GARCH_Oeffel_final.pdf
+Type: pdf
+
+Markus ¨Offel, BSc.
+Evaluating the ARIMA-GARCH Model’s Accuracy Across
+Diverse Cryptocurrencies
+A Case Study of BTC, ETH, DOGE, and SOL
+Master’s Thesis
+to be awarded the degree of
+Master of Science
+in Business Administration
+at the University of Graz
+supervised by
+Ao. Univ.-Prof. Mag. Dr. rer. soc. oec. Margit Sommersguter-Reichmann
+Department of Finance
+Graz, December 2025
+
+Contents
+List of Figures vi
+List of Tables vii
+List of Symbols viii
+1 Introduction 1
+2 Literature Review and Theoretical Background 3
+2.1 Overview of Selected Cryptocurrencies . . . . . . . . . . . . . . . . . . 3
+2.2 Characteristics of Cryptocurrency Markets . . . . . . . . . . . . . . . . . 4
+2.2.1 Extreme Volatility and Long Memory . . . . . . . . . . . . . . . 5
+2.2.2 Heavy Tails and Excess Kurtosis . . . . . . . . . . . . . . . . . . 7
+2.2.3 Jumps and Discontinuities . . . . . . . . . . . . . . . . . . . . . 7
+2.2.4 Structural Breaks and Regime Shifts . . . . . . . . . . . . . . . . 8
+2.2.5 Leverage Effect . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+2.2.6 Volatility Spillovers . . . . . . . . . . . . . . . . . . . . . . . . . 10
+2.2.7 Day-of-Week and Weekend Effects . . . . . . . . . . . . . . . . . 10
+2.3 Market Efficiency in Cryptocurrency Markets . . . . . . . . . . . . . . . 11
+2.4 Time Series Modeling in Financial Markets . . . . . . . . . . . . . . . . 13
+2.5 Econometric Framework for Time Series Modeling . . . . . . . . . . . . 14
+2.5.1 Modeling the Conditional Mean: The ARIMA Framework . . . . 14
+2.5.2 Modeling Conditional Volatility: The GARCH Framework . . . . 16
+2.5.3 The Combined ARIMA-GARCH Model Specification . . . . . . 17
+2.5.4 Extensions to the Standard GARCH Model . . . . . . . . . . . . 19
+ii
+
+2.6 Application of ARIMA-GARCH to Cryptocurrencies . . . . . . . . . . . 21
+2.7 Research Gap and Contribution . . . . . . . . . . . . . . . . . . . . . . . 22
+3 Methodology 23
+3.1 Research Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+3.2 Data Acquisition and Preprocessing . . . . . . . . . . . . . . . . . . . . 24
+3.2.1 Preprocessing Pipeline . . . . . . . . . . . . . . . . . . . . . . . 24
+3.2.2 Data Splitting . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+3.3 Exploratory Data Analysis and Preliminary Tests . . . . . . . . . . . . . 26
+3.3.1 Descriptive Statistics and Distributional Analysis . . . . . . . . . 26
+3.3.2 Stationarity Testing . . . . . . . . . . . . . . . . . . . . . . . . . 28
+3.3.3 Autocorrelation and Heteroskedasticity Testing . . . . . . . . . . 30
+3.4 Model Specification, Selection, and Estimation . . . . . . . . . . . . . . 33
+3.4.1 Parameter Estimation . . . . . . . . . . . . . . . . . . . . . . . . 35
+3.5 Forecasting and Evaluation Strategy . . . . . . . . . . . . . . . . . . . . 36
+3.5.1 Forecasting Design . . . . . . . . . . . . . . . . . . . . . . . . . 36
+3.5.2 Benchmark Models . . . . . . . . . . . . . . . . . . . . . . . . . 39
+3.5.3 Performance Evaluation Metrics . . . . . . . . . . . . . . . . . . 39
+3.6 Software and Implementation Details . . . . . . . . . . . . . . . . . . . . 43
+4 Empirical Results 45
+4.1 Descriptive Statistics and Stationarity . . . . . . . . . . . . . . . . . . . 45
+4.2 Model Diagnostics and Universal Specification Choices . . . . . . . . . . 47
+4.2.1 Distributional Properties . . . . . . . . . . . . . . . . . . . . . . 47
+4.2.2 Autocorrelation Structure . . . . . . . . . . . . . . . . . . . . . . 48
+4.3 ARIMA-GARCH Model Results for Bitcoin (BTC) . . . . . . . . . . . . 49
+4.3.1 Model Specification . . . . . . . . . . . . . . . . . . . . . . . . 49
+iii
+
+4.3.2 Initial Parameter Estimates . . . . . . . . . . . . . . . . . . . . . 50
+4.3.3 Forecasting Accuracy . . . . . . . . . . . . . . . . . . . . . . . . 51
+4.4 ARIMA-GARCH Model Results for Ethereum (ETH) . . . . . . . . . . . 57
+4.4.1 Model Specification . . . . . . . . . . . . . . . . . . . . . . . . 57
+4.4.2 Initial Parameter Estimates . . . . . . . . . . . . . . . . . . . . . 57
+4.4.3 Forecasting Accuracy . . . . . . . . . . . . . . . . . . . . . . . . 58
+4.5 ARIMA-GARCH Model Results for Dogecoin (DOGE) . . . . . . . . . . 63
+4.5.1 Model Specification . . . . . . . . . . . . . . . . . . . . . . . . 63
+4.5.2 Initial Parameter Estimates . . . . . . . . . . . . . . . . . . . . . 63
+4.5.3 Forecasting Accuracy . . . . . . . . . . . . . . . . . . . . . . . . 64
+4.6 ARIMA-GARCH Model Results for Solana (SOL) . . . . . . . . . . . . 68
+4.6.1 Model Specification . . . . . . . . . . . . . . . . . . . . . . . . 69
+4.6.2 Initial Parameter Estimates . . . . . . . . . . . . . . . . . . . . . 69
+4.6.3 Forecasting Accuracy . . . . . . . . . . . . . . . . . . . . . . . . 69
+4.7 Comparative Analysis and Summary of Findings . . . . . . . . . . . . . 75
+5 Discussion 77
+5.1 Robustness Check: The Decisive Impact of Window Length . . . . . . . 77
+5.2 Answering the Research Question . . . . . . . . . . . . . . . . . . . . . 78
+5.3 Methodological Limitations . . . . . . . . . . . . . . . . . . . . . . . . . 79
+6 Conclusion 81
+Bibliography 82
+iv
+
+List of Figures
+2.1 Linear Price Development of BTC, ETH, DOGE, and SOL (2020–2024) . 5
+2.2 Logarithmic Price Development of BTC, ETH, DOGE, and SOL (2020–2024) 6
+2.3 30-Day Rolling Realized Volatility of Selected Cryptocurrencies (2020–2024) 7
+2.4 Distribution Cryptocurrencies (2020–2025) . . . . . . . . . . . . . . . . 8
+2.5 Volatility Estimates Across GARCH-Type Models for BTC-USD Returns 20
+3.1 Illustration of an AR(2) process. . . . . . . . . . . . . . . . . . . . . . . 31
+3.2 Illustration of an MA(1) process. . . . . . . . . . . . . . . . . . . . . . . 31
+3.3 Illustration of an ARMA(1,1) process. . . . . . . . . . . . . . . . . . . . 31
+3.4 Schematic of the Rolling Window Forecasting Procedure. . . . . . . . . . 37
+4.1 Q-Q Plots of Log Returns for All Assets . . . . . . . . . . . . . . . . . . 47
+4.2 ACF and PACF Plots of Log Returns for All Assets . . . . . . . . . . . . 48
+4.3 Rolling 1-Step Price Forecast for Bitcoin . . . . . . . . . . . . . . . . . . 53
+4.4 Rolling 1-Step Volatility Forecast for Bitcoin . . . . . . . . . . . . . . . 53
+4.5 Rolling 1-Step VaR Thresholds vs. Actual Log Return for Bitcoin . . . . 54
+4.6 Standardized 1-Step Residuals from Rolling Backtest for Bitcoin . . . . . 54
+4.7 Rolling Parameter Stability Plot for BTC . . . . . . . . . . . . . . . . . . 55
+4.8 Rolling 1-Step Price Forecast for Ethereum . . . . . . . . . . . . . . . . 60
+4.9 Rolling 1-Step Volatility Forecast for Ethereum . . . . . . . . . . . . . . 60
+4.10 Standardized 1-Step Residuals from Rolling Backtest for Ethereum . . . . 61
+4.11 Rolling 1-Step VaR Thresholds vs. Actual Log Return for Ethereum . . . 61
+4.15 Rolling 1-Step Price Forecast for Dogecoin . . . . . . . . . . . . . . . . 66
+4.16 Rolling 1-Step Volatility Forecast fore Dogecoin . . . . . . . . . . . . . . 66
+v
+
+4.17 Rolling 1-Step VaR Thresholds vs. Actual Log Return for Dogecoin . . . 67
+4.18 Rolling 1-Step Volatility Forecast for Dogecoin . . . . . . . . . . . . . . 67
+4.22 Rolling 1-Step Price Forecast for Solana . . . . . . . . . . . . . . . . . . 72
+4.23 Rolling 1-Step Volatility Forecast for Solana . . . . . . . . . . . . . . . . 72
+4.24 Rolling 1-Step VaR Thresholds vs. Actual Log Return for Solana . . . . . 73
+4.25 Standardized 1-Step Residuals from Rolling Backtest for Solana . . . . . 73
+4.26 Rolling Parameter Stability Plot for SOL . . . . . . . . . . . . . . . . . . 74
+vi
+
+List of Tables
+2.1 Key characteristics of the selected cryptocurrencies. . . . . . . . . . . . . 4
+4.1 Summary of Descriptive Statistics for the observed coins . . . . . . . . . 45
+4.2 Stationarity Test Results for Daily Log Returns . . . . . . . . . . . . . . 46
+4.3 BTC Initial Parameter Estimates: ARIMA(0,0,0)–FIGARCH(1,1)– t . . . 50
+4.4 BTC Forecast Accuracy — Multi-Horizon Evaluation . . . . . . . . . . . 51
+4.5 BTC 5% VaR Backtesting — Multi-Horizon Evaluation . . . . . . . . . . 52
+4.6 BTC Rolling 1-Step Backtest Performance Summary (60-Day Window) . 52
+4.7 ETH Initial Parameter Estimates: ARIMA(1,0,0)–FIGARCH(1,1)– t . . . 57
+4.8 ETH Forecast Accuracy — Multi-Horizon Evaluation . . . . . . . . . . . 58
+4.9 ETH 5% VaR Backtesting — Multi-Horizon Evaluation . . . . . . . . . . 59
+4.10 ETH Rolling 1-Step Backtest Performance Summary (60-Day Window) . 59
+4.11 DOGE Initial Parameter Estimates: ARIMA(0,0,0)–FIGARCH(1,1)– t . . 63
+4.12 DOGE Forecast Accuracy — Multi-Horizon Evaluation . . . . . . . . . . 64
+4.13 DOGE 5% VaR Backtesting — Multi-Horizon Evaluation . . . . . . . . 64
+4.14 DOGE Rolling 1-Step Backtest Performance Summary (60-Day Window) 65
+4.15 SOL Initial Parameter Estimates: ARIMA(0,0,0)–FIGARCH(1,1)– t . . . 69
+4.16 SOL Forecast Accuracy — Multi-Horizon Evaluation . . . . . . . . . . . 70
+4.17 SOL 5% VaR Backtesting — Multi-Horizon Evaluation . . . . . . . . . . 70
+4.18 SOL Rolling 1-Step Backtest Performance Summary (60-Day Window) . 71
+4.19 Comparative Summary of Key Findings (60-Day Rolling Backtest) . . . . 76
+5.1 Comparative Summary of Key Backtesting Metrics: 60-Day vs. 365-Day
+Window . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+vii
+
+List of Symbols
+R Set of real numbers
+N Set of natural numbers
+E[·] Expectation operator
+Var[·] Variance operator
+ln Natural logarithm operator
+Φ(·) Standard normal cumulative distribution function
+Φ−1(·) Quantile (inverse CDF) of the standard normal distribution
+N (0, 1) Standard normal distribution
+WN(0, σ2) White-noise process with variance σ2
+I{·} Indicator function (takes value 1 if statement true, else 0)
+n, T Sample size / number of observations
+Θ, ˆΘ Parameter vector / its estimator (MLE/QMLE)
+L(Θ), ℓ(Θ) Likelihood / log-likelihood function
+t Time index or point in time
+i, j, k General lag indices
+B Backshift (lag) operator, Brt = rt−1
+∇ Difference operator, ∇ = (1 − B)
+W Size (days) of the rolling estimation window
+h Forecast horizon (days)
+Pt Asset price at time t
+rt Daily log return, rt = ln(Pt/Pt−1)
+ˆrt Forecasted value of rt
+µ, µ t, ˆµt Constant mean / conditional mean / its forecast
+p, d, q AR, differencing, MA orders in ARIMA(p, d, q)
+c Constant (intercept) in the mean equation
+ϕi AR coefficient at lag i in the mean equation
+θj MA coefficient at lag j in the mean equation
+viii
+
+ϵt, ˆϵt Innovation (residual) / estimated residual at time t
+AIC Akaike Information Criterion
+BIC Bayesian Information Criterion
+AICc Small-sample corrected AIC
+HQC Hannan–Quinn Criterion
+CAIC Consistent AIC (Bozdogan)
+P, Q Orders of ARCH(ϵ2) and GARCH(σ2) in GARCH(P, Q)
+σ2
+t , ˆσ2
+t Conditional variance / its forecast
+σt, ˆσt Conditional standard deviation (volatility) / its forecast
+zt, ˆzt Standardized residual, zt = ϵt/σt / its estimate
+α0 Variance intercept in (G)ARCH equation
+ω Alternative notation for variance intercept (e.g., EGARCH/APARCH)
+αi ARCH coefficient onϵ2
+t−i
+βj GARCH coefficient onσ2
+t−j
+Ft−1 Information set up to time t − 1
+d Fractional differencing parameter in FIGARCH(·, d, ·)
+γi Asymmetry (leverage) coefficient (e.g., EGARCH/GJR-GARCH)
+I(ϵt−1 < 0) Shock-sign indicator used in GJR-GARCH
+tν Student’st distribution with ν degrees of freedom
+ν Degrees of freedom (tail thickness) in tν
+λ Skewness parameter (skew-t)
+η Shape parameter (skew-t; model-specific)
+RMSE Root Mean Squared Error
+MSE Mean Squared Error
+MAE Mean Absolute Error
+MAPE Mean Absolute Percentage Error
+QLIKE Quasi-likelihood loss for variance forecasts
+VaR(α)
+t+1 One-step Value-at-Risk at tail levelα
+ES(α)
+t+1 One-step Expected Shortfall at tail level α
+qα α-quantile of the innovation distribution
+I α
+t VaR exceedance indicator (1 if rt < −VaR(α)
+t , else 0)
+ix
+
+αVaR VaR tail probability (coverage level)
+ADF Augmented Dickey–Fuller unit-root test
+KPSS Kwiatkowski–Phillips–Schmidt–Shin stationarity test
+ARCH-LM Engle’s Lagrange Multiplier test for ARCH effects
+Ljung–Box Q(m) Portmanteau test for residual autocorrelation up to lag m
+JB Jarque–Bera normality test statistic
+DM Diebold–Mariano test for predictive accuracy
+χ2
+k Chi-square distribution with k degrees of freedom
+H0 Null hypothesis
+α Significance level in hypothesis testing
+p-value Probability value associated with a test statistic
+LRuc Kupiec unconditional coverage test statistic
+LRind Christoffersen independence test statistic
+LRcc Christoffersen conditional coverage test statistic
+RW Naive random-walk / zero-return benchmark
+EWMA Exponentially Weighted Moving Average volatility model
+λEWMA EWMA smoothing parameter (decay factor)
+ACF, PACF Autocorrelation / Partial autocorrelation function
+BTC Ticker symbol for Bitcoin
+ETH Ticker symbol for Ethereum
+DOGE Ticker symbol for Dogecoin
+SOL Ticker symbol for Solana
+x
+
+1 Introduction
+The rise of cryptocurrencies such as Bitcoin (BTC), Ethereum (ETH), Dogecoin (DOGE),
+and Solana (SOL) has significantly impacted financial markets. Once considered niche
+innovations, these digital assets are now at the center of attention for everyday investors
+and major financial institutions alike. This growing acceptance is reflected in the rollout
+of crypto-based Exchange Traded Funds (ETFs) and the active regulatory conversations
+unfolding across major global economies.1
+In January 2024, the U.S. Securities and Exchange Commission (SEC) approved the
+first Bitcoin spot ETFs, followed by the first Ethereum spot ETFs in July 2024. This
+led to increased participation from major players such as BlackRock, Fidelity, and ARK
+Invest, who launched corresponding products, lowering entry barriers for both retail and
+institutional investors.2
+Even as more institutions enter the crypto space, digital assets still operate very differently
+from traditional financial markets. Cryptocurrencies are relatively new and often driven by
+speculation, making them harder to predict. Their round-the-clock trading, sharp price
+swings, and decentralized setup pose serious challenges for standard models originally
+designed for traditional financial markets.3 These attributes differentiate cryptocurrencies
+significantly from established asset classes like stocks or bonds, complicating the direct
+application of standard forecasting techniques.
+As crypto assets become increasingly integrated into diversified portfolios and finan-
+cial products, understanding both the predictive capabilities and limitations of standard
+econometric models, such as ARIMA-GARCH, is essential to support informed financial
+decision-making in this volatile and complex market environment.4
+Given these characteristics, this thesis deliberately adopts a classical econometric modeling
+framework. ARIMA-GARCH models are chosen not for their complexity but for their
+1 Cf. U.S. Securities and Exchange Commission (2024).
+2 Cf. Torpey (2024); Reuters (2024).
+3 Cf. Cheah/Fry (2015), pp. 33ff.
+4 Cf. Huang et al. (2024), p. 84.
+1
+
+well-established structure, interpretability, and suitability as a transparent baseline. This
+makes them particularly useful for evaluating whether simple time series models can
+offer meaningful predictive signals in a highly volatile and rapidly evolving market like
+cryptocurrencies.
+This leads to the central research question of this thesis:
+How accurately can the ARIMA-GARCH model predict the price movements
+and volatility patterns of Bitcoin (BTC), Ethereum (ETH), Dogecoin (DOGE)
+and Solana (SOL) and how does the accuracy of the model vary between these
+cryptocurrencies?
+The choice of this topic is motivated by the need to assess the tools available to model the
+behavior of the cryptocurrency market. By focusing on the ARIMA- GARCH model across
+a range of digital assets, this research aims to contribute to more informed investment
+decisions and risk management practices in the rapidly evolving cryp- tocurrency landscape.
+To address the research question, the thesis is structured as follows:
+• Chapter 2 summarizes the theoretical background and state of research.
+• Chapter 3 describes the design, data and methods.
+• Chapter 4 presents the empirical results and model evaluations.
+• Chapter 5 discusses the findings.
+• Chapter 6 concludes and offers answers to the research question.
+2
+
+2 Literature Review and Theoretical
+Background
+This chapter provides the theoretical foundation and reviews relevant academic research on
+the financial characteristics of cryptocurrencies and the application of time-series models.
+2.1 Overview of Selected Cryptocurrencies
+This section introduces the four cryptocurrencies analyzed in this thesis: Bitcoin (BTC),
+Ethereum (ETH), Dogecoin (DOGE), and Solana (SOL). These assets were selected to
+represent a broad spectrum of technological purposes, user dynamics, and market behaviors.
+Bitcoin (BTC) was introduced in 2009 by the pseudonymous Satoshi Nakamoto as the
+first decentralized cryptocurrency.5 Bitcoin is often compared to ”digital gold” due to its
+characteristics such as programmed scarcity, decentralized structure, and potential as a
+store of value.6
+Ethereum (ETH) Ethereum (ETH) was launched in 2015 by Vitalik Buterin et al. as
+a general purpose programmable blockchain. Unlike Bitcoin, Ethereum was explicitly
+designed to support smart contracts and decentralized applications (dApps), enabling a
+wide range of use cases beyond digital currency.7 It forms the backbone of the decentralized
+finance ecosystem (DeFi) and the broader token economy, allowing use cases beyond
+simple value transfer.
+Dogecoin (DOGE) originated in 2013 as a meme-inspired fork of Litecoin originally
+created as a satire on crypto speculation, evolved into a legitimate digital asset with
+real-world trading volume. However, it quickly gained traction through social media
+communities and endorsements by high-profile individuals. Unlike Bitcoin, Dogecoin has
+no supply cap and is primarily driven by speculative sentiment and community enthusiasm.8
+5 Cf. Nakamoto (2008).
+6 Cf. Ammous (2018).
+7 Cf. Antonopoulos/Wood (2018), p. 33ff.
+8 Cf. Nani (2022), p. 1720ff.
+3
+
+Solana (SOL) is a high-performance blockchain designed as a scalable and secure platform
+for decentralized applications (dApps). It utilizes innovations such as its unique Proof
+of History (PoH) consensus mechanism, often combined with Proof of Stake (PoS),
+to differentiate itself. This architecture allows Solana to achieve significantly higher
+transaction throughput, processing thousands of transactions per second, and offers lower
+transaction fees compared to many other blockchain platforms like Ethereum. Consequently,
+Solana is well suited to support large-scale dApps, including those in decentralized finance
+(DeFi) and gaming.9
+Table 2.1 summarizes the key characteristics of these four cryptocurrencies, highlighting
+their different origins, primary functions, and notable features that contribute to their
+distinct market behaviors.
+Coin Launched Primary Use Notable Features
+BTC 2009 Store of Value First-mover, limited supply, ”digital gold”
+ETH 2015 Smart Contracts dApps, DeFi, strong developer ecosystem
+DOGE 2013 Meme Tipping, inflationary, community-driven
+SOL 2020 Scalable Platform Proof of History, fast throughput, low fees
+Table 2.1: Key characteristics of the selected cryptocurrencies.
+Source: based on own illustration.
+2.2 Characteristics of Cryptocurrency Markets
+Cryptocurrencies represent a novel asset class whose markets exhibit a set of well-
+documented statistical properties, or stylized facts that distinguish them from traditional
+financial markets. At their core, they are digital assets secured by cryptography and operating
+on decentralized ledger technologies such as blockchain, which ensure a high degree of
+transparency and immutability of transactions.10 Beyond these technological foundations,
+the financial behavior of these markets is characterized by a unique set of statistical
+properties. These include pronounced long-memory effects, complex leverage dynamics,
+9 Cf. Mishra et al. (2024), pp. 197ff.
+10 Cf. Valdivia et al. (2019), p. 34.
+4
+
+stochastic volatility and distinctly heavy-tailed return distributions.11 Collectively, these
+empirical properties invalidate the standard assumptions of classical finance and provide
+a robust justification for the specific methodological choices made in this study. The
+following subsections will develop a coherent argument by examining each stylized fact
+and its implications for the analytical framework of this thesis.
+2.2.1 Extreme Volatility and Long Memory
+The most widely recognized characteristic of cryptocurrencies is their extreme price
+volatility. Compared to established asset classes like equities or commodities, their
+daily price swings are often orders of magnitude larger.12 Research has also highlighted
+the prevalence of speculative bubbles and herd behavior within these markets. For
+instance, Cheah/Fry (2015) provided early evidence that Bitcoin prices often deviated
+significantly from estimates of fundamental value indicative of speculative bubble activity.13
+This complicates traditional valuation methods and introduces significant uncertainty for
+investors. To illustrate these price dynamics, Figure 2.1 and Figure 2.2 present the historical
+price development of the four selected cryptocurrencies.
+Figure 2.1: Linear Price Development of BTC, ETH, DOGE, and SOL (2020–2024)
+Source: Own illustration; based on data from yahoofinance 2021-01-01 until 2025-01-01, accessed 2025-04-
+15.
+11 Cf. Phillip et al. (2018), pp. 7ff.
+12 Cf. Baur et al. (2018), p. 104.
+13 Cf. Cheah/Fry (2015), pp. 33–35.
+5
+
+Bitcoin (BTC) exhibits the highest and most stable upward trend, while Ethereum (ETH)
+mirrors this pattern on a smaller scale. Solana (SOL), which entered the market later,
+experienced rapid appreciation in 2021 followed by notable corrections. Dogecoin (DOGE)
+shows pronounced, short-lived spikes, particularly in early 2021. These patterns highlight
+the considerable fluctuations typical of crypto assets.
+Figure 2.2 shows the same price movements on a logarithmic scale.
+Figure 2.2: Logarithmic Price Development of BTC, ETH, DOGE, and SOL (2020–2024)
+Source: Own illustration; based on data from yahoofinance 2021-01-01 until 2025-01-01, accessed 2025-04-
+15.
+A closely related phenomenon is volatility clustering, where large price changes tend to be
+followed by further large changes, and small changes by small changes.14 This persistence
+is clearly visible in Figure 2.3, which shows the 30-day rolling realized volatility. In
+cryptocurrencies, this persistence is often so strong that the impact of shocks decays at a
+very slow, hyperbolic rate—a behavior termed long memory.15 The combination of extreme
+volatility and its persistent, clustering nature makes the use of conditional volatility models
+an indispensable tool for analysis.
+Bitcoin (BTC) shows the lowest and most stable volatility. Ethereum (ETH) is slightly
+more volatile, often tracking BTC. Dogecoin (DOGE) experiences extreme spikes, aligned
+with its speculative price moves. Solana (SOL) also displays high volatility, especially
+during 2021.
+14 Cf. Bollerslev (1987), pp. 543f.
+15 Cf. Baillie et al. (1996), pp. 4ff.
+6
+
+Figure 2.3: 30-Day Rolling Realized Volatility of Selected Cryptocurrencies (2020–2024)
+Source: Own illustration; based on data from yahoofinance 2021-01-01 until 2025-01-01, accessed 2025-04-
+15.
+2.2.2 Heavy Tails and Excess Kurtosis
+The extreme volatility described above is directly reflected in the shape of the return
+distributions. These are fundamentally non-normal and exhibit significant leptokurtosis,
+characterized by ”heavy” or ”fat” tails and a pronounced peak around the mean. 16 As
+visualized in Figure 2.4, this implies that extreme events occur far more frequently than a
+Gaussian distribution would predict. This stylized fact has been robustly confirmed across
+a wide range of cryptocurrencies and time periods.17 It has profound implications for risk
+management, as standard models assuming normality will systematically underestimate the
+probability of large losses.18 This necessitates the use of alternative error distributions,
+such as Student’s t distribution, for any credible risk modeling in this domain.
+2.2.3 Jumps and Discontinuities
+A primary driver of the observed heavy tails are jumps sudden, discontinuous price
+movements that cannot be explained by a continuous diffusion process. These leaps
+are often triggered by the arrival of significant, unexpected information, such as major
+exchange hacks or unsuccessful technical changes. Chaim/Laurini (2018) found that jumps
+in Bitcoin are mostly negative and contribute significantly to large price variations and the
+16 Cf. Dorfleitner/Lung (2018), p. 479.
+17 Cf. Phillip et al. (2018), pp. 7ff.
+18 Cf. Bowala/Singh (2022), p. 1.
+7
+
+Figure 2.4: Distribution Cryptocurrencies (2020–2025)
+Source: Own illustration; based on data from yahoofinance 2021-01-01 until 2025-01-01, accessed 2025-04-
+15.
+heavy-tailed nature of returns.19
+Furthermore, these jumps are not entirely random events. Other research, such as that by
+Scaillet et al. 2017, suggests that jumps in Bitcoin are frequent and cluster in time, and are
+often anticipated by abnormal trading activity and liquidity conditions.20 The presence of
+such complex jump dynamics represents a significant challenge for standard conditional
+volatility models, which are typically based on continuous processes and may therefore
+systematically underestimate risk in the face of such abrupt shifts.
+2.2.4 Structural Breaks and Regime Shifts
+Beyond short-term jumps, the underlying data-generating process of cryptocurrency markets
+is itself unstable over longer horizons. It is subject to structural breaks and regime shifts,
+where the statistical properties of the return series, such as mean, variance, or correlation
+structures, change abruptly and persist over time. 21 In the context of cryptocurrencies,
+19 Cf. Chaim/Laurini (2018), pp. 159–162.
+20 Cf. Scaillet et al. (2017), pp. 23ff.
+21 Cf. Bai/Perron (2003), pp. 1f.
+8
+
+these shifts may be triggered by macroeconomic policy decisions. For example, changes
+in interest rates by the U.S. Federal Open Market Committee (FOMC) and quantitative
+easing measures by central banks in the U.S., Eurozone, United Kingdom, and Japan have
+been shown to significantly affect both Bitcoin returns and volatility.22 Consistent with
+these observations, Ardia et al.(2019) also provide robust evidence of distinct high- and
+low-volatility regimes in the Bitcoin market.23 Such structural instability violates the core
+assumption of parameter constancy that underpins many standard econometric models,
+making long-term forecasting particularly challenging.
+2.2.5 Leverage Effect
+The market’s response to shocks is not only time-varying but also often asymmetric. In
+traditional equity markets, this is known as the leverage effect, where negative returns
+induce a greater increase in future volatility than positive returns. This phenomenon first
+documented by Black (1976), is often attributed to financial leverage, where a drop in stock
+price increases a firm’s debt-to-equity ratio, making it inherently riskier.24
+While this effect is well-established for stocks, its nature in cryptocurrency markets is a
+subject of considerable academic debate, with compelling evidence pointing in conflicting
+directions. A significant body of research, for instance, argues that major cryptocurrencies
+exhibit an inverse leverage effect. Omane-Adjepong/Alagidede (2020) found that for assets
+like Bitcoin, volatility tends to increase more in response to positive shocks than to negative
+ones.25
+Conversely, other recent studies provide strong evidence for a traditional leverage effect.
+Ajeesh et al. (2023), found that negative events or news have a greater impact on market
+volatility than positive developments of similar magnitude. 26 This view is supported
+by Kyei-Mensah (2024), whose study of 17 cryptocurrencies concludes that negative
+return shocks developing from bad news wield significant effect on intensifying the future
+volatility compared to its equivalent positive return shocks. 27 This ambiguity in the
+22 Cf. Corbet et al. (2017), p. 70.
+23 Cf. Ardia et al. (2019), p. 269.
+24 Cf. Black (1976), p. 177.
+25 Cf. Omane-Adjepong/Alagidede (2020), pp. 1 ff.
+26 Cf. Ajeesh et al. (2023), pp. 13 ff.
+27 Cf. Kyei-Mensah (2024), p. 2 ff.
+9
+
+literature underscores a critical point: the nature of volatility asymmetry in cryptocurrency
+markets cannot be assumed a priori. It may be asset-specific, time-dependent, or influenced
+by overall market sentiment. It is therefore imperative to move beyond simple symmetric
+models and explicitly test for asymmetric responses to accurately capture the unique
+volatility dynamics of each cryptocurrency under investigation.
+2.2.6 Volatility Spillovers
+Finally, the complexity inherent in each asset’s volatility process is amplified by the highly
+interconnected nature of the market itself. The phenomenon of volatility spillovers, where
+shocks propagate across the system, is a dominant feature, with Bitcoin often acting as the
+primary transmitter of market-wide risk.28
+This interconnectedness means that an asset’s risk profile is determined not only by its own
+past but also by shocks originating elsewhere in the network. While a full multivariate
+analysis is required to model these cross-sectional dynamics, the univariate approach of this
+thesis provides the essential first step: a deep and granular understanding of the individual
+building blocks of this complex system.
+2.2.7 Day-of-Week and Weekend Effects
+A peculiar and widely studied anomaly in financial markets is the presence of calendar
+effects, where returns and volatility exhibit systematic patterns depending on the day of
+the week. While one might assume that the 24/7 operational nature of cryptocurrency
+markets would eliminate such effects, empirical research consistently demonstrates their
+persistence.
+Early research into this area provided compelling evidence for a ”Monday effect” in Bitcoin.
+In a foundational study covering the period from 2013 to 2017, Caporale/Plastun (2017)
+examined the four largest cryptocurrencies and found a statistically significant anomaly
+exclusively for Bitcoin. Their analysis revealed that returns on Mondays are significantly
+higher than those on the other days of the week. Through trading simulations, they
+demonstrated that a strategy exploiting this anomaly could generate profitable returns,
+28 Cf. Katsiampa et al. (2019), pp. 70–72.
+10
+
+leading them to conclude that this was evidence against the efficiency of the Bitcoin market
+at that time.29
+However, more recent research paints a more complex and evolving picture. In a subsequent
+study covering eight major cryptocurrencies from 2017 to 2020, Dangi (2020) employed
+more sophisticated models and arrived at a contrasting conclusion for Bitcoin returns.
+Their findings confirmed the absence of the day of week effect in the returns of Bitcoin,
+suggesting that the market may have become more efficient over time with respect to this
+specific anomaly.30
+Crucially, Dangi shifted the focus from returns to volatility. While the return anomaly in
+Bitcoin had vanished, their analysis affirmed the presence of the day of week effect in the
+volatility of all cryptocurrencies. This indicates that while predictable profit opportunities
+in returns may have been arbitraged away, the underlying market structure still exhibits
+weekly seasonality in its risk profile. Different days of the week are associated with
+systematically different levels of market uncertainty and price fluctuation.31
+The foregoing stylized facts raise the question whether crypto prices fully incorporate
+available information.
+2.3 Market Efficiency in Cryptocurrency Markets
+The central question raised by the previous findings is whether cryptocurrency prices fully
+reflect all available information, making consistent outperformance through historical data
+analysis impossible. Assessing the degree of efficiency in these markets is therefore not
+merely a theoretical exercise but a crucial step for developing sound trading strategies,
+regulatory policies, and evaluating the long-term viability of crypto assets.
+The Efficient Market Hypothesis (EMH) first formalized by Fama holds that asset prices
+fully reflect available information. It is commonly divided into three forms:32
+• Weak form: prices already embed all information contained in historical price and
+29 Cf. Caporale/Plastun (2017), pp. 4 ff.
+30 Cf. Dangi(2020), p. 159.
+31 Cf. Dangi(2020), p. 165.
+32 Cf. Fama (1970)
+11
+
+volume data where pure technical analysis cannot yield abnormal returns.
+• Semi-strong form: prices adjust instantaneously to all publicly available information
+such as earnings, macro releases or regulatory news.
+• Strong form: even private (insider) information is fully impounded, so no investor
+can systematically outperform the market.
+The examination of the weak form of market efficiency is closely connected to a broad
+academic discourse. Early analyses, particularly those focusing on Bitcoin, often pointed
+to inefficiencies in the market and thus to the possibility of achieving abnormal returns
+based on historical price data.3334 However, as cryptocurrency markets have matured and
+become more liquid, the overall picture has become more nuanced. More recent studies
+frequently report mixed findings, indicating that the level of market efficiency can vary
+over time and across different crypto assets.35
+Within this context, Brauneis and Mestel (2018) also observed that cryptocurrencies do not
+exhibit a uniform level of efficiency. More established and liquid assets such as Bitcoin
+tend to display stronger signs of weak form efficiency compared to smaller or newer coins.
+Cryptocurrencies with lower market capitalization and reduced liquidity are generally
+found to be less efficient, as they more frequently deviate from the random-walk hypothesis.
+Bitcoin, on the other hand, demonstrates the highest efficiency among the assets examined,
+which supports the earlier conclusions by Urquhart (2016) that the efficiency of Bitcoin
+has improved over time.36
+These empirical observations of time-varying and asset-specific efficiency suggest that a
+static concept of efficiency may not adequately capture the dynamics of emerging markets.
+In response to the limitations of the traditional Efficient Market Hypothesis (EMH) in light
+of such findings, and drawing from insights in behavioral economics, Lo (2004) developed
+the Adaptive Market Hypothesis (AMH). The Adaptive Market Hypothesis (AMH) posits
+that the degree of market efficiency changes over time, as market participants learn and
+33 Cf. Urquhart (2016), p. 82.
+34 Cf. Cheah/Fry (2015), p. 35.
+35 Cf. Kyriazis (2019), pp. 2ff.
+36 Cf. Brauneis/Mestel (2018), p. 60.
+12
+
+adapt to shifting conditions through mechanisms similar to competition, adaptation, and
+natural selection. Instead of assuming consistent rationality, the AMH recognizes that
+investors may be influenced by cognitive biases such as overconfidence37, loss aversion38
+or herd behavior39.As a result, market participants and thus market efficiency adapt to
+changing environmental conditions, competition, and learning processes. This can lead to
+cycles in which markets oscillate between phases of higher and lower efficiency.40 These
+inefficiencies, however, may diminish as learning processes and arbitrage come into play.41
+Empirical support for the AMH in the context of cryptocurrencies can be found, for
+example, in the study by Khuntia/Pattanayak (2018), which used a rolling-window approach
+to detect evidence of time-varying efficiency in the Bitcoin market, consistent with the
+AMH framework.42
+The AMH thus provides a plausible theoretical framework for analyzing the complex
+and evolving efficiency dynamics in cryptocurrency markets. It helps explain why more
+established cryptocurrencies like Bitcoin may exhibit higher levels of efficiency, while
+newer assets or those driven by specific narrative dynamics, such as Dogecoin may undergo
+more pronounced phases of inefficiency.43
+The examination of forecasting accuracy in this study, particularly through the use of a
+rolling-window methodology that allows for some degree of adaptation to changing market
+conditions, can also be interpreted in the context of the AMH. If the quantitative models
+employed fail to produce consistently superior forecasts, this would also support the notion
+of weak market efficiency during the investigated period.
+2.4 Time Series Modeling in Financial Markets
+Building on the notion that market efficiency may vary over time and across assets, it
+becomes essential to adopt statistical tools capable of capturing such evolving dynamics.
+37 Cf. Barber/Odean (2001).
+38 Cf. Kahneman/Tversky (1979).
+39 Cf. Huberman/Regev (2001).
+40 Cf. Lo (2005), pp. 22ff.
+41 Cf. Lo (2004), pp. 15ff.
+42 Cf. Khuntia/Pattanayak (2018), pp. 26ff.
+43 Cf. Nani (2022), pp. 1719ff.
+13
+
+In particular, financial time series require models that can account for the probabilistic
+structure of sequential data and reflect both short-term dependencies and long-term trends.
+Financial time series analysis combines theoretical valuation concepts with strongly
+empirical data work. In contrast to many other fields, an additional degree of uncertainty is
+always present, for example, because key parameters such as the volatility of a stock return
+process are not directly observable. This is precisely why statistical methods play a key
+role in drawing reliable conclusions from existing time series.44
+2.5 Econometric Framework for Time Series Modeling
+This section details the two-part econometric framework employed in this thesis. First, it
+outlines the Autoregressive Integrated Moving Average (ARIMA) model class, a widely
+used method for capturing linear dependencies in the conditional mean of a time series.
+Second, it addresses the limitations of the constant-variance assumption in ARIMA models
+by introducing the Generalized Autoregressive Conditional Heteroskedasticity (GARCH)
+framework. The GARCH model and its key extensions are presented as the primary tools
+for capturing the time-varying volatility of financial asset returns.
+2.5.1 Modeling the Conditional Mean: The ARIMA Framework
+In financial econometrics, log returns are often used for time series analysis due to their
+desirable statistical properties. For a price series Pt at time t, the daily log return rt is
+defined as:
+rt = ln(Pt) − ln(Pt−1) (2.1)
+Stationary models are based on the assumption that a time series is in equilibrium
+around a constant mean value level. These models are particularly suitable if statistical
+properties such as expected value, variance and autocorrelation do not change over time.
+In economic practice, however, it is often the case that many time series do not exhibit
+such stability and must be classified as non-stationary. The decisive factor is the selection
+of a suitable stochastic model, which is either inherently stationary or can be transformed
+44 Cf. Tsay (2010), p. 1.
+14
+
+into a stationary form, for example, by differencing the original time series. Within this
+framework, the ARIMA model plays a central role, as it combines both stationary and
+integrated non-stationary components in a uniform approach.45
+The autoregressive–integrated moving-average (ARIMA) framework of Box/Jenkins (1976)
+is an established method for modeling linear dependence in time-series data. The ARIMA
+methodology is built upon two primary components for stationary time series: the
+autoregressive (AR) and the moving average (MA) parts.
+An autoregressive (AR) process of order p, abbreviated as AR(p), models the current
+value of a time series rt as a linear combination of its p most recent past values and an
+uncorrelated white noise term ϵt. This captures the internal memory structure of the
+process. Using the backshift operator B, defined by Brt = rt−1, the model is compactly
+expressed as
+ϕ(B)rt = ϵt, with ϕ(B) = 1 − ϕ1B − ϕ2B2 − · · · − ϕpBp, (2.2)
+where ϕ(B) is the autoregressive lag polynomial.46
+A key requirement for stationarity in AR(p) models is that all roots of the characteristic
+polynomial ϕ(B) = 1 − ϕ1B − · · · − ϕpBp lie outside the unit circle. That is, all complex
+solutions λ to ϕ(λ−1) = 0 must satisfy |λ| > 1. This condition ensures that the infinite
+expansion ϕ(B)−1 converges and that past shocks have a diminishing influence on future
+values.47
+A moving average (MA) processof order q, abbreviated as MA(q), expresses the current
+value rt as a linear combination of the current and q lagged white-noise innovations. This
+formulation captures the influence of past shocks rather than past observations. Formally,
+the model is written as
+rt = θ(B)ϵt, with θ(B) = 1 + θ1B + θ2B2 + · · · + θqBq, (2.3)
+where ϵt
+iid
+∼ WN(0, σ2
+ϵ ) denotes a white-noise process with zero mean and constant variance,
+45 Cf. Box/Jenkins (1976), pp. 7ff.
+46 Cf. Box/Jenkins (1976), pp. 46ff.
+47 Cf. Box/Jenkins (1976), p. 51.
+15
+
+and θ(B) is the moving-average lag polynomial.48
+In practice, many time series exhibit characteristics of both types, leading to the mixed
+Autoregressive Moving Average (ARMA(p, q)) model. While the stationary AR and MA
+forms are sufficient for series whose second moments are time-invariant, many economic
+and financial sequences display stochastic trends. These can be removed, or at least
+rendered weakly stationary, by differencing. This is with the integrated (I) component of
+the framework, which extends its applicability to non-stationary series. By applying the
+ARMA(p, q) model not to the original series rt but to its d-th difference wt = ∇drt, where
+∇ = (1 − B) is the difference operator, the full ARIMA(p, d, q) model is formed.49
+Combining these yields the general ARIMA( p, d, q) model, which provides a robust
+foundation for forecasting the conditional mean of a time series:50
+ϕ(B)(1 − B)drt = θ(B)ϵt (2.4)
+2.5.2 Modeling Conditional Volatility: The GARCH Framework
+While ARIMA models provide a robust framework for modeling the conditional mean of a
+time series, their core assumption that the variance of the error terms ϵt is constant over
+time (homoscedasticity) is a significant limitation in finance.51
+To address this problem, Engle (1982) introduced the Autoregressive Conditional
+Heteroskedasticity (ARCH) model. The ARCH( q) model specifies the conditional
+variance σ2
+t as a linear function of the past q squared residuals (ϵt = rt − µt):
+σ2
+t = α0 +
+qX
+i=1
+αiϵ2
+t−i (2.5)
+where α0 > 0 and αi ≥ 0 to ensure a positive variance. 52 However, in empirical
+applications, a high order q is often required to adequately capture the persistence of
+volatility, leading to a large number of parameters and potential issues with non-negativity
+constraints.53
+48 Cf. Box/Jenkins (1976), pp. 65-69.
+49 Cf. Box/Jenkins (1976), pp. 26ff.
+50 Cf. Box/Jenkins (1976), pp. 85ff.
+51 Cf. Tsay (2010), p. 109.
+52 Cf. Engle (1982), p. 990.
+53 Cf. Bollerslev (1986), p. 308. 16
+
+As a more flexible and parsimonious generalization, Bollerslev (1986) proposed the
+Generalized ARCH (GARCH) model, which incorporates lagged conditional variances
+into the equation. The standard GARCH(p, q) model is defined as:
+σ2
+t = α0 +
+pX
+i=1
+αiϵ2
+t−i +
+qX
+j=1
+βjσ2
+t−j (2.6)
+In this formulation, the αi coefficients (ARCH terms) measure the immediate reaction
+of volatility to market shocks, while the βj coefficients (GARCH terms) measure the
+persistence in volatility. A high βj indicates that volatility shocks are slow to die out. The
+sum of these coefficients,P αi +P βj, indicates the overall degree of volatility persistence
+while a value close to 1 suggests that shocks have a long-lasting impact on the conditional
+variance.54 In empirical applications, the simple GARCH(1,1) model has proven to be
+remarkably effective.55
+For consistency with the ARIMA notation, we define the backshift-operator polynomials as
+α(B) =
+pX
+i=1
+αiBi, β (B) = 1 −
+qX
+j=1
+βjBj (2.7)
+Then, the standard GARCH(p, q) variance equation, which shows that the squared errors
+(ϵ2
+t ) follow an ARMA-like process, can be written more compactly as:
+β(B) σ2
+t = α0 + α(B) ϵ2
+t (2.8)
+This representation highlights the analogy to an ARMA process for the conditional variance,
+which is a key insight of the GARCH framework. As Bollerslev et al. note, rearranging the
+GARCH equation shows that the squared residuals ϵ2
+t follow an ARMA process, which
+allows for the use of standard time series techniques for model identification.56
+2.5.3 The Combined ARIMA-GARCH Model Specification
+The combination of both model classes into an ARIMA-GARCH frameworkallows for
+a comprehensive and simultaneous modeling of the conditional mean and conditional
+54 Cf. Bollerslev (1986), p. 310.
+55 Cf. Hansen/Lunde (2005), p. 875.
+56 Cf. Bollerslev et al. (1994), p. 2968.
+17
+
+variance of a time series.57 For a given log return series rt, the complete ARIMA(p, d, q)-
+GARCH(p, q) model is specified as a system of three interconnected equations.
+First, the conditional mean equation models the structure of the returns using the
+ARIMA(p, d, q) process. Letting wt = (1 − B)drt be the stationary (differenced) return
+series, the model is:
+wt = µ +
+pX
+i=1
+ϕiwt−i +
+qX
+j=1
+θjϵt−j + ϵt (2.9)
+This is equivalent to the compact form ϕ(B)(wt − µ) = θ(B)ϵt, where ϵt is the error term
+of the mean equation, which is no longer assumed to be simple white noise.58
+Second, the error term ϵt is defined as a product of a standardized, independent innovation
+zt and the time-varying conditional standard deviation σt. This equation links the mean
+model to the volatility model:
+ϵt = ztσt, where zt ∼ i.i.d. D(0, 1) (2.10)
+The innovations zt are assumed to follow a specific distribution D (e.g., Normal, Student’s
+t) with a mean of zero and a variance of one.59
+Finally, theconditional variance equationmodels the evolution ofσ2
+t using a GARCH(p, q)
+process, driven by the past squared errors (ϵ2
+t−i) and past conditional variances (σ2
+t−j):
+σ2
+t = α0 +
+pX
+i=1
+αiϵ2
+t−i +
+qX
+j=1
+βjσ2
+t−j (2.11)
+In this complete system, the ARIMA component filters the linear dependencies from the
+returns, while the GARCH process captures the dynamic volatility structure of the resulting
+residuals.60
+57 Cf. Tsay (2010), p. 161f.
+58 Cf. Box/Jenkins (1976), pp. 10ff.
+59 Cf. Tsay (2010), pp. 116ff.
+60 Cf. Bollerslev (1986), pp. 307ff.
+18
+
+2.5.4 Extensions to the Standard GARCH Model
+While the standard GARCH model successfully captures volatility clustering, its symmetric
+nature and assumption of exponential decay limit its ability to replicate other well-
+documented stylized facts of financial returns. Consequently, a rich family of GARCH
+extensions has been developed to provide a more nuanced description of volatility dynamics.
+The most relevant for this study are those addressing the asymmetric impact of shocks,
+long-term persistence in volatility, and non-normal error distributions.
+A key empirical observation, particularly in equity markets, is the leverage effect where
+negative shocks tend to increase future volatility more than positive shocks of the same
+magnitude.61
+A widely used model to capture asymmetry is the GJR-GARCH, developed by Glosten
+et al. (1993), which adds an indicator function for negative shocks to the standard GARCH
+equation:
+σ2
+t = α0 +
+pX
+i=1
+ϵ2
+t−i (αi + γiI(ϵt−i < 0)) +
+qX
+j=1
+βjσ2
+t−j. (2.12)
+Here, I(·) is an indicator function. A statistically significant positive coefficientγi indicates
+the presence of a leverage effect, as the total impact of a negative shock becomes(αi + γi).62
+The autocorrelation of squared financial returns often decays at a very slow, hyperbolic
+rate, a characteristic known as long memory or long-term persistence. This is in contrast to
+the faster, exponential decay implied by a stationary GARCH process. TheFractionally
+Integrated GARCH (FIGARCH)model, introduced by Baillie et al. (1996), explicitly
+addresses this by allowing for a fractional order of integration, d, in the variance process.
+Using the backshift operator notation, the FIGARCH(p, d, q) model can be expressed as:
+ϕ(B)(1 − B)dϵ2
+t = α0 + (1 − β(B))vt, (2.13)
+where 0 < d < 1 is the fractional differencing parameter andvt = ϵ2
+t − σ2
+t is the zero-mean
+error term. This formulation allows the impact of past shocks on future volatility to decay
+61 Cf. Black (1976), p. 177.
+62 Cf. Glosten et al. (1993), pp.1780ff.
+19
+
+at a slow hyperbolic rate, which is often more consistent with empirical data.63
+To visually illustrate the distinct dynamic properties of the GARCH model family, Figure
+2.5 compares the estimated conditional volatility from four different specifications fitted to
+the daily log returns of BTC-USD. The top panel shows the return series, which exhibits
+characteristic periods of volatility clustering, such as in May 2020 and April 2024. The
+three lower panels display the corresponding conditional standard deviation one step ahead
+(σt) estimated by each model in response to these returns.
+Figure 2.5: Volatility Estimates Across GARCH-Type Models for BTC-USD Returns
+Source: Own illustration; based on data from yahoofinance 2021-01-01 until 2025-01-01, accessed 2025-04-
+19.
+The comparison in Figure 2.5 illustrates key characteristics of volatility modeling across
+the three GARCH-type models applied to Bitcoin returns. All models capture the well-
+documented phenomenon of volatility clustering, with conditional volatility σt rising
+markedly during turbulent market phases (e.g., late 2020 to early 2021 and during mid-
+2021), and declining in more stable periods.
+The GARCH(1,1) model provides a smooth baseline, reacting symmetrically to positive
+63 Cf. Baillie et al. (1996), pp. 7-9.
+20
+
+and negative return shocks. In contrast, the GJR-GARCH(1,1) model, which accounts for
+potential asymmetries in how returns affect volatility, shows only marginal deviations from
+the standard GARCH trajectory. This suggests that the empirical relevance of asymmetric
+effects such as the leverage effect, where negative shocks increase volatility more than
+positive ones is limited for BTC within this sample period.
+The FIGARCH(1,d,1) model, in contrast, demonstrates a visibly different behavior. With a
+fractional integration parameter of d ≈ 0.29, it exhibits long memory dynamics: volatility
+shocks decay more slowly over time, and periods of high volatility tend to persist longer.
+This is particularly evident after major volatility spikes, such as in early 2021 and mid-2022,
+where the FIGARCH model maintains elevated volatility levels even as the other models
+revert more quickly.
+Overall, the comparison highlights that the choice of model has a non-trivial impact on
+volatility estimation. While GARCH and GJR-GARCH yield nearly identical volatility
+paths in this context—indicating a largely symmetric volatility structure. FIGARCH
+provides a structurally different perspective by incorporating memory effects. The selection
+of the appropriate model should thus reflect both the empirical behavior of the data and the
+specific purpose of the forecast—whether short-term reactivity or long-term persistence is
+of greater relevance.
+2.6 Application of ARIMA-GARCH to Cryptocurrencies
+Given the pronounced volatility and other stylized facts observed in cryptocurrency markets,
+GARCH models have become a natural tool for analysis. Numerous studies have applied
+various GARCH specifications to model and forecast the volatility of Bitcoin and other
+cryptocurrencies.
+Early work often focused on Bitcoin. Dyhrberg (2016) used GARCH models to compare
+Bitcoin’s characteristics to gold and the US dollar, finding similarities with gold.64
+More recent research continues to explore the optimal GARCH specifications and the
+predictability of crypto volatility. Huang et al. (2024) specifically employed an integrated
+64 Cf. Dyhrberg (2016), p 92.
+21
+
+ARMA-GARCH approach alongside Value-at-Risk (VaR) to assess cryptocurrency market
+risk. Their study confirmed the higher volatility of cryptocurrencies compared to traditional
+assets and underscored the utility of ARMA-GARCH for risk assessment.65
+Similarly, Chu et al. (2017) emphasize the value of GARCH-family models for capturing
+the volatility dynamics of cryptocurrencies. Their empirical analysis across seven digital
+assets, including Bitcoin, suggests that GARCH-type models outperform naive benchmarks
+by accounting for volatility clustering and leptokurtosis.66
+2.7 Research Gap and Contribution
+While numerous studies have applied GARCH models to cryptocurrencies, there is a lack
+of systematic, out-of-sample comparisons of the ARIMA-GARCH framework’s return
+forecasting performance across cryptocurrencies with distinct characteristics.
+Most existing research focuses on the fitting of the sample or the forecast of volatility,
+which is crucial for risk management.67 Few studies rigorously evaluate the predictability
+of the out-of-sample return against simple benchmarks in multiple, diverse assets using a
+consistent methodological setup.
+This thesis aims to address this gap by:
+1. Applying a consistent ARIMA-GARCH methodology—including model selection via
+information criteria, choice of appropriate error distributions, and robust backtesting
+to four the chosen cryptocurrencies;
+2. Evaluating out-of-sample forecasting accuracy for daily log returns, compared
+directly with a naive benchmark using statistical significance tests;
+3. Systematically comparing model performance across these assets to examine whether
+predictive accuracy varies depending on coin characteristics.
+By doing so, this study offers a focused, comparative evaluation of ARIMA-GARCH’s
+predictive performance in an evolving and heterogeneous digital asset landscape.
+65 Cf. Huang et al. (2024), pp. 84ff.
+66 Cf. Chu et al. (2017), p. 6.
+67 Cf. Huang et al. (2024), pp. 103f.
+22
+
+3 Methodology
+Building on the theoretical foundations established in the previous chapter, this chapter
+outlines the empirical strategy used to assess the predictive accuracy and risk modeling
+performance of ARIMA-GARCH models for four cryptocurrencies. The methodology
+follows a structured, reproducible design from data preprocessing and model specification
+to forecasting and performance evaluation as detailed in the following sections.
+3.1 Research Design
+This study employs a quantitative, empirical research design based on time series analysis.
+The core steps involve:
+1. Data Collection and Preprocessing: Gathering historical daily price data for the
+four selected cryptocurrencies and transforming them into log returns to achieve
+approximate stationarity and facilitate analysis.
+2. Exploratory Data Analysis (EDA) and Preliminary Tests: Examining statistical
+properties of the return series (descriptive statistics, distribution), formally testing
+for stationarity, analyzing autocorrelation structures, and testing for conditional
+heteroskedasticity.
+3. Model Specification: Identifying appropriate ARIMA(p, d, q) orders for the con-
+ditional mean, and selecting the best-fitting GARCH-type model (GARCH, GJR,
+or FIGARCH, with orders p = 1, q = 1) and error distribution (Normal, Student’s
+t) for the conditional variance, using an automated approach based on the Akaike
+Information Criterion (AIC) and parameter significance tests.
+4. Parameter Estimation: Estimating the parameters of the chosen ARIMA-GARCH
+models via Maximum Likelihood. The estimation is performed either statically on
+the combined training/validation set or dynamically within a rolling window over the
+test set, depending on the forecasting exercise.
+5. Out-of-Sample Forecasting: Generating forecasts on the held-out test set using two
+23
+
+distinct strategies: an adaptive one-step-ahead rolling-window forecast and a static
+multi-horizon forecast.
+6. Performance Evaluation: Assessing the accuracy of the generated forecasts using
+standard statistical metrics (e.g., MAPE, QLIKE) and comparing them against
+benchmark models (naive zero-return forecast and EWMA volatility forecast) using
+the Diebold-Mariano test. Risk management performance is evaluated via Value-at-
+Risk (VaR) backtesting.
+7. Comparative Analysis: Comparing the results across the four cryptocurrencies to
+identify differences in model performance and structural dynamics.
+This structured design enables a consistent and reproducible assessment of ARIMA-GARCH
+models across heterogeneous cryptocurrency markets.
+3.2 Data Acquisition and Preprocessing
+The empirical analysis relies on daily historical price data for four major cryptocurrencies:
+Bitcoin (BTC-USD), Ethereum (ETH-USD), Dogecoin (DOGE-USD), and Solana (SOL-
+USD). Data were acquired using the yfinance Python library, sourcing information from
+Yahoo Finance.
+The selected analysis period spans from May 11, 2020, to April 20, 2024. This window
+was chosen to capture the full market cycle following Bitcoin’s third halving event on
+May 11, 2020. Halving events that reduce the block reward by 50% are associated with
+the formation of speculative bubbles and supercycles. These events significantly affect
+investors expectations by creating a sense of scarcity and the expectation of price increases,
+leading to significant price swings and potentially volatility.68
+3.2.1 Preprocessing Pipeline
+Raw cryptocurrency price series ( Pt) typically reveal non-stationarity, making them
+unsuitable for direct modeling. To address this, the following pre-processing pipeline was
+applied:
+68 Cf. M’bakob (2024), pp. 3ff.
+24
+
+1. Data Cleaning: Initial checks for obvious errors or gaps were performed. Duplicates
+based on date were resolved by keeping the first occurrence.
+2. Daily Resampling and Interpolation: The data was resampled to a consistent
+daily frequency (’D’). Any missing price values were filled using time-based linear
+interpolation.
+3. Log Return Transformation: The cleaned price series (Pt) was transformed into
+continuously compounded daily returns (rt) using the formula:
+rt = ln(Pt) − ln(Pt−1) = ln
+ Pt
+Pt−1
+
+(3.1)
+4. Final Cleanup: The first observation, having an undefined log return, was removed.
+This pipeline yielded a consistent daily time series for each asset. The transformation to
+log returns offers several advantages, including a tendency towards stationarity, variance
+stabilization, and easier interpretation as approximate percentage changes.
+3.2.2 Data Splitting
+The full dataset for each cryptocurrency was divided into three contiguous, non-overlapping
+parts to prevent look-ahead bias and enable principled model evaluation:
+1. Training Set: Used for model estimation and preliminary specification.
+2. Validation Set: Reserved for potential model tuning, following standard ML practice,
+but not explicitly used in this study.
+3. Test Set: Used exclusively for final out-of-sample forecast evaluation.
+While the implementation script defined a 70%-15%-15% split, the training and validation
+sets were combined during model fitting, as no hyperparameter tuning or early stopping
+was performed. The split was retained for consistency with machine learning conventions
+and to facilitate future extensions.
+25
+
+3.3 Exploratory Data Analysis and Preliminary Tests
+To ensure the appropriate application of the ARIMA-GARCH framework, an initial
+exploratory data analysis and several statistical tests were performed on the log return
+series (rt) of the combined training and validation set. This preliminary stage is crucial for
+understanding the underlying data generating process and justifying the subsequent model
+choices.
+3.3.1 Descriptive Statistics and Distributional Analysis
+A foundational step in time series analysis is to characterize the unconditional distribution
+of the return series. Basic descriptive statistics were calculated for each asset to quantify
+their key properties.
+• Mean: The average daily log return. For financial assets, this is typically close to
+zero. A statistically significant non-zero mean would suggest a persistent drift, which
+would be captured by the constant term in the ARIMA model.
+• Standard Deviation: The unconditional, or total, volatility of the returns. This
+provides a baseline measure of risk for each asset and allows for a general comparison
+of their volatility levels. It is a static measure, and its expected variation over time is
+precisely what GARCH models aim to capture.
+• Skewness: This measures the asymmetry of the return distribution. A value of
+zero indicates a perfectly symmetric distribution. Negative skewness, common in
+equity markets, implies that large negative returns are more probable than large
+positive returns. Positive skewness indicates the opposite. The presence of significant
+skewness motivates the use of asymmetric GARCH models.
+• Excess Kurtosis: This measures the ”tailedness” of the distribution compared to a
+Gaussian distribution, which has an excess kurtosis of zero. A positive value, known
+as leptokurtosis, indicates that the distribution has ”heavier” or ”fatter” tails and a
+sharper peak than the normal distribution.
+To formally test the hypothesis that the return series follow a normal distribution, the
+26
+
+Jarque-Bera (JB) test was employed.69 The JB test is a test that determines whether
+sample data have the skewness and kurtosis matching a normal distribution. The null
+hypothesis (H0) is that the data is jointly normal, meaning it has zero skewness and zero
+excess kurtosis.
+The test statistic is calculated as:
+JB = n
+6 S2 + n
+24(K − 3)2 (3.2)
+where:
+• n is the number of observations in the sample.
+• S is the sample skewness.
+• K is the sample kurtosis.
+In practice, the sample skewness S and kurtosis K are computed using standardized third
+and fourth central moments of the return distribution. The excess kurtosis is then obtained
+by subtracting 3 from the sample kurtosis, since a Gaussian distribution has a theoretical
+kurtosis of exactly 3:
+Kexcess = K − 3 (3.3)
+Conceptually, for a perfectly normal sample, bothS and Kexcess would be zero, resulting
+in a JB statistic of zero. The further the skewness and excess kurtosis are from zero, the
+larger the JB statistic becomes.
+Under the null hypothesis, the JB statistic asymptotically follows a Chi-squared ( χ2)
+distribution with two degrees of freedom, reflecting the two moment conditions being
+tested: zero skewness and zero excess kurtosis. The decision rule is based on the p-value
+derived from this distribution. A low p-value (typically < 0.05) indicates that the observed
+JB statistic is highly unlikely to have occurred if the data were truly normal. This leads to
+the rejection of the null hypothesis, providing strong statistical evidence that the return
+distribution is non-normal.
+69 Cf. Jarque/Bera (1980).
+27
+
+For this study, the JB test is of paramount importance. A rejection of normality, which is
+strongly expected for all four cryptocurrencies, provides the formal statistical justification
+for moving beyond the standard Gaussian assumption for the error terms ( zt) in the
+GARCH models. It validates the necessity of testing and potentially selecting heavy-tailed
+distributions like the Student t’s distribution to adequately capture the tail risk inherent in
+cryptocurrency returns.
+In addition to the quantitative tests, a visual inspection based on Quantile-Quantile (Q-Q)
+plots was conducted. 70 Q-Q plots map the empirical quantiles against the theoretical
+quantiles of a standard normal distribution. Systematic deviations from the 45-degree
+reference line especially pronounced S-shaped curves in the tails indicate leptokurtosis and
+thus clear departures from normality. This visual approach displayed in Chapter 4 supports
+and complements the results of formal normality tests.
+3.3.2 Stationarity Testing
+A fundamental assumption of the Box-Jenkins methodology for ARIMA models is that
+the time series being modeled is weakly stationary. While financial log return series (rt)
+often exhibit this property, formal verification is crucial.71 Therefore, the stationarity of
+the log return series for each cryptocurrency was assessed using the combined training and
+validation data. Two complementary tests were employed, following standard econometric
+practice:
+Augmented Dickey-Fuller (ADF) Test
+This test evaluates the null hypothesis (H0) that a unit root exists (non-stationarity) against
+the alternative (H1) of stationarity. It achieves this by estimating an autoregressive model
+and testing whether the coefficient on the lagged level term is significantly less than zero.
+Specifically, a regression of the following form is estimated:
+∆rt = α + γrt−1 +
+kX
+i=1
+δi∆rt−i + ϵt (3.4)
+70 Cf. Wilk/Gnanadesikan(1968).
+71 Cf. Tsay (2010), p. 20.
+28
+
+Here, ∆rt represents the first difference of the log return series. The crucial term is γrt−1,
+where the null hypothesis of a unit root corresponds to H0 : γ = 0 against the alternative
+of stationarity, H1 : γ < 0. The lagged difference terms Pk
+i=1 δi∆rt−i are included to
+address potential serial correlation in the error term ϵt.72
+The number of lags k is automatically selected to best capture the short-run dynamics by
+minimizing an information criterion, specifically the Akaike Information Criterion (AIC)
+in this study’s implementation. The ADF test statistic is the t-statistic for the coefficientˆγ.
+If this statistic is more negative than the MacKinnon critical values, the null hypothesis is
+rejected in favor of stationarity.73
+Kwiatkowski-Phillips-Schmidt-Shin (KPSS) Test
+This test takes the opposite approach, evaluating the null hypothesis (H0) that the series
+is stationary around a deterministic component against the alternative (H1) of a unit root.
+The series rt is decomposed as:
+rt = ξt + ϵt (level-stationary case) (3.5)
+where ξt is a random walk and ϵt is a stationary error term. The null hypothesis is that
+the variance of the random walk component is zero ( H0 : σ2
+v = 0 ). The test statistic
+is a Lagrange Multiplier (LM) type statistic based on the partial sums of the residuals
+(St =Pt
+i=1 ˆei):
+KPSS = 1
+T 2
+TX
+t=1
+S2
+t
+ˆσ2
+LT
+(3.6)
+where ˆσ2
+LT is a consistent estimator of the long-run variance of the residuals.74
+The number of lags for estimating this long-run variance was determined automatically
+based on the sample size, following the method proposed by Schwert75. Failure to reject
+H0 (typically for p ≥ 0.05) supports the stationarity assumption. This study uses the test
+for level stationarity (regression=’c’).
+72 Cf. Dickey/Fuller (1979).
+73 Cf. MacKinnon (2010).
+74 Cf. Kwiatkowski et al. (1992).
+75 Cf. Schwert (1989), p. 151.
+29
+
+Using both tests provides a more robust assessment of the time series properties. The
+outcomes guide the determination of the integration order d in the ARIMA(p, d, q) model.
+If both tests consistently indicate stationarity (ADF rejects H0, KPSS fails to reject H0),
+the series is considered integrated of order zero, I(0), justifying the use of d = 0 in the
+subsequent modeling stages.
+3.3.3 Autocorrelation and Heteroskedasticity Testing
+Following the confirmation of stationarity, the next step is to diagnose the specific structure
+of the return series to justify the use of both the ARIMA and GARCH components.
+This involves formally testing for linear dependencies in the conditional mean and for
+time-varying variance in the residuals.
+To determine if an ARMA( p, q) component is necessary to model linear dependencies
+in the log return series ( rt), two methods were employed. First, a visual inspection of
+the Sample Autocorrelation Function (ACF)and the Sample Partial Autocorrelation
+Function (PACF)was conducted.
+The Autocorrelation Function (ACF) measures the correlation between a time series and
+its lagged values 76, while the Partial Autocorrelation Function (PACF) measures this
+correlation after removing the linear effects of the intermediate lags.77
+In practical model building, the shape of these plots can help to identify appropriate lag
+order of AR and MA components.78
+The following three plots give a visual instruction how to identify the behavior of the ACF
+and PACF for ARMA Models:79
+As displayed in figure 3.1 anAR(p) process is characterized by a PACF that cuts off after
+lag p and an ACF that tails off exponentially.
+76 Cf. Shumway/Stoffer (2011), p. 21.
+77 Cf. Shumway/Stoffer (2011), p. 106.
+78 Cf. Box/Jenkins (1976), p. 174.
+79 Cf. Shumway/Stoffer (2011), p. 108.
+30
+
+0 2 4 6 8 10 12 14 16 18 20
+Lag
+0.50
+0.25
+0.00
+0.25
+0.50
+0.75
+1.00
+Correlation
+AR(2)
+ACF
+PACF
+Figure 3.1: Illustration of an AR(2) process.
+Source: Own illustration based on simulated AR(2) data, as described by Box and Jenkins (1976).
+In figure 3.2 an MA(q) process is characterized by an ACF that cuts off after lagq and a
+PACF that tails off.
+0 2 4 6 8 10 12 14 16 18 20
+Lag
+0.25
+0.00
+0.25
+0.50
+0.75
+1.00
+Correlation
+MA(1)
+ACF
+PACF
+Figure 3.2: Illustration of an MA(1) process.
+Source: Own illustration based on simulated MA(1) data, as described by Box and Jenkins (1976).
+An ARMA(p, q) process shown in figure 3.3 is characterized by both the ACF and PACF
+tailing off.
+0 2 4 6 8 10 12 14 16 18 20
+Lag
+0.25
+0.00
+0.25
+0.50
+0.75
+1.00
+Correlation
+ARMA(1,1)
+ACF
+PACF
+Figure 3.3: Illustration of an ARMA(1,1) process.
+Source: Own illustration based on simulated ARMA(1,1) data, as described by Box and Jenkins
+(1976).
+Since sample patterns can be ambiguous, the visual inspection is complemented by statistical
+31
+
+information criteria. Two widely used metrics are the Akaike Information Criterion (AIC)
+and the Bayesian Information Criterion (BIC). The AIC is defined as:
+AIC = −2 logL + 2k, (3.7)
+and the BIC as:
+BIC = −2 logL + k log T, (3.8)
+where L is the maximum likelihood of the model, k is the number of estimated parameters,
+and T the sample size. Both criteria penalize model complexity, but the BIC applies a
+stronger penalty as the sample size increases.
+The goal is to minimize AIC or BIC, thereby selecting the model that best balances
+goodness-of-fit and complexity. In particular, the BIC favors moreparsimonious models
+that is, models that explain the data well using the fewest possible parameters. Such models
+are less likely to overfit and are generally preferred for forecasting purposes.80
+Second, to formally test for the overall significance of serial correlation, the Ljung-
+Box Q-test was applied.81 This test evaluates the null hypothesis ( H0) that the first m
+autocorrelations of the series are jointly zero. The test statistic is calculated as:
+Q = T (T + 2)
+mX
+k=1
+(T − k)−1ˆρ2
+k ∼ χ2(m) (3.9)
+where T is the sample size, ˆρk is the sample autocorrelation at lag k, and m is the number
+of lags tested. A rejection of the null hypothesis (i.e., a p-value < 0.05) indicates the
+presence of significant serial correlation, justifying the inclusion of ARMA terms in the
+conditional mean equation to capture these linear dynamics.
+A core assumption of a simple ARIMA model is that the variance of its error terms is
+constant over time (homoskedastic). To test this assumption and justify the use of a GARCH
+model, Engle’s Lagrange Multiplier (LM) test82 for ARCH effects was performed. The test
+is designed to detect autoregressive conditional heteroskedasticity by examining whether
+80 Cf. Tsay (2010), pp. 46-48.
+81 Cf. Ljung/Box (1978), p. 297.
+82 Cf. Engle (1982).
+32
+
+the variance of the residuals can be predicted by its own past values.
+The test is conducted as a two-stage procedure:
+Step 1: A conditional mean model (e.g., an ARMA model or a simple constant mean) is
+estimated via Ordinary Least Squares (OLS), and the residuals (ˆϵt)T
+t=1 are collected.
+Step 2: The squared residuals (ˆϵ2
+t )T
+t=1, which serve as a proxy for the unobserved variance,
+are regressed on a constant and their own q lagged values:
+ˆϵ2
+t = α0 + α1ˆϵ2
+t−1 + α2ˆϵ2
+t−2 + · · · + αqˆϵ2
+t−q + νt (3.10)
+The null hypothesis is H0 : α1 = α2 = · · · = αq = 0, which implies there are no ARCH
+effects (i.e., past squared residuals do not help predict the current squared residual). The
+test statistic is calculated as LM = T × R2, where T is the sample size and R2 is the
+coefficient of determination from the auxiliary regression in Equation 3.10. Under the
+null hypothesis, this statistic follows aχ2(q) distribution. A statistically significant result
+(p-value < 0.05) leads to the rejection of H0, confirming the presence of ARCH effects and
+providing strong justification for employing a GARCH model to capture the time-varying
+conditional variance.
+3.4 Model Specification, Selection, and Estimation
+The specification and estimation of an appropriate ARIMA-GARCH model for each
+cryptocurrency followed a systematic, data-driven procedure. This approach was designed
+to select a model that best captures the specific statistical properties of each asset’s return
+series, as identified in the exploratory analysis.
+The core of this process was an automated model selection algorithm implemented in
+Python. This algorithm conducted a comprehensive grid-search over a predefined space of
+candidate models, which systematically combined different specifications for the conditional
+mean, conditional variance, and error distribution. The selection process involved iterating
+through the following components:
+1. Conditional Mean (ARMA Orders): To capture potential linear dependencies, Au-
+toregressive (AR) and Moving Average (MA) orders, denoted byp and q respectively,
+33
+
+were tested for all integer combinations where p, q ∈ [0, 3]. This allowed for nine
+different ARMA structures, from a simple constant mean ARMA(0,0) to a complex
+ARMA(3,3).
+2. Conditional Variance (GARCH Type and Orders):To model the diverse volatility
+dynamics observed in cryptocurrencies, several key GARCH specifications were
+evaluated. For each type, orders for the ARCH term (p) and GARCH term (q) were
+tested for p, q ∈ [1, 2]. The candidate models included:
+• The standard, symmetric GARCH(p, q) model to capture volatility clustering.
+• The asymmetric GJR-GARCH(p, q) model to explicitly test for the presence
+of a leverage effect.
+• The long-memory FIGARCH(p, d, q) model to account for potentially highly
+persistent volatility shocks.
+3. Error Distribution: To address the prominent non-normality identified in the
+exploratory analysis, the procedure evaluated two assumptions for the distribution of
+the standardized innovations (zt):
+• The standard Normal (Gaussian) distribution as a baseline.
+• The heavy-tailed Student’s t-distribution, which is better suited for capturing
+the observed leptokurtosis.
+From this large set of potential specifications, the optimal model was selected using a
+two-stage criterion designed to balance model fit with parsimony and statistical validity.
+First, only models where all core structural parameters were statistically significant at
+the p < 0.10 level were considered valid candidates. These core parameters include the
+coefficients of the highest lags in each component (ϕp, θq, αp, βq) as well as any model-
+defining parameters, such as the asymmetry term (γp) for GJR-GARCH or the fractional
+integration parameter (d) for FIGARCH.
+Second, among this subset of statistically valid models, the one with the lowest Akaike
+Information Criterion (AIC) was chosen as the final specification for each cryptocurrency.
+The AIC is widely used for model selection, balancing goodness of fit with model complexity.
+It is often preferred in forecasting contexts when the goal is to choose the model that best
+34
+
+approximates the true data-generating process.83 This data-driven approach ensures that
+the selected model is tailored to the unique empirical properties of each asset.
+3.4.1 Parameter Estimation
+Once the optimal model structure for each asset was identified through the selection
+procedure, the final model parameters were estimated using the Maximum Likelihood
+Estimation (MLE) method. MLE is the standard estimation technique for GARCH-family
+models. This method is favored due to its desirable asymptotic properties, such as
+consistency and efficiency, under the assumption of a correctly specified model.84 The
+implementation was handled with the statsmodels and arch Python libraries.
+The core principle of MLE is to find the set of model parameters ( θ) that maximizes
+the likelihood of observing the actual data sample. This is achieved by maximizing the
+log-likelihood function (LLF). For an ARIMA-GARCH model, the log-likelihood for a
+sample of T observations is the sum of the conditional log-likelihoods for each observation
+t:85
+ln L(θ) =
+TX
+t=1
+lt(θ) (3.11)
+The specific form of lt(θ) depends on the chosen conditional distribution. For the baseline
+case of conditionally normal errors, it is given by:
+lt(θ)Normal = −1
+2 ln(2π) − 1
+2 ln(σ2
+t ) − ϵ2
+t
+2σ2
+t
+(3.12)
+However, if the exploratory analysis reveals significant leptokurtosis, the Student’s t-
+distribution needs to be selected. The log-likelihood for a standardized Student’s t-
+distribution, as introduced for GARCH models by Bollerslev, is given by:86
+lt(θ)Student-t = ln
+ 
+Γ
+  ν+1
+2
+
+p
+π(ν − 2) Γ
+  ν
+2
+
+!
+− 1
+2 ln(σ2
+t ) − ν + 1
+2 ln
+
+1 + ϵ2
+t
+σ2
+t (ν − 2)
+
+(3.13)
+83 Cf. Akaike (1974), pp. 716ff.
+84 Cf. Bollerslev et al. (1994), pp. 2974ff.
+85 Cf. Bollerslev et al. (1994), pp. 2977f.
+86 Cf. Bollerslev (1986), p. 2979.
+35
+
+where Γ(·) is the Gamma function andν represents the degrees of freedom of the distribution.
+The parameter ν is estimated along with the other model parameters in θ. A lower value of
+ν (typically ν > 2) indicates heavier tails than the normal distribution.
+Since the log-likelihood functions for GARCH models are typically highly nonlinear,
+maximization cannot be performed analytically. Instead, iterative numerical optimization
+algorithms are required. This study relies on robust and widely used quasi-Newton methods,
+in particular algorithms such as the Broyden-Fletcher-Goldfarb-Shanno (BFGS) method.87
+The implementation was carried out using the statsmodels and arch-Python libraries
+To ensure the robustness and reproducibility of the estimation, the optimization process
+is governed by specific convergence criteria. The algorithm terminates when the change
+in the log-likelihood function value between iterations falls below a predefined tolerance
+threshold (e.g., ftol = 1 × 10−6) or when the change in the parameter vector becomes
+negligible. This ensures that the reported parameters represent a stable maximum of the
+likelihood function.
+3.5 Forecasting and Evaluation Strategy
+After specifying and estimating the optimal model for each asset, the subsequent phase
+focuses on evaluating its out-of-sample predictive performance. This section outlines the
+dual forecasting exercises conducted, the benchmark models used for comparison, and the
+comprehensive set of metrics employed to assess forecast accuracy and risk management
+utility.
+3.5.1 Forecasting Design
+To rigorously assess the predictive capabilities of the models, this study employs two
+distinct out-of-sample forecasting exercises, controlled by theforecast mode parameter
+in the implementation. The first is an adaptive rolling-window backtest for short-term
+forecasts, while the second is a static multi-horizon evaluation to assess the persistence of
+predictive power.
+87 Cf. Nocedal/Wright (2006), pp. 135ff.
+36
+
+Rolling-Window Backtest
+To simulate a realistic, adaptive forecasting scenario, a rolling-window backtest was
+performed. This standard procedure evaluates the out-of-sample performance of a model
+by re-estimating its parameters on a moving window of fixed size through the test set.88
+The general mechanics are illustrated in Figure 3.4.
+Figure 3.4: Schematic of the Rolling Window Forecasting Procedure.
+Source: Cortez et al. (2020), p. 10544.
+The process begins by estimating the pre-selected model on an initial window of size
+W . Based on this, a one-step-ahead forecast ( h = 1) is generated. The window is then
+advanced by a step size S, dropping the oldest observation and including the newest one.
+The model is re-estimated on this updated data to produce the next forecast, a procedure
+that is repeated for the entire test set.
+In this study’s primary configuration, the parameters were set in the main run to a window
+size of W = 60 days and a step size of S = 1. This daily re-estimation ensures the model
+is highly adaptive to the most recent information, though it is computationally intensive.
+88 Cf. Brooks (2019), p 370.
+37
+
+Multi-Horizon Evaluation
+In contrast to the adaptive backtest, the multi-horizon evaluation tests the model’s ability
+to predict across various future horizons ( h) from a single, static information set. This
+approach is used to assess the persistence of a model’s predictive power when its parameters
+are held constant.89 The procedure is fundamentally different as it involves no re-estimation.
+It unfolds in four steps:
+1. Model Estimation (Static): The optimal ARIMA-GARCH model specification is
+estimated only once using the combined Training and Validation Set.
+2. Forecast Generation: From a forecast origin t, a set of multi-step-ahead forecasts is
+generated for horizons h ∈ {1, 3, 7, 14, 30} days by iterating the model equations
+forward.
+3. Evaluation against Actuals: Each h-step-ahead forecast is compared to the actual
+observed value at time t + h.
+4. Rolling Forecast Origin: To generate a robust sample of forecast errors, the origint
+is moved one day at a time through the test set, and the forecast generation (Step 2)
+is repeated with the same static parameters. This continues until the remaining test
+set is shorter than the longest horizon.
+This method’s primary purpose is to assess how quickly predictive power decays. Its main
+challenge is the potential for forecast error accumulation, especially in iterated GARCH
+variance forecasts.
+Robustness Check on Window Length
+To test the stability of the findings from the adaptive backtest and investigate the risk of
+overfitting to short-term market regimes, a comprehensive robustness check was performed.
+In this check, the entire rolling-window procedure described in Section 3.5.1 was replicated
+using an extended window size of W = 365 days. This allows for a direct comparison of a
+89 Cf. Brooks (2019), p 369.
+38
+
+highly adaptive model (60-day window) versus a more stable, long-term model, providing
+deeper insights into the asset-specific dynamics as predicted by the Adaptive Market
+Hypothesis.
+3.5.2 Benchmark Models
+To contextualize the performance of the ARIMA-GARCH models in adaptive and static
+forecasting exercises, their forecasts were evaluated against two standard naive models.
+These models serve as a baseline to assess whether the more complex ARIMA-GARCH
+specifications provide any fundamental predictive power. The benchmarks are as follows:
+For conditional mean forecasts a naive random walk model was used, which posits that the
+best forecast for the next period’s log return is zero (ˆrt+1 = 0).
+For conditional variance forecasts an Exponentially Weighted Moving Average (EWMA)
+model was employed. The variance is forecast as ˆσ2
+t+1 = λˆσ2
+t + (1 − λ)r2
+t , with the
+smoothing parameter λ set to 0.94, a common value in financial risk management.90
+3.5.3 Performance Evaluation Metrics
+A comprehensive set of metrics was used to evaluate the models across three dimensions:
+point forecast accuracy, statistical significance of performance differences, and risk
+management utility. This multi-faceted approach ensures a holistic assessment of the
+models’ capabilities.
+The evaluation of point forecasts differs for the conditional mean and conditional variance,
+each requiring specific metrics.
+For conditional mean forecasts, accuracy was assessed on log returns (rt).
+Root Mean Squared Error (RMSE): Measures the square root of the average squared
+difference between forecasted ( ˆrt) and actual log returns ( rt). Due to the squaring, it
+penalizes larger errors more heavily.
+RMSE =
+vuut 1
+N
+NX
+t=1
+(rt − ˆrt)2 (3.14)
+90 Cf. J.P. Morgan (1996).
+39
+
+For conditional variance forecasts (ˆσ2
+t ), evaluation is more challenging as the true
+conditional variance is unobservable. The squared log return ( r2
+t ) is used as a proxy for the
+actual variance.
+Quasi-Likelihood (QLIKE) Loss Function: A robust loss function to compare variance
+forecasts, as it is less sensitive to the noise of the proxy and penalizes under-prediction of
+volatility more heavily than overprediction.91 The QLIKE loss is defined as:
+QLIKE = 1
+N
+NX
+t=1
+
+ln(ˆσ2
+t ) + r2
+t
+ˆσ2
+t
+
+(3.15)
+To determine if observed differences in forecast accuracy are statistically significant, the
+Diebold-Mariano (DM) test was used. The DM test compares the forecast errors from two
+models based on a specified loss function, L(·). The test statistic is based on the sample
+mean of the loss differential series, dt = L(error1,t) − L(error2,t). The null hypothesis
+is that the two models have equal predictive accuracy, H0 : E[dt] = 0 .92 In this study,
+one-sided tests are performed against the alternative H1 : E[dt] < 0, which posits that
+the primary model (ARIMA-GARCH) yields significantly lower forecast errors than the
+benchmark model.
+Since the standard DM test can be oversized in small samples, potentially leading to an
+excessive rejection of the null hypothesis, this study employs the small-sample correction
+proposed by Harvey, Leybourne, and Newbold93. This ensures that the resulting p-values
+are more reliable.
+Risk Management Evaluation
+Beyond point forecast accuracy, a crucial aspect of model performance is its utility for
+practical risk management. This was assessed by generating out-of-sample Value-at-Risk
+(VaR) forecasts and evaluating their reliability through formal backtesting procedures.
+Value-at-Risk (VaR) at a confidence level of(1 − α) is the quantile of the conditional return
+91 Cf. Patton (2011), pp. 246ff.
+92 Cf. Diebold/Mariano (1995), pp. 134ff.
+93 Harvey et al. (1997).
+40
+
+distribution. It represents the estimated maximum loss over a given period that should only
+be exceeded with a probability of α. For a one-step-ahead forecast, the parametric VaR is
+calculated as:94
+VaR(α)
+t+1|t = ˆµt+1|t + ˆσt+1|t · D−1(α; ˆθD) (3.16)
+where ˆµt+1|t and ˆσt+1|t are the one-step-ahead forecasts for the conditional mean and
+standard deviation, respectively. D−1(α; ˆθD) denotes the α-quantile of the assumed
+standardized error distribution D, given the estimated distribution parameters ˆθD. For
+example, ˆθD corresponds to the degrees of freedom ν in the case of a Student-t distribution,
+while no parameters are needed for the standard normal distribution. Since D−1 is the
+inverse of the cumulative distribution function (CDF), it identifies the point below which a
+proportion α of outcomes is expected, e.g., the worst 5% for α = 0.05.
+In the context of Value-at-Risk estimation,D−1(α; ˆθD) identifies the point on the distribution
+at which α percent of the worst outcomes are expected—depending on the assumed error
+distribution D. In this study, VaR is calculated at the 5% level ( α = 0.05). Since VaR
+represents a loss, it is a negative value.
+Backtesting VaR Models
+To evaluate the accuracy of the VaR forecasts, a backtesting procedure is applied. A
+violation is recorded for any period t + 1 where the actual observed return is less than the
+forecasted VaR. This is captured by an indicator seriesIt+1:95
+It+1 =
+
+
+
+1 if rt+1 < VaR(α)
+t+1|t
+0 otherwise
+(3.17)
+This series of violations is then formally tested for two key properties.
+• Unconditional Coverage (Kupiec Test):96 The Kupiec ”Proportion of Failures”
+94 Cf. Tsay (2010), pp. 326-328.
+95 Cf. citeauthorchristoffersen1998 (1998), pp. 843f.
+96 Cf.Kupiec (1995), pp. 73ff.
+41
+
+(POF) test examines whether the observed frequency of violations, π = N1/T ,
+is statistically different from the expected frequency, α. The null hypothesis is
+H0 : π = α. The test is based on a likelihood ratio (LR) statistic, which follows a
+χ2(1) distribution:
+LRuc = −2 ln
+(1 − α)N0αN1
+(1 − π)N0πN1
+
+(3.18)
+where N1 is the number of violations andN0 = T −N1 is the number of non-violations.
+A rejection of H0 implies that the model systematically over- or underestimates risk.
+• Conditional Coverage (Christoffersen Test):97 A good risk model must not only
+have the correct number of violations but also ensure that these violations are
+independent over time. The Christoffersen test jointly tests for correct unconditional
+coverage and for the independence of violations. The null hypothesis is that the
+violation series is an independent Bernoulli process with success probability α. The
+test statistic is the sum of the unconditional coverage LR statistic and an independence
+LR statistic (LRind), which tests for first-order Markov dependence:
+LRcc = LRuc + LRind ∼ χ2(2) (3.19)
+A rejection of H0 suggests that if a violation occurs today, another is more likely to
+occur tomorrow, a critical flaw known as violation clustering.
+Post-Forecast Diagnostic Checks
+Finally, to assess the overall adequacy of the model specification in an out-of-sample context,
+diagnostic tests were performed on the standardized residuals (ˆzt = ˆϵt/ˆσt) generated during
+the rolling backtest. This procedure checks for any remaining patterns that the model
+failed to capture. Specifically, the Ljung-Box test was used to check for remaining
+serial correlation, and the ARCH-LM test was used to check for remaining conditional
+heteroskedasticity. The absence of such patterns in the standardized residuals would
+indicate that the model has successfully captured the dynamics of the return series.98
+97 Cf. Christoffersen (1998), pp. 842ff.
+98 Cf. Brooks (2019), pp. 254ff.
+42
+
+3.6 Software and Implementation Details
+The empirical analysis was conducted using the Python programming language (Version
+3.9+) to ensure a transparent, reproducible, and customizable research workflow. The
+entire analysis pipeline, from data acquisition to final evaluation, is managed by a central
+configuration dictionary (CONFIG in the script), which allows for the systematic adjustment
+of all key parameters, such as model specifications, forecast modes, and evaluation horizons.
+The implementation relies on a set of well-established, open-source scientific libraries:
+• pandas and NumPy: These libraries form the backbone of the data handling process.
+pandas was used for its powerful DataFrame and Series objects, which are ideal for
+managing and manipulating indexed time series data. NumPy provided the foundation
+for all numerical computations.
+• yfinance: This library served as the interface to Yahoo Finance for the acquisition
+of historical daily price data for all four cryptocurrencies.
+• statsmodels: A core library for statistical modeling in Python. It was used for
+conducting preliminary diagnostic tests, including the Augmented Dickey-Fuller
+(ADF), Kwiatkowski-Phillips-Schmidt-Shin (KPSS), and Ljung-Box tests, as well as
+for estimating the conditional mean via its ARIMA class.99
+• arch: This library was central to the study and specifically designed for estimating
+conditional heteroskedasticity models. Its arch model function was used to fit all
+GARCH-family models (GARCH, GJR-GARCH, FIGARCH) and to handle the
+different error distributions (Normal and Student’s t).100
+• scipy: This library provided the underlying numerical optimization routines (e.g.,
+BFGS) used by statsmodels and arch for parameter estimation, as well as the
+statistical functions for probability distributions.
+• dieboldmariano: The Diebold-Mariano tests for comparing forecast accuracy
+99 Cf. Seabold/Perktold (2010).
+100 The library and its implementation are detailed in its extensive documentation, see https://arch.
+readthedocs.io/.
+43
+
+were performed using this specialized library, which includes the Harvey-Leybourne-
+Newbold correction for small samples.
+• matplotlib: All plots and figures presented in this thesis, including time series plots,
+diagnostic charts, and result visualizations, were generated using this comprehensive
+plotting library.
+44
+
+4 Empirical Results
+This chapter presents the empirical results obtained from applying the ARIMA-GARCH
+modeling framework (as described in Chapter 3) to the daily log-returns of Bitcoin (BTC),
+Ethereum (ETH), Dogecoin (DOGE), and Solana (SOL). The sample period ranges from
+11 May 2020 to 20 April 2024.
+Forecast accuracy was assessed through (i) a multi-horizon forecast evaluation for h ∈
+{1, 3, 7, 14, 30} days and (ii) a rolling one-step-ahead backtesting procedure. For the rolling
+forecasts, a window size of 60 trading days was used and compared against a longer-term
+window of 365 days. All forecasts are compared against a naive benchmark.
+Model selection was based on the Akaike Information Criterion (AIC), and parameter
+estimates were retained if their p-values satisfiedp < 0.10. Model specification was guided
+by an automated grid search procedure.
+4.1 Descriptive Statistics and Stationarity
+Preliminary analysis of the log return series for the full sample period confirms the presence
+of well-documented stylized facts of financial assets. Section 4.1 provides a summary of
+the key descriptive statistics for all four cryptocurrencies.
+Statistic BTC ETH DOGE SOL
+Mean (×10−2) 0.14 0.19 0.29 0.39
+Std. Dev. 0.0327 0.0426 0.0791 0.0705
+Skewness -0.2033 -0.4052 5.8228 -0.2878
+Excess Kurtosis 3.4456 5.1051 103.3068 6.6827
+Jarque–Bera Stat. 721.74 1602.02 648024.45 2697.49
+Jarque–Bera p-value < 0.001 < 0.001 < 0.001 < 0.001
+Observations 1439 1439 1439 1439
+Table 4.1: Summary of Descriptive Statistics for the observed coins
+Source: based on own computation
+Across all assets, the mean of the daily log returns remains close to zero, consistent with the
+typical behavior of speculative financial assets. The standard deviation is lowest for BTC
+45
+
+(0.0327) and highest for DOGE (0.0791), underscoring the substantially higher volatility
+and risk profile of the meme coin over the sample period.
+Regarding asymmetry, BTC, ETH, and SOL exhibit negative skewness, indicating a higher
+probability of large negative returns. In contrast, DOGE displays extreme positive skewness
+(5.82), reflecting its pronounced tendency for sharp upward price spikes, at least within the
+observed time horizon.
+Before estimating the ARIMA-GARCH models, the stationarity of the log-return series
+was assessed using two complementary tests: the Augmented Dickey–Fuller (ADF) and
+the Kwiatkowski–Phillips–Schmidt–Shin (KPSS) tests. Stationarity tests conducted on the
+log-return series reveal a more nuanced picture, as summarized in Table 4.2. For ETH and
+SOL, the tests yield conflicting outcomes. While the ADF test again rejects the presence of
+a unit root, the KPSS test also rejects its null hypothesis. In the context of financial return
+series, such divergence may reflect volatility clustering or structural shifts in variance,
+which can affect the behavior of the KPSS test.
+Test Bitcoin (BTC) Ethereum (ETH) Dogecoin (DOGE) Solana (SOL)
+Augmented Dickey-Fuller (ADF) Test
+p-value <0.001 <0.001 <0.001 <0.001
+Result (H0: Unit Root) Reject Reject Reject Reject
+Kwiatkowski-Phillips-Schmidt-Shin (KPSS) Test
+p-value 0.075 0.024 0.073 0.020
+Result (H0: Stationarity) Do Not Reject Reject Do Not Reject Reject
+Conclusion for d d=0 d=0 (Conflict) d=0 d=0 (Conflict)
+Table 4.2: Stationarity Test Results for Daily Log Returns
+Source: based on own computation.
+Given this conflict, the decision was made to rely on the strong rejection of the unit root
+by the ADF test. Since volatility-related phenomena are explicitly modeled through the
+GARCH component, the rejection of stationarity by the KPSS test is not taken as conclusive
+evidence against I(0). Therefore, all series are treated as stationary with an integration
+order of d = 0.
+46
+
+4.2 Model Diagnostics and Universal Specification Choices
+Following the initial data assessment, a graphical diagnostic analysis was performed on the
+combined training and validation data to inform the core structure of the ARIMA-GARCH
+models. The results reveal consistent patterns across all four assets, leading to several
+universal specification choices.
+4.2.1 Distributional Properties
+The distributional nature of returns is assessed first to select an appropriate error distribution
+for the GARCH component.
+Figure 4.1: Q-Q Plots of Log Returns for All Assets
+Source: based on own computation.
+The Quantile-Quantile (Q-Q) plots in Figure 4.1 provide clear visual confirmation that
+the returns of all four cryptocurrencies depart sharply from the Gaussian ideal. The
+pronounced S-shaped curves are classic indicators of leptokurtosis, implying that extreme
+47
+
+price movements occur far more frequently than predicted by a normal distribution. This
+universal finding, which corroborates the Jarque-Bera test results, provides a robust
+justification for employing a heavy-tailed error distribution. Consequently, theStudent’s
+t-distribution was chosen as a mandatory component for the GARCH specification across
+all assets to accurately model tail risk.
+4.2.2 Autocorrelation Structure
+Having established the non-normal nature of returns, the analysis next investigates the
+presence of linear dependencies to inform the specification of the ARIMA component.
+Figure 4.2: ACF and PACF Plots of Log Returns for All Assets
+Source: based on own computation.
+48
+
+The Autocorrelation (ACF) and Partial Autocorrelation (PACF) plots, combined in Fig-
+ure 4.2, provide a nuanced view on the linear predictability of cryptocurrency returns. A
+detailed examination reveals the following:
+• Bitcoin, Ethereum and Solana: For all three assets, the ACF and PACF plots are
+textbook examples of white noise. Beyond lag 0, there are no statistically significant
+spikes, indicating a clear absence of any exploitable linear patterns. This provides a
+strong justification for specifying a simpleARIMA(0,0,0) structure.
+• Dogecoin: The ACF and PACF plots are largely consistent with white noise. While
+the PACF displays a single significant spike at lag 2, this appears in isolation and lacks
+support from the ACF or neighboring lags. Such solitary deviations are typically
+interpreted as statistical noise rather than evidence of meaningful linear dependence.
+In the absence of a coherent autocorrelation structure, a parsimoniousARIMA(0,0,0)
+model remains the most robust and defensible choice, which also aligns with the
+automated model selection.
+Overall, the ACF and PACF diagnostics reveal no robust or persistent linear autocorrelation
+patterns across the four cryptocurrencies.
+4.3 ARIMA-GARCH Model Results for Bitcoin (BTC)
+Based on the preceding diagnostic analysis, the automated model selection procedure
+was applied to the Bitcoin (BTC) log return series. This section details the final model
+specification and evaluates its out-of-sample performance.
+4.3.1 Model Specification
+For the Bitcoin (BTC) log return series, the automated model selection procedure, which
+aimed to minimize the Akaike Information Criterion (AIC) among models with statistically
+significant parameters (p < 0.10), identified an ARIMA(0,0,0)–FIGARCH(1,1) model
+with a Student’st-distribution as the optimal specification.
+49
+
+4.3.2 Initial Parameter Estimates
+The parameters of the selected ARIMA(0,0,0)–FIGARCH(1,1) model were estimated using
+Maximum Likelihood Estimation (MLE) on the combined training and validation dataset.
+The results are presented in Section 4.3.2:
+Parameter Coefficient Std. Error t-statistic p-value
+Mean model (ARIMA)
+const 0.0904 0.0960 0.937 0.349
+Volatility model (FIGARCH)
+ω 0.0920 0.3300 0.279 0.780
+ϕ1 0.0000 0.3370 0.000 1.000
+d 1.0000 0.5060 1.977 0.048
+β1 0.9349 0.1790 5.223 < 0.001
+Distribution (Student’st)
+ν 3.2707 0.2820 11.597 < 0.001
+Table 4.3: BTC Initial Parameter Estimates: ARIMA(0,0,0)–FIGARCH(1,1)–t
+Source: based on own computation
+The initial parameter estimates reveal several critical characteristics of Bitcoin. The
+constant term in the mean model is statistically insignificant (p = 0.349), reinforcing the
+choice of an ARIMA(0,0,0).
+Within the volatility model, the results are particularly insightful. The short-term ARCH-
+term, ϕ1, is estimated to be zero and is highly insignificant, as is the constant ω. This
+suggests that over the long training period, the immediate impact of past shocks is not
+a stable, significant feature. Instead, the volatility dynamics are dominated by two key
+parameters:
+1. The fractional integration parameter d is estimated at the boundary of 1.0 and is
+statistically significant (p = 0.048). This provides strong evidence that volatility
+shocks have a nearly permanent impact.
+2. The degrees-of-freedom parameterν is estimated at a very low value of approximately
+3.27 and is highly significant. This quantitatively confirms the presence of extremely
+heavy tails in the return distribution, underscoring the necessity of the Student’s
+t-distribution for accurate risk modeling.
+50
+
+4.3.3 Forecasting Accuracy
+The out-of-sample forecasting performance of the selected model is evaluated on the test
+set using two distinct methodologies: a multi-horizon evaluation with a static model to
+test the persistence of its predictive power, and a rolling-window backtest to assess its
+performance in a more realistic, adaptive scenario.
+Multi-Horizon Evaluation
+This evaluation uses the model fitted once on the entire training and validation data to
+generate forecasts for horizons of 1, 3, 7, 14, and 30 days. This static approach tests
+how quickly the predictive power of a model, trained on a long history, decays over time.
+Section 4.3.3 summarizes the forecast accuracy against the respective benchmarks with
+significant p-values (< 0.05) in bold. A surprising result emerges: the static model shows
+significant predictive power for returns over longer horizons.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Price Forecast Accuracy
+MAPE AG (%) 1.83 3.18 5.36 7.55 13.29
+MAPE Na¨ıve (%) 1.84 3.23 5.54 8.11 14.45
+DM p-value (SE) 0.087 0.028 0.023 0.016 0.027
+Volatility Forecast Accuracy
+QLIKE AG 2.1759 2.1602 2.0836 1.9799 1.8019
+QLIKE EWMA 2.0729 2.1273 2.0961 2.0368 2.0738
+DM p-value (QLIKE) 0.787 0.594 0.460 0.365 0.028
+Table 4.4: BTC Forecast Accuracy — Multi-Horizon Evaluation
+Based on own computation.
+The results reveal a fascinating dichotomy. For one-step-ahead forecasts ( h = 1), the
+model offers no significant advantage. However, for all longer horizons ( h ≥ 3), the
+ARIMA-GARCH model providesstatistically significantly better price forecaststhan
+the naive benchmark, as indicated by the low p-values of the Diebold-Mariano test. This
+suggests that while the next day’s return is unpredictable, the model captures a weak
+but persistent signal that becomes relevant over longer timeframes. For volatility, the
+FIGARCH model’s superiority only becomes statistically significant at the longest horizon
+of 30 days, where its ability to model long-memory dynamics provides a clear advantage.
+51
+
+Risk Management Backtesting
+The performance of 5% Value-at-Risk (VaR) forecasts was evaluated for each horizon.
+As shown in Section 4.3.3, the static FIGARCH model performs exceptionally well, with
+a high p-value (> 0.05) indicating that the model passes the respective test, producing
+correctly calibrated and independent VaR forecasts across all horizons.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Violations AG 11 11 11 12 14
+(Expected) (9.3) (9.3) (9.3) (9.3) (9.3)
+Kupiec p-value AG 0.578 0.578 0.578 0.384 0.140
+Christoffersen p-value AG 0.456 0.427 0.427 0.297 0.336
+Table 4.5: BTC 5% VaR Backtesting — Multi-Horizon Evaluation
+Source: based on own computation.
+While these results confirm the adequacy of the static model in capturing unconditional
+risk, only the rolling backtest can assess its real-world forecasting performance.
+Rolling-Window Backtest Evaluation
+In contrast to the static multi-horizon evaluation the results of the 60-day rolling window
+are summarized in Table 4.6 and visualized in the subsequent figures.
+Metric AG Model Benchmark
+Price Forecast Accuracy (vs. Naive)
+MAPE (%) 1.93 1.91
+DM p-value (SE) 0.748
+Volatility Forecast Accuracy (vs. EWMA)
+QLIKE 1.8964 1.9796
+DM p-value (QLIKE) 0.263
+5% VaR Backtesting
+Violations (Expected: 10.8) 13 10
+Kupiec p-value 0.505 0.800
+Christoffersen p-value 0.347 –
+Standardized Residual Diagnostics
+Ljung-Box p-value 0.747
+ARCH-LM p-value 0.875
+Table 4.6: BTC Rolling 1-Step Backtest Performance Summary (60-Day Window)
+Note: based on own computation.
+52
+
+The adaptive rolling-window backtest confirms that for short-term, one-step-ahead forecasts,
+the ARIMA-GARCH (AG) model offers no meaningful predictive advantage. As shown
+in Table 4.6 and visualized in Figure 4.3, the model’s price forecasts are statistically
+indistinguishable from those of the naive benchmark.
+Figure 4.3: Rolling 1-Step Price Forecast for Bitcoin
+Figure 4.4 shows that in terms of volatility forecasting, the AG model achieves a slightly
+lower QLIKE loss (1.8964 vs. 1.9796), indicating a numerically better fit. However, the
+difference is not statistically significant (p = 0.263).
+Despite the lack of forecasting superiority, the model demonstrates excellent risk manage-
+ment properties. Figure 4.5 illustrates how the model’s 5% VaR threshold (red dashed line)
+dynamically adjusts to market conditions, widening during periods of high volatility and
+narrowing during calmer times.
+Figure 4.4: Rolling 1-Step Volatility Forecast for Bitcoin
+53
+
+The number of actual returns piercing this threshold (violations, marked by red dots) is
+close to the expected number, leading to successful Kupiec and Christoffersen backtests as
+reported in Table 4.6.
+Figure 4.5: Rolling 1-Step VaR Thresholds vs. Actual Log Return for Bitcoin
+Crucially, the diagnostic checks reveal a key insight. The standardized residuals, plotted
+in Figure 4.6, appear random and centered around zero, with no obvious patterns of
+clustering. This visual assessment is confirmed by the ARCH-LM test, which yields
+a highly insignificant p-value of 0.875. This indicates that the highly adaptive 60-day
+FIGARCH model successfully captured the entirety of the conditional heteroskedasticity.
+The model is, from a diagnostic perspective, perfectly specified.
+Figure 4.6: Standardized 1-Step Residuals from Rolling Backtest for Bitcoin
+The final piece of the puzzle lies in understanding why such a highly adaptive model is
+necessary for a correct specification. Figure 4.7 tracks the evolution of the FIGARCH
+54
+
+model’s key parameters as estimated over the 60-day rolling window, providing a granular
+view into the market’s changing dynamics.
+Figure 4.7: Rolling Parameter Stability Plot for BTC
+Source: based on own computation
+The plot reveals considerable and systematic time-variation in nearly all coefficients,
+which is not a sign of model failure, but rather strong evidence for theAdaptive Market
+Hypothesis (AMH). A detailed examination of the individual parameters reveals the
+multifaceted nature of this adaptation:
+55
+
+• const: The constant of the mean equation fluctuates moderately over time but remains
+mostly close to zero. This supports the assumption of a zero-mean return process,
+consistent with the weak-form market efficiency hypothesis.
+• sigma2: This parameter captures the persistent scale of volatility in the FIGARCH
+model. Its sharp rise from February 2024 signals a structural shift to a higher-risk
+regime, well beyond historical variation.
+• omega ( ω): The intercept of the volatility equation shows pronounced spikes,
+especially in late 2023 and early 2024. These shifts suggest that the baseline level of
+volatility is itself non-constant and reacts to changing market conditions or exogenous
+shocks.
+• phi (ϕ1): The short-term shock response is highly erratic, often collapsing to zero or
+fluctuating unpredictably. This reflects regime changes in the market’s sensitivity
+to recent innovations—alternating between persistence-driven and shock-driven
+volatility.
+• d: The fractional integration parameter d mostly remains near zero, indicating low
+long-memory, but temporarily spikes above 0.5. This suggests episodic persistence
+of volatility shocks.
+• nu (ν): The degrees-of-freedom parameter varies over time, with noticeable declines
+in late 2023 and a sharp rise in April 2024. Lowerν implies fatter tails and heightened
+tail risk; higher ν reflects more Gaussian-like return distributions.
+Collectively, these parameter dynamics illustrate a market in constant flux. The fact that
+the adaptive 60-day model can constantly re-estimate these shifting parameters and still
+produce diagnostically clean residuals (as shown by the ARCH-LM test) is a testament
+to its necessity. It succeeds not by assuming a stable data-generating process, but by
+continuously adapting to one that is fundamentally unstable. This provides powerful, direct
+evidence that for an asset like Bitcoin, adaptivity is not just a feature, but a prerequisite for
+valid risk modeling.
+56
+
+4.4 ARIMA-GARCH Model Results for Ethereum (ETH)
+Based on the preceding diagnostic analysis, the automated model selection procedure was
+applied to the Ethereum (ETH) log return series. This section details the final model
+specification and evaluates its out-of-sample performance.
+4.4.1 Model Specification
+For Ethereum (ETH), which exhibited slightly higher volatility and heavier tails than Bitcoin,
+the automated model selection process converged on an ARIMA(1,0,0)–FIGARCH(1,1)
+model with a Student’st-distribution. The selection of a FIGARCH(1,1) model again
+points to the presence of long memory in volatility, whereas the Student’st-distribution
+was required to model the significant leptokurtosis.
+4.4.2 Initial Parameter Estimates
+The parameters for the selected model were estimated on the combined training and
+validation data. The results are detailed in Section 4.4.2.
+Parameter Coefficient Std. Error t-statistic p-value
+Mean model (ARIMA)
+const 0.1766 0.1250 1.414 0.157
+ar.L1 -0.0413 0.0210 -1.935 0.053
+Volatility model (FIGARCH)
+omega 0.4155 0.4520 0.920 0.358
+ϕ1 0.2295 0.1200 1.911 0.056
+d 0.5318 0.1230 4.340 < 0.001
+β1 0.6382 0.1800 3.545 < 0.001
+Distribution (Student’st)
+ν 4.5058 0.4610 9.771 < 0.001
+Table 4.7: ETH Initial Parameter Estimates: ARIMA(1,0,0)–FIGARCH(1,1)–t
+Source: based on computation.
+The initial fit confirms the model structure chosen by the auto-tuning procedure. The AR(1)
+coefficient is statistically significant at the 10% level (p = 0.053), suggesting a weak but
+non-negligible linear dependence in the return series. In the volatility model, the long-
+memory parameter d and the moving-average term β1 are highly significant, underscoring
+57
+
+the persistent nature of Ethereum’s volatility. The degrees-of-freedom parameterν is low
+and significant, confirming heavy tails. Notably, the constant ω is insignificant, suggesting
+that the baseline volatility is not statistically different from zero in this long-term static fit.
+4.4.3 Forecasting Accuracy
+As in the previous section for Bitcoin, the forecasting performance is assessed via a twofold
+approach (Cf. section 4.3.3).
+Multi-Horizon Evaluation
+Section 4.4.3 summarizes the forecast accuracy. In a clear departure from Bitcoin, the
+model for Ethereum shows no significant advantage in forecasting returns at any horizon.
+However, it demonstrates a significant forecasting advantage for volatility at the longest
+horizon.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Price Forecast Accuracy
+MAPE AG (%) 1.98 3.50 6.08 8.50 11.55
+MAPE Na¨ıve (%) 2.00 3.56 6.27 9.06 13.51
+DM p-value (SE) 0.155 0.120 0.141 0.134 0.158
+Volatility Forecast Accuracy
+QLIKE AG 2.0973 2.0622 1.9661 1.8776 1.8242
+QLIKE EWMA 1.9920 1.9925 1.9861 1.9919 2.0498
+DM p-value (QLIKE) 0.739 0.681 0.425 0.155 0.036
+Table 4.8: ETH Forecast Accuracy — Multi-Horizon Evaluation
+Source: based on own computation.
+Risk Management Backtesting
+The results from the multi-horizon VaR backtest, shown in Section 4.4.3, are stark. The
+static FIGARCH model is entirely unsuitable for risk management for Ethereum especially
+at short horizons.
+58
+
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Violations AG 16 16 14 13 12
+(Expected) (9.3) (9.3) (9.3) (9.3) (9.3)
+Kupiec p-value AG 0.040 0.040 0.140 0.239 0.384
+Christoffersen p-value AG 0.049 0.105 0.336 0.498 0.662
+Table 4.9: ETH 5% VaR Backtesting — Multi-Horizon Evaluation
+Based on own computation.
+The model fails both the Kupiec and Christoffersen tests for the 1-day horizon and the
+Kupiec test for the 3-day horizon. It systematically underestimates risk, producing far more
+violations than expected. This demonstrates that a static model, even one trained on a long
+history, cannot capture the current risk environment of Ethereum.
+Rolling-Window Backtest Evaluation
+This evaluation displayed in table 4.10, assesses the model’s performance using a 60-day
+rolling window.
+Metric AG Model Benchmark
+Price Forecast Accuracy (vs. Naive)
+MAPE (%) 2.17 2.10
+DM p-value (SE) 0.967
+Volatility Forecast Accuracy (vs. EWMA)
+QLIKE 1.9617 1.9585
+DM p-value (QLIKE) 0.517
+5% VaR Backtesting
+Violations (Expected: 10.8) 18 10
+Kupiec p-value 0.039 0.800
+Christoffersen p-value 0.058 –
+Standardized Residual Diagnostics
+Ljung-Box p-value 0.181
+ARCH-LM p-value 0.992
+Table 4.10: ETH Rolling 1-Step Backtest Performance Summary (60-Day Window)
+Source: based on own computation.
+Table 4.10 summarizes the model’s rolling backtest performance across key evaluation
+dimensions. In terms of price forecasting, the AG model’s MAPE (2.17%) is slightly
+59
+
+higher than that of the naive benchmark (2.10%), and the DM test yields a high p-value
+(p = 0.967), indicating no significant improvement in predictive accuracy.
+Figure 4.8: Rolling 1-Step Price Forecast for Ethereum
+For volatility forecasting, the AG model performs comparably to the EWMA benchmark,
+with similar QLIKE values (1.9617 vs. 1.9585) and a non-significant DM test result
+(p = 0.517), suggesting no clear forecasting advantage as shown in Figure 4.9.
+Figure 4.9: Rolling 1-Step Volatility Forecast for Ethereum
+The adaptive backtest reveals a critical paradox. On one hand, the model is diagnostically
+perfect: the standardized residuals in Figure 4.10 are free of autocorrelation and, most
+importantly, show no remaining ARCH effects (ARCH-LM p = 0.992). This indicates
+the 60-day FIGARCH model is theoretically well-specified and successfully captures the
+conditional heteroskedasticity.
+60
+
+Figure 4.10: Standardized 1-Step Residuals from Rolling Backtest for Ethereum
+On the other hand, the model fails in its most critical practical application: risk management.
+As shown in Figure 4.11 and quantified in Table 4.10, the model produces 18 VaR violations,
+far exceeding the expected 10.8. This failure is statistically significant, with theKupiec
+test failing (p = 0.039) and the Christoffersen test being borderline ( p = 0.058). The
+model is too adaptive, it adjusts too quickly to periods of low volatility and is then caught
+off guard by sudden spikes, leading to a systematic underestimation of risk.
+Figure 4.11: Rolling 1-Step VaR Thresholds vs. Actual Log Return for Ethereum
+Source: based on own computation
+Section 4.4.3 reveals the underlying cause of this paradox. The model’s parameters are
+extraordinarily unstable, exhibiting a behavior far more erratic and prone to abrupt shifts
+than that observed for Bitcoin.
+The plot reveals considerable and systematic time-variation in nearly all coefficients. A
+61
+
+detailed examination of the individual parameters reveals the multifaceted nature of this
+adaptation:
+• const: The constant term in the mean equation fluctuates moderately but remains
+close to zero on average.
+• ar.L1: The autoregressive term displays clear sign shifts over time. Periods of weak
+momentum alternate with mean-reversion, reflecting short-term predictability.
+• sigma2: This parameter reflects the persistent scale of volatility in the FIGARCH
+model. From February 2024 onward, σ2 increases notably, suggesting a structural
+transition to a higher volatility regime.
+• omega (ω): The GARCH intercept shows pronounced instability with visible spikes
+in late 2023 and early 2024. These jumps suggest that Ethereum’s baseline risk level
+is not constant and responds to latent regime changes or news shocks.
+• phi (ϕ1): The short-run reaction to volatility shocks is highly erratic. The parameter
+frequently drops to zero, then abruptly reactivates, suggesting abrupt shifts in how
+markets absorb new information, alternating between persistence-dominant and
+innovation-sensitive periods.
+• d: The fractional differencing parameter alternates between near-zero and elevated
+levels, indicating that volatility persistence is not stable but switches across regimes.
+Periods of low d imply rapidly decaying shocks; high d implies enduring volatility
+effects.
+• nu ( ν): The degrees-of-freedom parameter is consistently low—indicating fat
+tails—but shows a sudden and extreme spike in late January 2024, followed by
+immediate reversion.
+Collectively, these parameter dynamics paint a picture of an exceptionally unstable market.
+Unlike Bitcoin, Ethereum exhibits abrupt transitions rather than gradual drift. Although
+the model fits the data diagnostically well (e.g., ARCH-LM p = 0.992), its inability to
+anticipate sharp regime changes renders it insufficient for reliable risk forecasting.
+62
+
+4.5 ARIMA-GARCH Model Results for Dogecoin (DOGE)
+Based on the preceding diagnostic analysis, the automated model selection procedure was
+applied to the Dogecoin (DOGE) log return series. This section details the final model
+specification and evaluates its out-of-sample performance.
+4.5.1 Model Specification
+Reflecting the findings from the diagnostic plots and consistent with the other assets, the
+auto-tuning procedure selected anARIMA(0,0,0)–FIGARCH(1,1) model with aStudent’s
+t-distribution for Dogecoin. The choice of a FIGARCH model suggests that even the
+sentiment-driven volatility of DOGE exhibits long-memory characteristics.
+4.5.2 Initial Parameter Estimates
+The parameters for the selected model were estimated on the combined training and
+validation data. The results are presented in Section 4.5.2.
+Parameter Coefficient Std. Error t-statistic p-value
+Mean model (ARIMA)
+const 0.2642 0.2940 0.899 0.368
+Volatility model (FIGARCH)
+omega 1.0519 0.9650 1.090 0.275
+ϕ1 0.3552 0.2510 1.417 0.156
+d 0.2896 0.0839 3.453 < 0.001
+β1 0.2221 0.1910 1.161 0.246
+Distribution (Student’st)
+ν 3.1218 0.1720 18.197 < 0.001
+Table 4.11: DOGE Initial Parameter Estimates: ARIMA(0,0,0)–FIGARCH(1,1)–t
+Source: Based on own computation.
+In the static, long-term fit, only the long-memory parameter d and the tail-heaviness
+parameter ν are statistically significant. This is an interesting finding, suggesting that the
+core, stable characteristics of Dogecoin’s volatility are its long-term persistence and its
+extremely fat tails (ν ≈ 3.12). The insignificance of the other parameters in this static view
+highlights the highly time-varying nature of its short-term dynamics, reinforcing the need
+for an adaptive, rolling-window approach.
+63
+
+4.5.3 Forecasting Accuracy
+As in the previous section for Bitcoin, the forecasting performance is assessed via a twofold
+approach (Cf. section 4.3.3).
+Multi-Horizon Evaluation
+Section 4.5.3 summarizes the forecast accuracy. The model shows no significant advantage
+in forecasting returns. However, it demonstrates a significant forecasting advantage for
+volatility at the longest horizon.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Price Forecast Accuracy
+MAPE AG (%) 2.95 4.75 7.42 11.46 17.70
+MAPE Na¨ıve (%) 2.96 4.75 7.38 11.31 19.31
+DM p-value (SE) 0.330 0.212 0.168 0.071 0.108
+Volatility Forecast Accuracy
+QLIKE AG 3.2025 2.4376 2.2774 2.1269 2.0395
+QLIKE EWMA 1.8659 2.0854 2.4569 2.5320 3.2970
+DM p-value (QLIKE) 0.998 0.849 0.326 0.233 0.043
+Table 4.12: DOGE Forecast Accuracy — Multi-Horizon Evaluation
+Source: based on own computation.
+Multi-Horizon Evaluation
+The results from the multi-horizon VaR backtest, are shown in Section 4.5.3. The static
+FIGARCH model is entirely unsuitable for risk management for Dogecoin.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Violations AG 22 16 13 17 22
+(Expected) (9.3) (9.3) (9.3) (9.3) (9.3)
+Kupiec p-value AG < 0.001 0.040 0.239 0.020 < 0.001
+Christoffersen p-value AG < 0.001 0.105 0.278 0.034 < 0.001
+Table 4.13: DOGE 5% VaR Backtesting — Multi-Horizon Evaluation
+Source: based on own computation.
+The model fails the Kupiec and Christoffersen tests on almost every horizon, often with
+64
+
+extremely low p-values. It produces more than double the expected number of violations at
+the 1-day and 30-day horizons. This demonstrates that a static model, even one trained on
+a long history, cannot capture the nature of Dogecoin’s risk.
+Rolling-Window Backtest Evaluation
+This evaluation assesses the model’s performance using a adaptive 60-day rolling window.
+Metric AG Model Benchmark
+Price Forecast Accuracy (vs. Naive)
+MAPE (%) 3.33 3.29
+DM p-value (SE) 0.851
+Volatility Forecast Accuracy (vs. EWMA)
+QLIKE 1.8040 1.7411
+DM p-value (QLIKE) 0.692
+5% VaR Backtesting
+Violations (Expected: 10.8) 13 9
+Kupiec p-value 0.505 0.563
+Christoffersen p-value 0.777 –
+Standardized Residual Diagnostics
+Ljung-Box p-value 0.708
+ARCH-LM p-value 0.987
+Table 4.14: DOGE Rolling 1-Step Backtest Performance Summary (60-Day Window)
+Source: based on own computation.
+The adaptive backtest confirms the established patterns: the model has no predictive power
+for returns as shown in Figure 4.15.
+65
+
+Figure 4.15: Rolling 1-Step Price Forecast for Dogecoin
+Source: based on own computation.
+In volatility forecasting, Figure 4.16 reveals that the adaptive FIGARCH model (red line)
+closely tracks the explosive volatility spikes observed in Dogecoin returns (grey line).
+While its performance is not statistically superior to the EWMA benchmark according
+to the Diebold-Mariano test, its visual responsiveness to extreme events highlights its
+relevance in high-volatility regimes.
+Figure 4.16: Rolling 1-Step Volatility Forecast fore Dogecoin
+Source: based on own computation.
+Most importantly, and in contrast to the multi-horizon results, the adaptive model proves
+to be a reliable tool for risk management. Figure 4.17 shows the 5% VaR threshold
+66
+
+dynamically adjusting to the wild swings in daily returns. The number of violations (13)
+is very close to the expected number (10.8), and the model successfully passes both the
+Kupiec (p = 0.505) and Christoffersen (p = 0.777) tests.
+Figure 4.17: Rolling 1-Step VaR Thresholds vs. Actual Log Return for Dogecoin
+Source: based on own computation.
+The fact that the model can adapt to these extreme shifts and still produce diagnostically
+clean residuals (ARCH-LM p = 0 .987) as displayed in Section 4.5.3 is a powerful
+demonstration of the adaptive, rolling-window approach for assets like Dogecoin.
+Figure 4.18: Rolling 1-Step Volatility Forecast for Dogecoin
+Source: based on own computation.
+The reason for this success is revealed in Section 4.5.3. The model’s parameters are as well
+extraordinarily unstable.
+67
+
+The parameter evolution for Dogecoin tells a story of a market characterized by periods of
+dormancy punctuated by explosive, rallies.
+• const: The mean return fluctuates widely and significantly deviates from zero at
+several points. This suggests that Dogecoin’s returns are occasionally influenced by
+strong directional market sentiment or speculative trends.
+• sigma2: The long-run volatility level rises steadily and markedly from February
+2024 onward, indicating a lasting increase in market uncertainty. This structural
+change mirrors developments observed in other cryptocurrencies but is even more
+pronounced.
+• omega (ω): Baseline volatility varies strongly, especially in March and April 2024.
+These jumps imply abrupt shifts in the unconditional variance level, potentially
+triggered by social media, speculative trading, or broader crypto market turbulence.
+• phi (ϕ1): The autoregressive volatility response switches erratically, collapsing to
+zero in some periods and spiking in others.
+• d: The long-memory parameter fluctuates between near-zero and values above 0.7,
+reflecting alternating phases of short-lived and highly persistent volatility clusters.
+• nu ( ν): The tail-thickness parameter shows extreme spikes and collapses. For
+example, ν exceeds 400 in early 2024 before sharply dropping—signaling temporary
+but severe shifts in tail risk.
+The fact that the highly adaptive 60-day model can navigate these wild parameter swings
+and still produce diagnostically clean residuals (ARCH-LM p = 0.987) and reliable VaR
+forecasts is a powerful demonstration of its necessity in risk management.
+4.6 ARIMA-GARCH Model Results for Solana (SOL)
+Based on the preceding diagnostic analysis, the automated model selection procedure
+was applied to the Solana (Sol) log return series. This section details the final model
+specification and evaluates its out-of-sample performance.
+68
+
+4.6.1 Model Specification
+The analysis of Solana (SOL) returns, characterized by high volatility and heavy tails, led to
+the selection of anARIMA(0,0,0)–FIGARCH(1,1) model with a Student’st-distribution.
+The volatility structure, governed by a FIGARCH process, aligns with the long-memory
+properties observed in the other cryptocurrencies.
+4.6.2 Initial Parameter Estimates
+The parameter estimates for the initial fit of the Solana model are displayed in Table 4.15.
+Parameter Coefficient Std. Error t-statistic p-value
+Mean model (ARIMA)
+const 0.2922 0.2110 1.387 0.165
+Volatility model (FIGARCH)
+omega 2.7026 2.2460 1.203 0.229
+ϕ1 0.2263 0.2680 0.843 0.399
+d 0.3722 0.0990 3.761 < 0.001
+β1 0.4406 0.3070 1.433 0.152
+Distribution (Student’st)
+ν 4.7540 0.5880 8.090 < 0.001
+Table 4.15: SOL Initial Parameter Estimates: ARIMA(0,0,0)–FIGARCH(1,1)–t
+Source: Based on own computation.
+In the static, long-term fit, only the long-memory parameter d and the tail-heaviness
+parameter ν are statistically significant. This mirrors the findings for Dogecoin, suggesting
+that the core, stable characteristics of Solana’s volatility are its long-term persistence and
+its significantly heavy tails (ν ≈ 4.75).
+4.6.3 Forecasting Accuracy
+The out-of-sample forecasting performance is assessed via a twofold approach (Cf. sec-
+tion 4.3.3).
+69
+
+Multi-Horizon Evaluation
+Table 4.16 summarizes the forecast accuracy. Similar to Bitcoin, the model shows significant
+predictive power for returns over medium horizons.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+Price Forecast Accuracy
+MAPE AG (%) 3.95 6.73 10.78 15.58 26.62
+MAPE Na¨ıve (%) 3.96 6.85 11.25 17.28 30.39
+DM p-value (SE) 0.121 0.054 0.030 0.026 0.079
+Volatility Forecast Accuracy
+QLIKE AG 1.9288 1.7989 1.6541 1.5546 1.4818
+QLIKE EWMA 1.6315 1.6803 1.7206 1.7077 1.9931
+DM p-value (QLIKE) 0.991 0.857 0.219 0.039 0.056
+Table 4.16: SOL Forecast Accuracy — Multi-Horizon Evaluation
+Source: Based on own computation.
+The results for Solana are compelling. The ARIMA-GARCH model provides statistically
+significantly better price forecasts for medium horizons of 7 and 14 days. Furthermore, it
+also delivers significantly better volatility forecasts at the 14-day horizon.
+The multi-horizon VaR backtest for Solana provides evidence for the practical necessity of
+the GARCH framework.
+Metric h = 1 h = 3 h = 7 h = 14 h = 30
+AG Model (FIGARCH)
+Violations 14 12 10 9 9
+Kupiec p-value 0.140 0.384 0.816 0.919 0.919
+Christoffersen p-value 0.336 0.662 0.814 0.735 0.167
+Benchmark Model (EWMA)
+Violations 2 2 3 8 10
+Kupiec p-value 0.003 0.003 0.014 0.654 0.816
+Christoffersen p-value 0.012 0.012 0.047 – –
+Table 4.17: SOL 5% VaR Backtesting — Multi-Horizon Evaluation
+Source: Based on own computation.
+As shown in Table 4.17, the FIGARCH model passes all VaR backtests across all horizons
+comfortably. In contrast, the EWMA benchmark model fails catastrophically at short to
+medium horizons (1, 3, and 7 days). It drastically underestimates the risk, producing
+70
+
+only 2-3 violations when 9.3 were expected, and these violations are highly clustered.
+Relying on a simple benchmark model for Solana’s risk management would be dangerously
+misleading.
+Rolling-Window Backtest Evaluation
+The adaptive 60-day backtest confirms the findings from the multi-horizon evaluation: the
+FIGARCH model is a robust and well-specified tool for Solana.
+Metric AG Model Benchmark
+Price Forecast Accuracy (vs. Naive)
+MAPE (%) 4.04 3.91
+DM p-value (SE) 0.810
+Volatility Forecast Accuracy (vs. EWMA)
+QLIKE 1.5960 1.6126
+DM p-value (QLIKE) 0.288
+5% VaR Backtesting
+Violations (Expected: 10.8) 8 3
+Kupiec p-value 0.360 0.004
+Christoffersen p-value 0.370 –
+Standardized Residual Diagnostics
+Ljung-Box p-value 0.765
+ARCH-LM p-value 0.942
+Table 4.18: SOL Rolling 1-Step Backtest Performance Summary (60-Day Window)
+Source: based on own computation.
+This evaluation confirms the findings from the multi-horizon results. While the model has
+no significant predictive power for short-term price returns as visualized in Figure 4.22
+71
+
+Figure 4.22: Rolling 1-Step Price Forecast for Solana
+Source: based on own computation
+In volatility forecasting, Figure 4.24 demonstrates that the adaptive FIGARCH model (red
+line) is capable of capturing the medium-sized volatility spikes of Solana. While not as
+reactive as in the case of Dogecoin, the model aligns closely with the volatility proxy (grey
+line) during major shifts, particularly in late 2023 and early 2024. Its smooth yet adaptive
+behavior reflects the more structured and less erratic nature of Solana’s volatility dynamics.
+Figure 4.23: Rolling 1-Step Volatility Forecast for Solana
+Source: based on own computation
+The adaptive model is diagnostically perfect and provides reliable risk management, passing
+all VaR backtests. The EWMA benchmark again fails dramatically.
+72
+
+Figure 4.24: Rolling 1-Step VaR Thresholds vs. Actual Log Return for Solana
+Source: based on own computation
+The practical success of the adaptive model in risk management is visually confirmed
+in Figure 4.24. The model’s 5% VaR threshold (red dashed line) effectively tracks the
+volatile returns, resulting in a number of violations (8) that is even lower than the statistical
+expectation (10.8) and passes all formal backtests with high p-values.
+The diagnostic foundation for this success is revealed in the standardized residuals. As
+shown in Figure 4.25, the residuals from the rolling backtest appear as white noise,
+fluctuating randomly around zero without any discernible patterns of volatility clustering.
+Figure 4.25: Standardized 1-Step Residuals from Rolling Backtest for Solana
+Source: based on own computation
+This visual impression is formally confirmed by the ARCH-LM test, which yields a highly
+insignificant p-value of 0.942 as shown in (Table 4.18). This result is critical: it proves that
+73
+
+the adaptive FIGARCH model has successfully filtered out all conditional heteroskedasticity
+from the return series, leaving behind residuals that are homoskedastic. From a diagnostic
+perspective, the model specification is perfect.
+Figure 4.26 shows that even for this well-behaved model, the underlying parameters are not
+constant.
+Figure 4.26: Rolling Parameter Stability Plot for SOL
+Source: based on own computation
+The parameter evolution for Solana presents a narrative of a maturing but still highly
+74
+
+dynamic asset, distinct from the gradual evolution of Bitcoin and the abrupt regime shifts
+of Ethereum and Dogecoin:
+• const: The mean return exhibits persistent deviations from zero, particularly between
+November 2023 and February 2024. This indicates prolonged phases of directional
+market sentiment, possibly reflecting speculative enthusiasm or sustained bullish
+momentum.
+• sigma2 (σ2): The long-run variance component rises sharply from November 2023
+onward and remains elevated for several months.
+• omega (ω): The baseline volatility fluctuates considerably, with multiple regime
+shifts. A particularly strong surge is observed between December 2023 and February
+2024.
+• phi (ϕ1): The short-term shock sensitivity parameter displays irregular behavior,
+with abrupt transitions between highly reactive and unresponsive phases.
+• d: The long-memory parameter d moves across a wide range, indicating alternating
+periods of persistent and short-lived volatility dynamics. Its apparent inverse rela-
+tionship with ϕ1 supports the notion of an evolving volatility generation mechanism.
+• nu (ν): The tail-thickness parameter shows extreme instability. It fluctuates between
+values below 50 (indicating heavy tails and high crash risk) and spikes well above
+300 (suggesting near-normality).
+The success of the adaptive 60-day window in producing clean residuals and reliable VaR
+forecasts, despite this significant parameter instability, highlights the robustness of the
+chosen methodology.
+4.7 Comparative Analysis and Summary of Findings
+This section synthesizes the findings from the individual analyses of Bitcoin (BTC),
+Ethereum (ETH), Dogecoin (DOGE), and Solana (SOL). By comparing the results
+across these diverse assets, consistent patterns and asset-specific differences emerge,
+providing a broader understanding of the ARIMA-GARCH framework’s applicability in
+75
+
+the cryptocurrency market. Table 4.19 presents a high-level overview of the key outcomes
+from the adaptive, 60-day rolling backtest.
+Metric / Finding Bitcoin
+(BTC)
+Ethereum
+(ETH)
+Dogecoin
+(DOGE)
+Solana
+(SOL)
+Final Model Specification (Adaptive)
+Mean Model ARIMA(0,0,0) ARIMA(1,0,0) ARIMA(0,0,0) ARIMA(0,0,0)
+Volatility Model FIGARCH(1,1)- t FIGARCH(1,1)-t FIGARCH(1,1)-t FIGARCH(1,1)-t
+1-Step Forecasting Performance
+Price Forecast (DM p) 0.748 0.967 0.851 0.810
+Volatility Forecast (DM p) 0.263 0.517 0.692 0.288
+1-Step Risk Management (5% VaR)
+Kupiec Test (p) 0.505 0.039 0.505 0.360
+Christoffersen Test (p) 0.347 0.058 0.777 0.370
+Model Diagnostics
+Residual ARCH (p) 0.875 0.992 0.987 0.942
+Table 4.19: Comparative Summary of Key Findings (60-Day Rolling Backtest)
+Source: based on own computation
+The comparative analysis reveals several key themes that provide a comprehensive picture
+of the ARIMA-GARCH framework’s performance in cryptocurrency markets.
+76
+
+5 Discussion
+This chapter interprets the empirical results presented in Chapter 4, contextualizing them
+within the existing literature to directly address the central research question regarding the
+predictive accuracy of the ARIMA-GARCH framework across diverse cryptocurrencies.
+The discussion synthesizes the findings on price and volatility forecasting, evaluates the
+model’s utility for risk management, and uses the Adaptive Market Hypothesis (AMH) as a
+theoretical lens to explain the observed asset-specific differences.
+5.1 Robustness Check: The Decisive Impact of Window
+Length
+To test the stability of the initial findings and investigate the hypothesis of ”regime
+overfitting” with the highly adaptive 60-day window, the entire backtesting analysis was
+replicated using a rolling window size extended to 365 days. This modification forces the
+model to learn from a more stable, long-term dataset. The results of this check, summarized
+in Section 5.1, are highly insightful, revealing a clear, asset-specific trade-off between
+model stability and adaptivity.
+Bitcoin Ethereum Dogecoin Solana
+Metric 60-Day 365-Day 60-Day 365-Day 60-Day 365-Day 60-Day 365-Day
+Model Specification
+Final ARIMA (p,q) (0,0) (0,0) (1,0) (1,0) (0,0) (0,0) (0,0) (0,0)
+Final GARCH Type FIGARCH FIGARCH FIGARCH FIGARCH FIGARCH FIGARCH FIGARCH FIGARCH
+Price Forecast (DM p-value)0.748 0.313 0.967 0.499 0.851 0.641 0.810 0.567
+Volatility Forecast (DM p-value)0.263 0.430 0.517 0.201 0.487 0.043 0.921 0.288
+Risk Management (AG Model)
+Kupiec p-value 0.505 0.505 0.039* 0.214 0.950 0.950 0.360 0.360
+Christoffersen p-value 0.347 0.777 0.058* 0.307 0.269 0.269 0.370 0.370
+Diagnostic Check
+ARCH-LM p-value 0.875 0.773 0.992 0.995 0.996 0.954 0.942 0.942
+*Asterisk denotes a statistically significant failure or a borderline resultp <0.10. Significant DM test resultsp <0.05are in bold.
+Table 5.1: Comparative Summary of Key Backtesting Metrics: 60-Day vs. 365-Day Window
+Source: based on own computation.
+The comprehensive robustness check reveals several critical insights across all dimensions
+of model performance:
+77
+
+1. Persistent Unpredictability of Returns: The universal failure to predict one-step-
+ahead returns is a highly robust finding. For all four assets, the Diebold-Mariano
+test p-values for price forecasts remain highly insignificant regardless of the window
+length. This reinforces the conclusion of weak-form market efficiency in the linear
+domain.
+2. The Risk Management Paradox for Ethereum: The paradox observed in the
+VaR backtests for Ethereum is confirmed and clarified. The highly adaptive 60-day
+model fails (p = 0.039), while the more stable 365-day model passes comfortably
+(p = 0.214). This strongly suggests that Ethereum’s risk profile is dominated by
+infrequent, large regime shifts. The shorter window overfits to recent, calmer periods,
+while the longer window maintains a more conservative, averaged risk estimate that
+proves superior.
+3. A New Finding in Volatility Forecasting for Dogecoin: The robustness check
+uncovers a new, significant result. While the 60-day model for Dogecoin showed no
+superior volatility forecasting ability, the more stable 365-day model significantly
+outperforms the EWMA benchmark (DM p-value = 0.043). This suggests that the
+underlying long-memory (FIGARCH) structure of Dogecoin’s volatility is a stable,
+long-term feature that a model with a longer memory can successfully exploit for
+better forecasts. The high noise and extreme short-term parameter instability in the
+60-day window likely obscured this underlying signal.
+5.2 Answering the Research Question
+The empirical analysis gives a clear but split answer to the research question. The ARIMA-
+GARCH model consistently fails to predict price movements but performs well when it
+comes to modeling volatility and supporting risk management. This section examines both
+sides of this contrast to directly address the core research question.
+The first part of the research question concerns the accuracy of predicting price movements.
+The results reveal a clear pattern: the ARIMA-GARCH model exhibits no statistically
+significant predictive power for one-step-ahead price forecasts for any of the four cryptocur-
+rencies, confirming their short-term unpredictability. However, for longer horizons (h = 3
+to h = 14 days), particularly for Bitcoin and Solana, the models do exhibit statistically
+78
+
+significant improvements over the naive benchmark. These findings suggest that weak,
+persistent structures in return dynamics can be exploited over longer intervals—consistent
+with the Adaptive Market Hypothesis (AMH), but incompatible with the strictest form of
+the Efficient Market Hypothesis (EMH).
+The second part of the research question, regarding the accuracy of modeling volatility
+patterns, reveals a more complex and asset-dependent picture. Here, the framework’s
+utility is not in generating superior point forecasts of volatility but in its application to risk
+management.
+For three of the four assets, the adaptive ARIMA-GARCH models proved to be highly
+effective risk management tools. The one-step-ahead 5% Value-at-Risk (VaR) forecasts
+were well-calibrated, successfully passing both Kupiec and Christoffersen backtests. This
+demonstrates that for these assets, the framework can accurately capture the conditional
+volatility dynamics to produce reliable risk estimates.
+Ethereum stands out as a critical exception. The highly adaptive 60-day window model,
+despite being diagnostically perfect (no residual ARCH effects), failed its VaR backtests
+significantly. Paradoxically, the less adaptive, more stable 365-day window model resolved
+this failure. This ”risk management paradox” is a key finding that highlights the variation
+in model accuracy: for an asset like Ethereum the choice of model adaptivity (i.e., window
+length) is a decisive factor for its practical utility.
+5.3 Methodological Limitations
+While this study was designed to be methodologically rigorous, it is important to acknowl-
+edge its inherent limitations. These boundaries define the scope of the conclusions and
+provide clear avenues for future research.
+• Model Scope: As pointed out by Brooks, restricting the analysis to univariate
+ARIMA-GARCH models ignores potential volatility spillovers across assets. 101
+Bauwens et al.(2006) showed that multivariate extensions such as DCC-GARCH can
+101 Cf. Brooks (2019), pp. 544ff.
+79
+
+capture these interdependencies.102
+• Exogenous Variables: As formalised by Han/Kristensen (2014), augmenting the
+conditional-variance equation with exogenous regressors—termed the GARCH-X
+model—allows volatility forecasts to incorporate additional market information such
+as trading volume, sentiment indices or macroeconomic factors, thereby improving
+responsiveness beyond lagged return shocks alone.103
+• Parameter Constancy and Structural Breaks: The rolling-window backtest allows
+parameters to adapt over time, but it assumes that the parameters are constant within
+each 60-day estimation window. This approach may be slow to adapt to sudden
+structural breaks caused by major regulatory events, technological failures, or shifts
+in market sentiment.
+Models that explicitly account for regime shifts could offer a more robust description
+of these dynamics.104
+• Volatility Proxy: The evaluation of volatility forecasts relies on squared daily log
+returns (r2
+t ) as a proxy for the true, unobserved conditional variance. While this is a
+standard approach, it is known to be a very noisy proxy. A more accurate evaluation
+could be achieved by using high-frequency intraday data to construct a realized
+volatility measure, which would provide a much cleaner benchmark for assessing the
+accuracy of the GARCH variance forecasts.105
+• Economic vs. Statistical Significance: The evaluation is based on statistical metrics
+(e.g., RMSE, DM tests). It does not assess the economic significance of the forecasts.
+A statistically significant, yet small, improvement in forecast accuracy may not
+translate into profitable trading strategies after accounting for transaction costs,
+slippage, and other market frictions.106
+102 Cf. Bauwens et al. (2006), pp. 79ff.
+103 Cf. Han/Kristensen (2014), pp. 416f.
+104 Cf. Hamilton(1994), pp. 677ff.
+105 Cf. Andersen/Bollerslev (1998), pp. 886ff.
+106 Cf. Giacomini/White (2006), pp. 1545ff.
+80
+
+6 Conclusion
+This thesis evaluated the forecasting performance of the ARIMA-GARCH framework
+across four cryptocurrencies — Bitcoin, Ethereum, Dogecoin, and Solana — with a focus
+on price prediction, volatility modeling, and practical risk assessment. The central research
+question was twofold: (1) how accurately can the model forecast returns and volatility; and
+(2) how does this accuracy vary across assets and forecast settings?
+The results yield a clear yet differentiated conclusion. In adaptive, one-step-ahead backtests,
+ARIMA-GARCH models failed to produce statistically significant improvements over the
+na¨ıve random walk benchmark for any of the assets. This provides strong empirical support
+for the weak-form Efficient Market Hypothesis (EMH) in the short term. However, in the
+static multi-horizon evaluation, statistically significant forecast improvements emerged
+for Bitcoin and Solana at horizons of 3 to 14 days. These findings suggest that weak,
+longer-term return structures may exist, aligning more closely with the Adaptive Market
+Hypothesis (AMH).
+In contrast to the limited utility for return forecasting, the GARCH component of the model
+proved valuable for volatility modeling and risk estimation. For Bitcoin, Dogecoin, and
+Solana, the adaptive 60-day models provided well-calibrated one-step-ahead Value-at-Risk
+(VaR) forecasts, confirmed by formal backtests. Ethereum, however, exhibited high
+sensitivity to the rolling window size: while the adaptive model failed risk tests, the more
+stable 365-day model succeeded. This divergence highlights that the optimal specification
+is asset-specific and time-dependent—a core tenet of the AMH.
+In summary, the ARIMA-GARCH framework is not suitable for predicting short-term
+cryptocurrency returns, but it remains a robust and flexible tool for volatility-based risk
+management. The key implication is that regular model re-evaluation and asset-specific
+calibration are essential in dynamic crypto markets. Practitioners should avoid naive
+return-forecasting strategies and instead focus on the model’s strengths: adaptive volatility
+modeling and informed risk control.
+81
+
+Bibliography
+Ajeesh, A. et al. (2023). “Beyond the Hype: Evaluating the Real Impact of News on
+Cryptocurrency Market Volatility”. In:Commerce Business Researcher 15.1, pp. 13–40.
+doi: 10.59640/cbr.v15i1.13-40.
+Akaike, Hirotugu (1974). “A new look at the statistical model identification”. In: IEEE
+Transactions on Automatic Control 19.6, pp. 716–723. doi: 10 . 1109 / TAC . 1974 .
+1100705.
+Ammous, Saifedean (2018).The Bitcoin Standard: The Decentralized Alternative to Central
+Banking. Hoboken, NJ: John Wiley & Sons. isbn: 978-1119473862.
+Andersen, Torben G./Tim Bollerslev (1998). “Answering the skeptics: Yes, standard
+volatility models do provide accurate forecasts”. In: International Economic Review
+39.4, pp. 885–905. doi: 10.2307/2527343.
+Antonopoulos, Andreas M./Gavin Wood (2018). Mastering Ethereum: Building Smart
+Contracts and DApps. O’Reilly Media.isbn: 978-1491971949.
+Ardia, David/Kevin Bluteau/Martino R¨ uede (2019). “Regime Changes in Bitcoin GARCH
+Volatility”. In:Finance Research Letters29, pp. 266–271. doi: 10.1016/j.frl.2018.
+08.009.
+Bai, Jushan/Pierre Perron (2003). “Computation and Analysis of Multiple Structural Change
+Models”. In: Journal of Applied Econometrics 18.1, pp. 1–22. doi: 10.1002/jae.659.
+Baillie, Richard T./Tim Bollerslev/Hans Ole Mikkelsen (1996). “Fractionally Integrated
+Generalized AutoRegressive Conditionally Heteroskedasticity”. In:Journal of Econo-
+metrics 74.1, pp. 3–30. doi: 10.1016/S0304-4076(95)01749-6.
+Barber, Brad M./Terrance Odean (2001). “Boys Will Be Boys: Gender, Overconfidence, and
+Common Stock Investment”. In:The Quarterly Journal of Economics116.1, pp. 261–292.
+doi: 10.1162/003355301556400.
+Baur, Dirk G./Thomas Dimpfl/Konstantin Kuck (2018). “Bitcoin, Gold and the US
+Dollar—A Replication and Extension”. In: Finance Research Letters25, pp. 103–110.
+doi: 10.1016/j.frl.2017.10.012.
+82
+
+Bauwens, Luc/S´ebastien Laurent/Jeroen V. K. Rombouts (2006). “Multivariate GARCH
+models: a survey”. In: Journal of Applied Econometrics 21.1, pp. 79–109. doi: 10.
+1002/jae.842.
+Black, Fischer (1976). “Studies of Stock Price Volatility Changes”. In:Proceedings of the
+1976 Meetings of the American Statistical Association, Business and Economic Statistics
+Section, pp. 177–181.
+Bollerslev, Tim (1986). “Generalized Autoregressive Conditional Heteroskedasticity”. In:
+Journal of Econometrics 31.3, pp. 307–327. doi: 10.1016/0304-4076(86)90063-1.
+– (1987). “A Conditionally Heteroskedastic Time Series Model for Speculative Prices and
+Rates of Return”. In: The Review of Economics and Statistics 69.3, pp. 542–547. doi:
+10.2307/1925546.
+Bollerslev, Tim/Robert F. Engle/Daniel B. Nelson (1994). “ARCH Models”. In: Hand-
+book of Econometrics. Ed. by Robert F. Engle/Daniel L. McFadden. Vol. 4. Elsevier
+(North-Holland), Amsterdam, pp. 2959–3038. doi: 10.1016/S1573-4412(05)80018-
+2.
+Bowala, Sulalitha/Jia Singh (2022). “Optimizing Portfolio Risk of Cryptocurrencies Using
+Data-Driven Risk Measures”. In: Journal of Risk and Financial Management 15.10,
+p. 427. doi: 10.3390/jrfm15100427.
+Box, George E. P./Gwilym M. Jenkins (1976). Time Series Analysis: Forecasting and
+Control. Revised. San Francisco: Holden-Day. isbn: 9780816211043.
+Brauneis, Alexander/Roland Mestel (2018). “Price discovery of cryptocurrencies: Bitcoin
+and beyond”. In: Economics Letters 165, pp. 58–61. doi: 10.1016/j.econlet.2018.
+02.001.
+Brooks, Chris (2019). Introductory Econometrics for Finance. 4th ed. Cambridge, UK:
+Cambridge University Press. isbn: 978-1108436823. doi: 10.1017/9781108524872.
+Caporale, Guglielmo Maria/Alex Plastun (2017). The Day of the Week Effect in the Crypto
+Currency Market. Discussion Paper 1694. DIW Berlin, German Institute for Economic
+Research. url: https://hdl.handle.net/10419/171314 (Accessed on July 27,
+2025).
+Chaim, Pedro/M ´arcio P. Laurini (2018). “Volatility and return jumps in Bitcoin”. In:
+Economics Letters 173, pp. 158–163. doi: 10.1016/j.econlet.2018.10.011.
+83
+
+Cheah, Eng-Tuck/John Fry (2015). “Speculative bubbles in Bitcoin markets? An empirical
+investigation into the fundamental value of Bitcoin”. In:Economics Letters 130, pp. 32–
+36. doi: 10.1016/j.econlet.2015.02.029.
+Christoffersen, Peter F. (1998). “Evaluating Interval Forecasts”. In:International Economic
+Review 39.4, pp. 841–862. doi: 10.2307/2527341.
+Chu, Jeffrey et al. (2017). “GARCH modelling of cryptocurrencies”. In:Journal of Risk
+and Financial Management 10.4, p. 17. doi: 10.3390/jrfm10040017.
+Corbet, Shaen/Grace McHugh/Andrew Meegan (2017). “The influence of central bank
+monetary policy announcements on cryptocurrency return volatility”. In: Investment
+Management and Financial Innovations 14.4, pp. 60–72. doi: 10.21511/imfi.14(4)
+.2017.07.
+Cortez, Paulo/Pedro Pereira/Rui Mendes (July 2020). “Multi-step time series prediction
+intervals using neuroevolution”. In: Neural Computing and Applications 32. doi: 10.
+1007/s00521-019-04387-3.
+Dangi, Vandana (2020). “Day of the Week Effect in Cryptocurrencies’ Returns and
+Volatility”. In:Ramanujan International Journal of Business and Research V, pp. 139–
+167. issn: 2455-5959. doi: 10.51245/rijbr.v5i1.2020.221.
+Dickey, David A./Wayne A. Fuller (1979). “Distribution of the Estimators for Autoregressive
+Time Series With a Unit Root”. In: Journal of the American Statistical Association
+74.366a, pp. 427–431. doi: 10.1080/01621459.1979.10482531.
+Diebold, Francis X./Roberto S. Mariano (1995). “Comparing Predictive Accuracy”. In:
+Journal of Business & Economic Statistics13.3, pp. 253–263. doi: 10.1080/07350015.
+1995.10524599.
+Dorfleitner, Gregor/Carina Lung (2018). “Cryptocurrencies from the perspective of euro
+investors: a re-examination of diversification benefits and a new day-of-the-week effect”.
+In: Journal of Asset Management 19.6, pp. 472–494. doi: 10.1057/s41260- 018-
+0093-8.
+Dyhrberg, Anne Haubo (2016). “Bitcoin, gold and the dollar – A GARCH volatility analysis”.
+In: Finance Research Letters16, pp. 85–92. doi: 10.1016/j.frl.2015.10.008.
+Engle, Robert F. (1982). “Autoregressive Conditional Heteroscedasticity with Estimates of
+the Variance of United Kingdom Inflation”. In:Econometrica 50.4, pp. 987–1007. doi:
+10.2307/1912773.
+84
+
+Fama, Eugene F. (1970). “Efficient Capital Markets: A Review of Theory and Empirical
+Work”. In:The Journal of Finance 25.2, pp. 383–417. doi: 10.2307/2325486.
+Giacomini, Raffaella/Halbert White (2006). “Tests of Conditional Predictive Ability”. In:
+Econometrica 74.6, pp. 1545–1578. doi: 10.1111/j.1468-0262.2006.00718.x.
+Glosten, Lawrence R./Ravi Jagannathan/David E. Runkle (1993). “On the Relation between
+the Expected Value and the Volatility of the Nominal Excess Return on Stocks”. In:
+The Journal of Finance 48.5, pp. 1779–1801. doi: 10.1111/j.1540- 6261.1993.
+tb05128.x.
+Hamilton, James D. (1994). Time Series Analysis. Princeton, NJ: Princeton University
+Press. isbn: 9780691042893.
+Han, Heejoon/Dennis Kristensen (2014). “Asymptotic Theory for the QMLE in GARCH-X
+Models With Stationary and Nonstationary Covariates”. In: Journal of Business &
+Economic Statistics 32.3, pp. 416–429. doi: 10.1080/07350015.2014.897954.
+Hansen, Peter R./Asger Lunde (2005). “A Forecast Comparison of Volatility Models: Does
+Anything Beat a GARCH(1,1)?” In:Journal of Applied Econometrics 20.7, pp. 873–889.
+doi: 10.1002/jae.800.
+Harvey, David/Stephen Leybourne/Paul Newbold (1997). “Testing the equality of prediction
+mean squared errors”. In: International Journal of Forecasting 13.2, pp. 281–291. doi:
+10.1016/S0169-2070(96)00719-4.
+Huang, Yongrong et al. (2024). “Evaluating Cryptocurrency Market Risk on the Blockchain:
+An Empirical Study Using the ARMA-GARCH-VaR Model”. In:IEEE Open Journal of
+the Computer Society 5, pp. 83–94. doi: 10.1109/OJCS.2024.3370603.
+Huberman, Gur/Tomer Regev (2001). “Contagious Speculation and a Cure for Cancer: A
+Nonevent that Made Stock Prices Soar”. In:Journal of Finance 56.1, pp. 387–396. doi:
+10.1111/0022-1082.00330.
+J.P. Morgan (1996). RiskMetrics™ – Technical Document (Fourth Edition). Tech. rep.
+Technical Document, Morgan Guaranty Trust Co. New York: J.P. Morgan / Reuters.
+url: https://www.msci.com/documents/10199/5915b101-4206-4ba0-aee2-
+3449d5c7e95a (Accessed on June 17, 2025).
+Jarque, Carlos M./Anil K. Bera (1980). “Efficient tests for normality, homoscedasticity and
+serial independence of regression residuals”. In: Economics Letters 6.3, pp. 255–259.
+doi: 10.1016/0165-1765(80)90024-5.
+85
+
+Kahneman, Daniel/Amos Tversky (1979). “Prospect Theory: An Analysis of Decision
+under Risk”. In: Econometrica 47.2, pp. 263–291. doi: 10.2307/1914185.
+Katsiampa, Paraskevi/Shaen Corbet/Brian M. Lucey (2019). “Volatility Spillovers and
+Dynamic Correlation in the Cryptocurrency Market”. In: Finance Research Letters29,
+pp. 68–74. doi: 10.1016/j.frl.2019.03.009.
+Khuntia, Sashikanta/J. K. Pattanayak (2018). “Adaptive Market Hypothesis and Evolving
+Predictability of Bitcoin”. In: Economics Letters 167.C, pp. 26–28. doi: 10.1016/j.
+econlet.2018.03.005.
+Kupiec, Paul H. (1995). “Techniques for Verifying the Accuracy of Risk Measurement
+Models”. In: Journal of Derivatives 3.2, pp. 73–84. doi: 10.3905/jod.1995.407942.
+Kwiatkowski, Denis et al. (1992). “Testing the null hypothesis of stationarity against the
+alternative of a unit root: How sure are we that economic time series have a unit root?” In:
+Journal of Econometrics54.1-3, pp. 159–178.doi: 10.1016/0304-4076(92)90104-Y.
+Kyei-Mensah, Justice (2024). “Asymmetric Reverting and Volatility in Cryptocurrency
+Markets”. In: doi: 10.2139/ssrn.4720579.
+Kyriazis, Nikolaos A. (2019). “A survey on the weak-form efficiency of cryptocurrency
+markets”. In: Journal of Risk and Financial Management 12.4, p. 169. doi: doi.org/
+10.3390/jrfm12020067.
+Ljung, Greta M./George E. P. Box (1978). “On a Measure of Lack of Fit in Time Series
+Models”. In: Biometrika 65.2, pp. 297–303. doi: 10.1093/biomet/65.2.297.
+Lo, Andrew W. (2004). “The adaptive markets hypothesis: Market efficiency from an
+evolutionary perspective”. In:Journal of Portfolio Management 30.5, pp. 15–29. doi:
+10.3905/jpm.2004.442611.
+– (2005). “Reconciling Efficient Markets with Behavioral Finance: The Adaptive Markets
+Hypothesis”. In: Journal of Investment Consulting 7.2, pp. 21–44. url: https://ssrn.
+com/abstract=1702447 (Accessed on Mar. 27, 2025).
+M’bakob, Gilles Brice (2024). “Bubbles in Bitcoin and Ethereum: The Role of Halving in
+the Formation of Super Cycles”. In: Sustainable Futures 7, p. 100178. doi: 10.1016/j.
+sftr.2024.100178. url: https://doi.org/10.1016/j.sftr.2024.100178.
+MacKinnon, James G. (2010). Critical Values for Cointegration Tests. QED Working
+Paper 1227. Queen’s University, Department of Economics.url: https://www.econ.
+86
+
+queensu . ca / sites / econ . queensu . ca / files / wpaper / qed _ wp _ 1227 . pdf
+(Accessed on July 27, 2025).
+Mishra, Debani Prasad et al. (2024). “Solana blockchain technology: a review”. In:
+International Journal of Informatics and Communication Technology (IJ-ICT) 13.2,
+pp. 197–205. issn: 2252-8776. doi: 10.11591/ijict.v13i2.pp197-205.
+Nakamoto, Satoshi (2008). Bitcoin: A Peer-to-Peer Electronic Cash System. Whitepaper.
+url: https://bitcoin.org/bitcoin.pdf (Accessed on Feb. 17, 2025).
+Nani, Albi (2022). “The doge worth 88 billion dollars: A case study of Dogecoin”. In:
+Convergence: The International Journal of Research into New Media Technologies28.6,
+pp. 1719–1736. doi: 10.1177/13548565211070417 . url: https://doi.org/10.
+1177/13548565211070417.
+Nocedal, Jorge/Stephen J. Wright (2006). Numerical Optimization. 2nd ed. Springer Series
+in Operations Research and Financial Engineering. New York, NY: Springer. isbn:
+9780387303031. doi: 10.1007/978-0-387-40065-5 .
+Omane-Adjepong, Maurice/Imhotep Paul Alagidede (2020). “Modelling Asymmetry and
+Leverage in Cryptocurrencies and Emerging Financial Markets”. In:Economic Papers:
+A journal of applied economics and policy. doi: 10.1111/1759-3441.12308.
+Patton, Andrew J. (2011). “Volatility Forecast Comparison Using Imperfect Volatility
+Proxies”. In: Journal of Econometrics 160.1, pp. 246–256. doi: 10.1016/j.jeconom.
+2010.03.034.
+Phillip, Andrew/Jennifer S. K. Chan/Shelton Peiris (2018). “A New Look at Cryptocurren-
+cies”. In: Economics Letters 163, pp. 6–9. doi: 10.1016/j.econlet.2017.11.020.
+Reuters (2024). US SEC approves first spot ether ETFs to start trading Tuesday . url:
+https : / / www . reuters . com / technology / us - sec - approves - first - spot -
+ether - etfs - start - trading - tuesday - 2024 - 07 - 22/(Accessed on Apr. 13,
+2025).
+Scaillet, Olivier/Adrien Treccani/Christopher Trevisan (2017). High-Frequency Jump
+Analysis of the Bitcoin Market . Research Paper 17-19. Swiss Finance Institute. url:
+https://ssrn.com/abstract=2982298 (Accessed on July 27, 2025).
+Schwert, G. William (1989). “Tests for Unit Roots: A Monte Carlo Investigation”. In:
+Journal of Business & Economic Statistics 7.2, pp. 147–159. doi: 10.2307/1391432.
+87
+
+Seabold, Skipper/Josef Perktold (2010). “statsmodels: Econometric and Statistical Modeling
+with Python”. In:9th Python in Science Conference, pp. 57–61.doi: 10.25080/Majora-
+92bf1922-011.
+Shumway, Robert H./David S. Stoffer (2011).Time Series Analysis and Its Applications: With
+R Examples. 3rd ed. New York: Springer.isbn: 978-1-4419-7864-6. doi: 10.1007/978-
+1-4419-7865-3.
+Torpey, Kyle (2024).Spot Bitcoin ETFs Are Approved by SEC, Cleared To Start Trading
+Thursday. Investopedia article. url: https : / / www . investopedia . com / spot -
+bitcoin - etfs - are - approved - by - sec - cleared - to - start - trading -
+thursday-8357670 (Accessed on Apr. 13, 2025).
+Tsay, Ruey S. (2010).Analysis of Financial Time Series. 3rd. Hoboken, NJ: John Wiley &
+Sons. isbn: 978-0-470-41435-4.
+U.S. Securities and Exchange Commission (Jan. 2024). SEC Approves Listing and Trading
+of Certain Spot Bitcoin ETPs . Accessed: 2025-04-13. url: https : / / www . sec .
+gov/newsroom/speeches- statements/gensler- statement- spot- bitcoin-
+011023 (Accessed on Apr. 13, 2025).
+Urquhart, Andrew (2016). “The inefficiency of Bitcoin”. In:Economics Letters 148, pp. 80–
+82. doi: 10.1016/j.econlet.2016.09.019.
+Valdivia, Leonardo J. et al. (2019). “Decentralization: The Failed Promise of Cryptocur-
+rencies?” In: IT Professional 21.2, pp. 33–40. doi: 10.1109/MITP.2018.2876932.
+Wilk, Martin B./Ramanathan Gnanadesikan (1968). “Probability plotting methods for the
+analysis of data”. In: Biometrika 55.1, pp. 1–17. doi: 10.2307/2334448.
+Yahoo Finance (2025). Historical Data for BTC-USD, ETH-USD, DOGE-USD, and
+SOL-USD. url: https://finance.yahoo.com (Accessed on Apr. 19, 2025).
+88

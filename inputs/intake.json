@@ -1,0 +1,69 @@
+{
+  "language": "en",
+  "region_variant": "en-GB",
+  "job": {
+    "company": "Raiffeisen Research",
+    "role_title": "Research Innovation Hub (Quant/Data Science)",
+    "job_posting_text": "Du verfügst über starke analytische Fähigkeiten, Kommunikationsstärke und Teamorientierung? Du möchtest deine Kompetenzen gezielt einsetzen und innovative Lösungen in der Finanzmarktanalyse sowie datengetriebene Produkte für Retail (Mobile Brokerage) und Private Banking gestalten?\nDann werde Teil unseres agilen Research Innovation Hub Teams bei Raiffeisen Research und gestalte die Entwicklung modernster Quant-Modelle und digitaler Research-Produkte aktiv mit.\n\nDeine Mission:\n\nDu verstärkst das Innovationsteam von Raiffeisen Research und entwickelst abteilungsübergreifend datengetriebene Modelle für die Analyse verschiedener Assetklassen, Themen und insbesondere auch auf Portfolioebene (Aktienscoring, Asset Allocation, Prognosemodelle).\nDu arbeitest cross-funktional in agilen Teams an verschiedenen Data Science Use Cases innerhalb der Bank, um unsere Research- und Prognosedaten effizient an Kunden wie österreichische und internationale Retail- und Private-Banking-Kunden, Kundenbetreuer, Handel und Produktabteilungen zu bringen.\nIn enger Zusammenarbeit mit der Product Ownerin und dem Lead Developer treibst du die Weiterentwicklung unserer digitalen Research-Plattform voran, mit dem Ziel, einfache, nachhaltige und verlässliche (Daten-) Lösungen für unsere Kunden zu schaffen.\nDu bereitest Innovationsschritte und Analyseergebnisse in Rahmen von Dashboards, Präsentationen und/oder Publikationen informativ und verständlich auf.\n\nWas du mitbringst:\n\nAbgeschlossenes Studium, idealerweise mit Schwerpunkt Quantitative Finance, Statistik, Data Science oder Vergleichbares; Spezialisierung in Zeitreihen und/oder Portfolioanalyse sind von Vorteil.\nFundierte Programmierkenntnisse in R, Python, oder vergleichbaren Sprachen.\nUmfassende Erfahrung in der Erstellung automatisierter Reports oder Dashboards (z.B. via R-Markdown, Angular, Jupyter Notebooks, usw.)\nDu schreckst nicht davor zurück, Marktdaten – beispielsweise aus unserer Datenbank, Bloomberg und/oder LSEG/Refinitiv - aufzubereiten.\nDu präsentierst deine Ergebnisse in Deutsch und/oder Englisch, sowohl mündlich, als auch schriftlich\n\nNice to have:\n\nErste Erfahrungen mit kollaborativer Softwareentwicklung (git, Atlassian)\nAgiles Arbeiten und Scrum sind dir bekannte Begriffe\nErfahrung mit Linux, SQL, AWS\n\nUnser Angebot:\n\nWork-Life-Balance: Flexible Arbeitszeiten, Home-Office-Optionen aus Österreich und 30 Tage/Jahr Remote-Arbeit aus jedem EU-Land.\nInternationale Community: 75+ Nationalitäten, Englisch als Unternehmenssprache und Unterstützung beim Erlangen der Arbeitserlaubnis.\nWachstum: Wir setzen auf kontinuierliches Lernen und aktive Karriereentwicklung. Übernehmen Sie anspruchsvolle Aufgaben, besuchen Sie Schulungen und nutzen Sie neue Technologien, um einen nachhaltigen Beitrag zu leisten.\nGesund bleiben: Subventionierte Kantine, Gesundheitsprogramme, Vorsorgeuntersuchungen und Sportzulagen.\nSparen: Rabatte, exklusive Bankkonditionen und eine ermäßigte Fahrkarte für den öffentlichen Nahverkehr.\nUnterstützung für Familien: Kinderzulagen, geschlechtsneutrale Elternkarenz, zweisprachiger Betriebskindergarten und Ferienbetreuung.\nGehalt: ab EUR 46.400,- brutto p.a. ohne Überstunden (Bereitschaft zur Überzahlung je nach Qualifikation / Erfahrung). Ihr tatsächliches Gehalt besprechen wir gerne persönlich.",
+    "seniority": "junior",
+    "location": null,
+    "must_haves_hint": []
+  },
+  "candidate": {
+    "name": "Markus Öffel",
+    "contact": {
+      "email": "markus.oeffel@gmail.com",
+      "phone": "+43 650 2300064",
+      "location": "Ausstellungsstrasse 55/14, 1020 Vienna, AT",
+      "linkedin": null,
+      "github": null
+    },
+    "targeting": {
+      "preferred_focus": "hybrid",
+      "tone": "confident"
+    }
+  },
+  "files": {
+    "cv_current": [
+      "g_CV_oeffel 05.25_rb.docx",
+      "p_CV_oeffel 11.25_rb_eng.pdf"
+    ],
+    "cover_letters_old": [
+      "Bewerbung als Fachexperte Produktmanagement Wertpapiere.pdf",
+      "Bewerbung als Fast Tracker im Risiko-Management .pdf",
+      "Bewerbung als Investment Associate bei Red Bull Ventures.pdf",
+      "Bewerbung als Manager Transaktionsberatung – Financial Modelling & Analytics.pdf",
+      "Bewerbung als Trainee im Risk Modelling.pdf"
+    ],
+    "master_thesis_pdf": [
+      "Masterthesis___ARIMA_GARCH_Oeffel_final.pdf",
+      "masterarbeit.tex"
+    ],
+    "code": [
+      "ARIMA GARCH FINAL.py",
+      "model_1.py",
+      "model_2.py",
+      "Marktkapitalisierung.py"
+    ],
+    "certificates": [
+      "Certificate VM2_Campus02 3.pdf",
+      "Coursera Z0MBGWK4Z33C.pdf",
+      "Dienstzeugnis VNL.pdf",
+      "FH Bachelor Innovationsmanagement.pdf",
+      "Seminare.pdf",
+      "Studienblatt_inno.pdf",
+      "VM_Zertifizierung_AVM_Campus02 12.pdf",
+      "certificate.pdf",
+      "certificate_data_analyst.pdf"
+    ],
+    "transcripts": [
+      "Transcript_de_UB 066 915_01051033.pdf"
+    ]
+  },
+  "constraints": {
+    "no_fabrication": true,
+    "ats_priority": true,
+    "max_iterations": 5,
+    "pdf_output": false
+  }
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "source": "g_CV_oeffel 05.25_rb.docx",
+    "output": "extracted/g_CV_oeffel_05.25_rb.docx.txt"
+  },
+  {
+    "source": "p_CV_oeffel 11.25_rb_eng.pdf",
+    "output": "extracted/p_CV_oeffel_11.25_rb_eng.pdf.txt"
+  },
+  {
+    "source": "Bewerbung als Fachexperte Produktmanagement Wertpapiere.pdf",
+    "output": "extracted/Bewerbung_als_Fachexperte_Produktmanagement_Wertpapiere.pdf.txt"
+  },
+  {
+    "source": "Bewerbung als Fast Tracker im Risiko-Management .pdf",
+    "output": "extracted/Bewerbung_als_Fast_Tracker_im_Risiko-Management_.pdf.txt"
+  },
+  {
+    "source": "Bewerbung als Investment Associate bei Red Bull Ventures.pdf",
+    "output": "extracted/Bewerbung_als_Investment_Associate_bei_Red_Bull_Ventures.pdf.txt"
+  },
+  {
+    "source": "Bewerbung als Manager Transaktionsberatung \u2013 Financial Modelling & Analytics.pdf",
+    "output": "extracted/Bewerbung_als_Manager_Transaktionsberatung_Financial_Modelling_Analytics.pdf.txt"
+  },
+  {
+    "source": "Bewerbung als Trainee im Risk Modelling.pdf",
+    "output": "extracted/Bewerbung_als_Trainee_im_Risk_Modelling.pdf.txt"
+  },
+  {
+    "source": "Masterthesis___ARIMA_GARCH_Oeffel_final.pdf",
+    "output": "extracted/Masterthesis___ARIMA_GARCH_Oeffel_final.pdf.txt"
+  },
+  {
+    "source": "masterarbeit.tex",
+    "output": "extracted/masterarbeit.tex.txt"
+  },
+  {
+    "source": "ARIMA GARCH FINAL.py",
+    "output": "extracted/ARIMA_GARCH_FINAL.py.txt"
+  },
+  {
+    "source": "model_1.py",
+    "output": "extracted/model_1.py.txt"
+  },
+  {
+    "source": "model_2.py",
+    "output": "extracted/model_2.py.txt"
+  },
+  {
+    "source": "Marktkapitalisierung.py",
+    "output": "extracted/Marktkapitalisierung.py.txt"
+  },
+  {
+    "source": "Certificate VM2_Campus02 3.pdf",
+    "output": "extracted/Certificate_VM2_Campus02_3.pdf.txt"
+  },
+  {
+    "source": "Coursera Z0MBGWK4Z33C.pdf",
+    "output": "extracted/Coursera_Z0MBGWK4Z33C.pdf.txt"
+  },
+  {
+    "source": "Studienblatt_inno.pdf",
+    "output": "extracted/Studienblatt_inno.pdf.txt"
+  },
+  {
+    "source": "VM_Zertifizierung_AVM_Campus02 12.pdf",
+    "output": "extracted/VM_Zertifizierung_AVM_Campus02_12.pdf.txt"
+  },
+  {
+    "source": "certificate.pdf",
+    "output": "extracted/certificate.pdf.txt"
+  },
+  {
+    "source": "certificate_data_analyst.pdf",
+    "output": "extracted/certificate_data_analyst.pdf.txt"
+  },
+  {
+    "source": "Transcript_de_UB 066 915_01051033.pdf",
+    "output": "extracted/Transcript_de_UB_066_915_01051033.pdf.txt"
+  }
+]

@@ -1,0 +1,14 @@
+Source: certificate.pdf
+Type: pdf
+
+#584,191
+HAS BEEN AWARDED TO
+Markus Ö ffel
+FOR SUCCESSFULLY COMPLETING
+Python Data Fundamentals
+LENGTH
+28 HOURS
+COMPLETED ON
+FEB 07, 2025
+Jonathan Cornelissen
+CEO, DataCamp

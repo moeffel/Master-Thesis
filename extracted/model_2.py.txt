@@ -1,0 +1,1053 @@
+Source: model_2.py
+Type: py
+
+import ccxt
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import seaborn as sns
+from datetime import datetime, timezone, timedelta
+import ta
+from pypfopt import EfficientFrontier, risk_models, expected_returns
+from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
+import requests
+import time
+import traceback
+import streamlit as st
+from bs4 import BeautifulSoup
+import re
+
+# --- Dashboard Titel und Seitenkonfiguration ---
+st.set_page_config(layout="wide", page_title="CryptoPro Optimizer AI")
+st.title("🚀 CryptoPro Optimizer AI Dashboard")
+
+# --- Sidebar für Konfigurationen ---
+st.sidebar.header("⚙️ Konfigurationen")
+NUMBER_OF_TOP_COINS_TO_SCAN = st.sidebar.slider("Anzahl Top Coins (CoinGecko)", 30, 500, 75, 10, help="CoinGecko Top Coins für Analyse (Max 300). Mehr Coins = längere Ladezeit.")
+TARGET_EXCHANGE = 'binance'
+DEFAULT_CURRENT_PORTFOLIO_ALLOCATION_STR = "{'BTC/USDT': 0.40, 'ETH/USDT': 0.30, 'USDC': 0.30}"
+DEFAULT_CURRENT_PORTFOLIO_VALUE_USD = 10000
+current_allocation_str = st.sidebar.text_area("Akt. Portfolio Allokation (Python Dict)", DEFAULT_CURRENT_PORTFOLIO_ALLOCATION_STR, height=100, help="Format: {'BTC/USDT': 0.5, 'USDC': 0.5}")
+try:
+    CURRENT_PORTFOLIO_ALLOCATION = eval(current_allocation_str)
+    if not isinstance(CURRENT_PORTFOLIO_ALLOCATION, dict):
+        st.sidebar.error("Ungültiges Format für Portfolio Allokation."); CURRENT_PORTFOLIO_ALLOCATION = eval(DEFAULT_CURRENT_PORTFOLIO_ALLOCATION_STR)
+except Exception as e:
+    st.sidebar.error(f"Fehler Parsen Portfolio Allokation: {e}"); CURRENT_PORTFOLIO_ALLOCATION = eval(DEFAULT_CURRENT_PORTFOLIO_ALLOCATION_STR)
+CURRENT_PORTFOLIO_VALUE_USD = st.sidebar.number_input("Aktueller Portfolio Wert (USD)", min_value=100, value=DEFAULT_CURRENT_PORTFOLIO_VALUE_USD, step=100, help="Gesamtwert deines Krypto-Portfolios in USD.")
+MAX_ASSETS_IN_OPTIMIZED_PORTFOLIO = st.sidebar.slider("Max. Assets im optimierten Portfolio", 3, 15, 7, 1, help="Maximale Anzahl Assets im optimierten Zielportfolio.")
+MIN_USD_ALLOCATION_PER_ASSET = st.sidebar.number_input("Min. USD Allokation pro Asset", min_value=20, max_value=1000, value=100, step=10, help="Minimaler USD-Betrag pro Asset im optimierten Portfolio.")
+PORTFOLIO_ASSET_STOP_LOSS_PCT = st.sidebar.slider("Konzept. Portfolio SL (%)", 0.03, 0.20, 0.10, 0.01, format="%.2f", help="Konzeptioneller Stop-Loss für Assets im Kernportfolio.")
+RISK_FREE_RATE = 0.02
+MAX_DRAWDOWN_PER_TRADE_PCT_CONFIG = st.sidebar.slider("Max. Drawdown pro takt. Trade (Std % SL)", 0.5, 5.0, 2.0, 0.1, format="%.1f", help="Max. Verlust pro taktischem Trade (%), wenn ATR deaktiviert.") / 100
+USE_ATR_FOR_RISK_MANAGEMENT = st.sidebar.checkbox("ATR für taktisches Risiko-Mgmt nutzen?", True, help="Stop-Loss und Positionsgröße basierend auf ATR.")
+ATR_PERIOD = 14
+ATR_STOP_LOSS_MULTIPLIER = st.sidebar.slider("ATR Stop-Loss Multiplikator", 1.0, 4.0, 2.0, 0.1, help="Vielfaches des ATR für Stop-Loss (wenn ATR aktiv).")
+ATR_RISK_PER_TRADE_USD_PCT_CONFIG = st.sidebar.slider("Risiko pro takt. Trade (% des Portfolios bei ATR)", 0.1, 1.5, 0.5, 0.1, help="Portfolio-Risiko pro Trade (%) bei ATR-Nutzung.") / 100
+ENABLE_DYNAMIC_CASH = st.sidebar.checkbox("Autom. Cash-Management (via F&G-TA) aktivieren?", True, help="Passt Cash-Anteil basierend auf F&G Index TA an.")
+FNG_HISTORY_DAYS = 90
+FNG_SMA_SHORT = st.sidebar.slider("F&G SMA Kurz (Tage)", 3, 14, 7, 1)
+FNG_SMA_LONG = st.sidebar.slider("F&G SMA Lang (Tage)", 15, 50, 21, 1)
+FNG_TA_EXTREME_GREED_SELL_THRESHOLD = st.sidebar.slider("F&G Gier-Schwelle für Cash-Erhöhung", 65, 85, 75, 1)
+FNG_TA_EXTREME_FEAR_BUY_THRESHOLD = st.sidebar.slider("F&G Angst-Schwelle für Cash-Reduktion", 15, 35, 25, 1)
+DYNAMIC_CASH_ADJUSTMENT_PCT = st.sidebar.slider("Autom. Cash: Anpassung Cash-Anteil (%)", 0.05, 0.30, 0.10, 0.01, format="%.2f")
+MIN_TOTAL_CASH_PCT = st.sidebar.slider("Min. Gesamt-Cash-Anteil (%)", 0.05, 0.30, 0.10, 0.01, format="%.2f")
+MAX_TOTAL_CASH_PCT = st.sidebar.slider("Max. Gesamt-Cash-Anteil (%)", 0.50, 0.90, 0.75, 0.01, format="%.2f")
+PROFIT_TAKING_THRESHOLD_PCT_CONFIG = st.sidebar.slider("Profit-Taking Schwelle (%) für Hinweis", 20, 200, 50, 10, help="Wenn ein Asset im Portfolio diesen %-Gewinn (ggü. vor 30T) erreicht, wird ein Hinweis zur Gewinnmitnahme angezeigt.") / 100
+
+STABLECOINS_TO_IGNORE = ['USDT', 'DAI', 'BUSD', 'TUSD', 'USDP', 'GUSD', 'PAX', 'USDD', 'FDUSD', 'EURS', 'PYUSD']
+PAIRS_TO_EXCLUDE_FROM_OPTIMIZATION = ['PAXG/USDT', 'XAUT/USDT', 'USDC/USDT', 'WBTC/BTC']
+MIN_DATA_POINTS_FOR_ANALYSIS = st.sidebar.slider("Min. Datenpunkte für TA (Tage)", 20, 60, 35, 1, help="Min. Handelstage für TA. Kürzere Historien = höheres Risiko.")
+LAST_DATA_DOWNLOAD_TIMESTAMP_UTC = None
+MC_SIMULATIONS = st.sidebar.slider("Monte Carlo Simulationen", 100, 10000, 500, 100, help="Mehr Simulationen = genauer, aber langsamer.")
+MC_DAYS_TO_SIMULATE_LONG_TERM = 252
+MC_DAYS_TO_SIMULATE_SHORT_TERM = [1, 7]
+
+exchange_instance = None
+
+# --- Hilfsfunktionen ---
+def initialize_exchange():
+    global exchange_instance
+    if exchange_instance is None:
+        try:
+            exchange_instance = getattr(ccxt, TARGET_EXCHANGE)(); exchange_instance.load_markets(True)
+        except Exception as e:
+            st.sidebar.error(f"Fehler Börsenverbindung: {e}"); st.error(f"Börsenverbindung: {e}"); st.stop()
+    return exchange_instance
+
+@st.cache_data(ttl=1800)
+def get_fear_and_greed_index_data_cached(days=FNG_HISTORY_DAYS):
+    current_value, current_classification = None, "Unbekannt (API Problem)"
+    df_hist = pd.DataFrame()
+    try:
+        url_now = "https://api.alternative.me/fng/?limit=1&format=json"
+        r_now = requests.get(url_now, timeout=10); r_now.raise_for_status(); data_now_list = r_now.json().get('data')
+        if data_now_list and isinstance(data_now_list, list) and len(data_now_list) > 0:
+            data_now = data_now_list[0]
+            try:
+                current_value_str = data_now.get('value')
+                match = re.search(r"^\d+", str(current_value_str))
+                if match: current_value = int(match.group(0))
+                else: current_value = int(current_value_str)
+                current_classification = data_now.get('value_classification', "Unbekannt")
+            except (ValueError, TypeError): pass
+        url_hist = f"https://api.alternative.me/fng/?limit={days}&date_format=unix"
+        r_hist = requests.get(url_hist, timeout=10); r_hist.raise_for_status(); data_hist = r_hist.json()
+        if data_hist and 'data' in data_hist and data_hist['data']:
+            df_hist_raw = pd.DataFrame(data_hist['data'])
+            if 'value' in df_hist_raw.columns and 'timestamp' in df_hist_raw.columns:
+                df_hist_raw['value'] = pd.to_numeric(df_hist_raw['value'], errors='coerce')
+                df_hist_raw['timestamp'] = pd.to_numeric(df_hist_raw['timestamp'], errors='coerce')
+                df_hist_raw.dropna(subset=['value', 'timestamp'], inplace=True)
+                if not df_hist_raw.empty:
+                    df_hist = df_hist_raw.copy(); df_hist['timestamp'] = pd.to_datetime(df_hist['timestamp'].astype(int), unit='s')
+                    df_hist = df_hist.sort_values('timestamp').set_index('timestamp')
+        if current_value is None : current_value, current_classification = np.random.randint(40,60), "Neutral (Simuliert)"
+    except requests.exceptions.RequestException as e_req:
+        print(f"F&G Index API Request Fehler: {e_req}"); st.sidebar.warning(f"F&G API Fehler (Netzwerk/Request). Nutze simulierte Werte.")
+        current_value, current_classification = np.random.randint(40,60), "Neutral (Simuliert)" # Fallback für aktuellen Wert
+    except Exception as e_json:
+        print(f"F&G Index API Gesamtfehler: {e_json}"); st.sidebar.warning(f"F&G API Fehler (Datenverarbeitung). Nutze simulierte Werte.")
+        current_value, current_classification = np.random.randint(40,60), "Neutral (Simuliert)" # Fallback für aktuellen Wert
+
+    # Sicherstellen, dass df_hist immer ein DataFrame mit den richtigen Spalten ist
+    if df_hist.empty:
+        df_hist = pd.DataFrame(columns=['value', 'timestamp'])
+        if days > 0: # Versuche, Dummy-Daten für Plot zu erstellen, wenn Historie gewünscht
+            dummy_dates = pd.to_datetime([datetime.now(timezone.utc) - timedelta(days=x) for x in range(days)]).sort_values()
+            df_hist['timestamp'] = dummy_dates
+            df_hist['value'] = np.random.randint(20, 80, size=len(dummy_dates)) # Simulierte Werte
+        df_hist = df_hist.set_index('timestamp')
+        if days > 0: st.sidebar.warning("F&G API: Konnte keine historischen Daten laden. Zeige simulierte F&G-Historie.")
+
+    elif 'value' not in df_hist.columns:
+        st.sidebar.warning("F&G API: 'value'-Spalte fehlt in historischen Daten. Chart könnte unvollständig sein.")
+        if 'timestamp' in df_hist.columns and not df_hist.empty:
+             df_hist['value'] = np.nan
+        else: # Sollte durch obigen Block abgefangen werden
+             df_hist = pd.DataFrame(columns=['value', 'timestamp']).set_index('timestamp')
+
+    if not isinstance(df_hist.index, pd.DatetimeIndex) and not df_hist.empty:
+         df_hist.index = pd.to_datetime(df_hist.index)
+
+    return current_value, current_classification, df_hist
+
+
+def get_market_sentiment_data():
+    fng_val, fng_cls, fng_hist_df = get_fear_and_greed_index_data_cached(days=FNG_HISTORY_DAYS)
+    return {"fear_greed_value": fng_val, "fear_greed_classification": fng_cls, "fng_history_df": fng_hist_df}
+
+@st.cache_data(ttl=86400)
+def get_coingecko_coin_list_cached():
+    try:
+        url = "https://api.coingecko.com/api/v3/coins/list?include_platform=false"
+        response = requests.get(url, timeout=10); response.raise_for_status()
+        return {coin['symbol'].upper(): coin['id'] for coin in response.json()}
+    except Exception as e: print(f"Fehler Laden CoinGecko Coin-Liste: {e}"); return {}
+
+@st.cache_data(ttl=86400)
+def get_coingecko_coin_details_cached(coin_id):
+    if not coin_id: return {"categories": ["Unbekannt"], "description": "Keine CoinGecko ID gefunden.", "homepage": None}
+    try:
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
+        response = requests.get(url, timeout=15); response.raise_for_status(); data = response.json()
+        categories = data.get('categories', [])
+        filtered_categories = [cat for cat in categories if cat and cat.lower() not in ["cryptocurrency", "token", "finance", "asset-backed-tokens"]]
+        final_categories = filtered_categories[:2] if filtered_categories else (categories[:1] if categories else ["Unbekannt"])
+        description_html = data.get('description', {}).get('en', '')
+        short_description = "Keine Beschreibung verfügbar."
+        if description_html:
+            soup = BeautifulSoup(description_html, 'html.parser')
+            description_text = soup.get_text(separator=' ', strip=True)
+            sentences = re.split(r'(?<=[.!?])\s+', description_text)
+            short_desc_parts = []; current_len = 0; max_desc_len = 700
+            for s_idx, s_val in enumerate(sentences):
+                if current_len + len(s_val) < max_desc_len or s_idx < 3 :
+                    short_desc_parts.append(s_val); current_len += len(s_val) + 1
+                    if s_idx >= 2 and current_len >= max_desc_len *0.60 : break
+                else: break
+            short_description = " ".join(short_desc_parts)
+            if short_desc_parts and not short_description.endswith(('.', '!', '?')): short_description += "."
+            if not short_desc_parts and len(description_text) > max_desc_len : short_description = description_text[:max_desc_len] + "..."
+            elif not short_desc_parts: short_description = description_text
+        homepage_links = data.get('links', {}).get('homepage', [])
+        homepage_link = homepage_links[0] if homepage_links and homepage_links[0] else None
+        return {"categories": final_categories, "description": short_description, "homepage": homepage_link}
+    except Exception as e: return {"categories": ["Fehler"], "description": f"Fehler beim Laden der Coin-Details.", "homepage": None}
+
+@st.cache_data(ttl=3600)
+def get_top_n_coins_from_coingecko_cached(n=100, quote='USDT', ignore_stables=None, _exchange_markets_tuple=None):
+    current_exchange = initialize_exchange()
+    if ignore_stables is None: ignore_stables = STABLECOINS_TO_IGNORE
+    req_n = min(n + len(ignore_stables) + 50, 250)
+    url = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={req_n}&page=1&sparkline=false"
+    symbols = []
+    try:
+        r = requests.get(url, timeout=15); r.raise_for_status(); coins = r.json()
+    except Exception as e: print(f"CoinGecko Fehler: {e}"); return []
+    found_count = 0
+    for coin_data in coins:
+        if found_count >= n: break
+        base = coin_data['symbol'].upper()
+        if base in ignore_stables: continue
+        pair = f"{base}/{quote}"
+        market_info = current_exchange.markets.get(pair)
+        if market_info and market_info.get('active', False):
+            if pair.upper() in PAIRS_TO_EXCLUDE_FROM_OPTIMIZATION and pair.upper() != 'USDC/USDT':
+                 print(f"Info: {pair} aktiv, aber auf Ausschlussliste für Optimierung.")
+            symbols.append(pair); found_count +=1
+    print(f"Gefunden für Scan: {len(symbols)}/{n} Assets auf {TARGET_EXCHANGE} ({quote}) nach Filter.")
+    return symbols
+
+@st.cache_data(ttl=1800)
+def fetch_crypto_data_cached(symbols, timeframe='1d', limit=365):
+    global LAST_DATA_DOWNLOAD_TIMESTAMP_UTC
+    current_exchange = initialize_exchange()
+    data = {}; count = 0
+    download_start_time = datetime.now(timezone.utc)
+    if len(symbols) == 0: return {}
+    progress_bar = st.sidebar.progress(0); status_text = st.sidebar.empty()
+    for i, sym in enumerate(symbols):
+        count += 1
+        status_text.text(f"Lade Daten: {sym} ({count}/{len(symbols)})")
+        progress_bar.progress((i + 1) / len(symbols))
+        try:
+            if current_exchange.rateLimit: time.sleep(current_exchange.rateLimit / 1000)
+            ohlcv = current_exchange.fetch_ohlcv(sym, timeframe=timeframe, limit=limit)
+            if ohlcv is None or len(ohlcv) < MIN_DATA_POINTS_FOR_ANALYSIS: continue
+            df = pd.DataFrame(ohlcv, columns=['timestamp','open','high','low','close','volume'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms'); df.set_index('timestamp', inplace=True)
+            df = df[df['volume'] > 0]
+            if len(df) < MIN_DATA_POINTS_FOR_ANALYSIS: continue
+            data[sym] = df
+        except KeyboardInterrupt: raise
+        except Exception as e: print(f"-> Fehler {sym}: {str(e)[:70]}...");
+    status_text.text(f"Daten für {len(data)} Assets geladen."); progress_bar.empty()
+    if data: LAST_DATA_DOWNLOAD_TIMESTAMP_UTC = download_start_time
+    return data
+
+def perform_technical_analysis(data_dict):
+    long_candidates = []; short_candidates = []
+    assets_with_ta_data = {}
+    required_len = max(ATR_PERIOD + 5, MIN_DATA_POINTS_FOR_ANALYSIS, 25)
+    for symbol, df_orig in data_dict.items():
+        if df_orig.empty or len(df_orig) < required_len:
+            assets_with_ta_data[symbol] = df_orig; continue
+        df = df_orig.copy()
+        try:
+            df['SMA20'] = ta.trend.SMAIndicator(df['close'], window=20).sma_indicator()
+            df['SMA50'] = ta.trend.SMAIndicator(df['close'], window=50).sma_indicator()
+            df['RSI'] = ta.momentum.RSIIndicator(df['close'], window=14).rsi()
+            macd = ta.trend.MACD(df['close']); df['MACD_hist'] = macd.macd_diff()
+            bb = ta.volatility.BollingerBands(df['close'], window=20, window_dev=2)
+            df['BB_low'] = bb.bollinger_lband();  df['BB_high'] = bb.bollinger_hband()
+            df['ATR'] = ta.volatility.AverageTrueRange(df['high'], df['low'], df['close'], window=ATR_PERIOD).average_true_range()
+        except Exception as e: print(f"TA Fehler {symbol}: {e}"); assets_with_ta_data[symbol] = df_orig; continue
+        assets_with_ta_data[symbol] = df
+        if pd.isna(df['ATR'].iloc[-1]) or df['ATR'].iloc[-1] < 1e-8 : continue
+        latest = df.iloc[-1]; previous = df.iloc[-2] if len(df) > 1 else latest
+        if latest['RSI'] < 38 and previous['close'] < previous['BB_low'] and latest['close'] > latest['BB_low']:
+            long_candidates.append({"symbol": symbol, "reason": "RSI<38,BB_Rev", "price": latest['close'], "rsi": latest['RSI'], "atr": latest['ATR']})
+        if previous['MACD_hist'] <= 0 and latest['MACD_hist'] > 0 and latest['RSI'] < 65 and latest['close'] > latest['SMA20']:
+             long_candidates.append({"symbol": symbol, "reason": "MACD_H_Bull,RSI<65", "price": latest['close'], "rsi": latest['RSI'], "atr": latest['ATR']})
+        if latest['RSI'] > 75 and previous['close'] > previous['BB_high'] and latest['close'] < latest['BB_high']:
+            short_candidates.append({"symbol": symbol, "reason": "RSI>75,BB_Rev_Short", "price": latest['close'], "rsi": latest['RSI'], "atr": latest['ATR']})
+        if previous['MACD_hist'] >= 0 and latest['MACD_hist'] < 0 and latest['RSI'] > 40 and latest['close'] < latest['SMA50'] and (macd.macd().iloc[-1] < 0 if not pd.isna(macd.macd().iloc[-1]) else False) :
+             short_candidates.append({"symbol": symbol, "reason": "MACD_H_Bear_Strong", "price": latest['close'], "rsi": latest['RSI'], "atr": latest['ATR']})
+    long_candidates = sorted(list({tc['symbol']: tc for tc in long_candidates}.values()), key=lambda x: x.get('rsi', 100))
+    short_candidates = sorted(list({tc['symbol']: tc for tc in short_candidates}.values()), key=lambda x: x.get('rsi', 0), reverse=True)
+    return {"long": long_candidates, "short": short_candidates}, assets_with_ta_data
+
+def calculate_portfolio_metrics(portfolio_data_dict, allocation, risk_free_rate):
+    valid_assets_for_calc = [asset for asset in allocation if asset in portfolio_data_dict and not portfolio_data_dict[asset].empty and allocation.get(asset, 0) > 0 and asset.upper() not in ['USDC', 'USDT']]
+    if not valid_assets_for_calc: return None, None, None
+    filtered_allocation = {asset: allocation[asset] for asset in valid_assets_for_calc}
+    total_weight_invested_assets = sum(filtered_allocation.values())
+    if total_weight_invested_assets < 1e-6 : return None,None,None
+    normalized_allocation = {asset: weight / total_weight_invested_assets for asset, weight in filtered_allocation.items()}
+    portfolio_returns_list = []
+    for asset, weight in normalized_allocation.items():
+        returns = portfolio_data_dict[asset]['close'].pct_change().dropna()
+        portfolio_returns_list.append(returns * weight)
+    if not portfolio_returns_list: return None, None, None
+    df_portfolio_contributions = pd.concat(portfolio_returns_list, axis=1)
+    df_portfolio_total_returns = df_portfolio_contributions.sum(axis=1, min_count=1).ffill().fillna(0)
+    if df_portfolio_total_returns.empty: return None, None, None
+    mean_daily_return = df_portfolio_total_returns.mean(); std_daily_return = df_portfolio_total_returns.std()
+    annual_return = mean_daily_return * 252; annual_volatility = std_daily_return * np.sqrt(252)
+    sharpe_ratio = (annual_return - risk_free_rate) / annual_volatility if annual_volatility > 1e-6 else 0
+    return annual_return, annual_volatility, sharpe_ratio
+
+def format_price(price):
+    if pd.isna(price) or not isinstance(price, (int, float)) or price == 0: return "N/A"
+    if abs(price) < 0.000001 and price != 0: return f"{price:.8e}"
+    if abs(price) < 0.001: return f"{price:.8f}"
+    elif abs(price) < 0.1: return f"{price:.6f}"
+    elif abs(price) < 1: return f"{price:.4f}"
+    else: return f"{price:,.2f}"
+
+def optimize_portfolio_sharpe(historical_data_dict, risk_free_rate, assets_for_optimization, max_assets_limit, assets_with_ta_data, coingecko_ids_map, coingecko_categories_cache, current_tickers_dict):
+    min_hist_for_opt = max(MIN_DATA_POINTS_FOR_ANALYSIS, 60)
+    prices_dict = {}
+    for symbol in assets_for_optimization:
+        if symbol in historical_data_dict and not historical_data_dict[symbol].empty and len(historical_data_dict[symbol]['close']) >= min_hist_for_opt:
+            prices_dict[symbol] = historical_data_dict[symbol]['close']
+
+    if not prices_dict or len(prices_dict) < 2:
+        st.sidebar.warning(f"Zu wenig Daten ({len(prices_dict)}) für Optimierung."); return None, None, None, pd.DataFrame()
+
+    prices_df = pd.DataFrame(prices_dict).ffill().bfill(); prices_df.dropna(axis=1, how='any', inplace=True)
+    if prices_df.empty or len(prices_df.columns) < 2:
+        st.sidebar.warning("Zu wenig Assets nach Bereinigung für Optimierung."); return None, None, None, pd.DataFrame()
+
+    try:
+        mu_orig = expected_returns.ema_historical_return(prices_df, compounding=True, span=180, frequency=252)
+        S = risk_models.CovarianceShrinkage(prices_df, frequency=252).ledoit_wolf()
+
+        mu_adjusted = mu_orig.copy()
+        volatility_penalty_factor = 0.05
+        atr_penalty_threshold_multiplier = 1.75
+
+        all_normalized_atrs_data = []
+        for symbol_mu in mu_adjusted.index:
+            if symbol_mu not in prices_df.columns: continue
+            if symbol_mu in assets_with_ta_data and 'ATR' in assets_with_ta_data[symbol_mu].columns and \
+               not pd.isna(assets_with_ta_data[symbol_mu]['ATR'].iloc[-1]):
+                atr_val = assets_with_ta_data[symbol_mu]['ATR'].iloc[-1]
+                price_for_norm = None
+                if symbol_mu in current_tickers_dict and current_tickers_dict.get(symbol_mu) and \
+                   current_tickers_dict[symbol_mu].get('last') is not None and current_tickers_dict[symbol_mu]['last'] > 0:
+                    price_for_norm = current_tickers_dict[symbol_mu]['last']
+                elif symbol_mu in assets_with_ta_data and not assets_with_ta_data[symbol_mu].empty and \
+                     'close' in assets_with_ta_data[symbol_mu].columns and assets_with_ta_data[symbol_mu]['close'].iloc[-1] > 0:
+                    price_for_norm = assets_with_ta_data[symbol_mu]['close'].iloc[-1]
+
+                if price_for_norm is not None and price_for_norm > 0 and atr_val > 1e-9:
+                    all_normalized_atrs_data.append({'symbol': symbol_mu, 'norm_atr': atr_val / price_for_norm})
+
+        if all_normalized_atrs_data:
+            norm_atr_values_only = [item['norm_atr'] for item in all_normalized_atrs_data if not pd.isna(item['norm_atr'])]
+            if norm_atr_values_only:
+                median_norm_atr = np.median(norm_atr_values_only)
+                if not pd.isna(median_norm_atr) and median_norm_atr > 1e-9:
+                    for item in all_normalized_atrs_data:
+                        symbol_to_penalize = item['symbol']
+                        norm_atr_for_symbol = item['norm_atr']
+                        if norm_atr_for_symbol > median_norm_atr * atr_penalty_threshold_multiplier:
+                            penalty_ratio = (norm_atr_for_symbol / median_norm_atr - 1)
+                            penalty = min(penalty_ratio * volatility_penalty_factor, 0.5)
+                            mu_adjusted[symbol_to_penalize] *= (1 - penalty)
+        mu_to_use = mu_adjusted
+    except Exception as e:
+        st.sidebar.error(f"Fehler bei mu/S/Vola-Anpassung: {e}"); traceback.print_exc(); return None, None, None, pd.DataFrame()
+
+    ef_weight_bounds = (0.0, 1.0); raw_weights = None; ef = None
+    try:
+        ef = EfficientFrontier(mu_to_use, S, weight_bounds=ef_weight_bounds); raw_weights = ef.max_sharpe(risk_free_rate=risk_free_rate)
+    except Exception as e_max_s:
+        st.sidebar.warning(f"Fehler max_sharpe: {e_max_s}")
+        if "infeasible" in str(e_max_s).lower() or "optimal_inaccurate" in str(e_max_s).lower() or "singular" in str(e_max_s).lower():
+            st.sidebar.info("Versuche min_volatility als Fallback...")
+            try:
+                ef_fb = EfficientFrontier(mu_to_use, S, weight_bounds=(0.0,1.0)); raw_weights = ef_fb.min_volatility(); ef = ef_fb
+            except Exception as e_min_v: st.sidebar.error(f"Fehler min_volatility: {e_min_v}"); return None, None, None, pd.DataFrame()
+        else: return None, None, None, pd.DataFrame()
+
+    if raw_weights is None: st.sidebar.warning("Keine Gewichte nach Optimierung."); return None, None, None, pd.DataFrame()
+    cleaned_weights = ef.clean_weights(cutoff=0.0001)
+    if not cleaned_weights: st.sidebar.warning("Keine Assets nach clean_weights()."); return None, None, None, pd.DataFrame()
+
+    final_weights = {}
+    if max_assets_limit > 0 and len(cleaned_weights) > max_assets_limit:
+        sorted_w = dict(sorted(cleaned_weights.items(), key=lambda item: item[1], reverse=True))
+        top_n_unnorm = dict(list(sorted_w.items())[:max_assets_limit])
+        total_top_n = sum(top_n_unnorm.values())
+        if total_top_n > 1e-6: final_weights = {k: v / total_top_n for k, v in top_n_unnorm.items()}
+    else:
+        total_cleaned = sum(cleaned_weights.values())
+        if total_cleaned > 1e-6: final_weights = {k: v / total_cleaned for k, v in cleaned_weights.items()}
+
+    if not final_weights: st.sidebar.warning("Keine finalen Gewichte."); return None, None, None, pd.DataFrame()
+
+    opt_perf_data = {"annual_return": None, "annual_volatility": None, "sharpe_ratio": None, "daily_return": None}
+    asset_details_for_df = []
+
+    if final_weights:
+        try:
+            assets_final = list(final_weights.keys())
+            mu_f = mu_to_use.loc[mu_to_use.index.isin(assets_final)]
+            S_f = S.loc[S.index.isin(assets_final), S.columns.isin(assets_final)]
+            weights_s = pd.Series(final_weights).reindex(mu_f.index).fillna(0)
+
+            if not mu_f.empty and not S_f.empty and not weights_s.empty and len(mu_f) == len(S_f) == len(weights_s):
+                ret_f = np.sum(mu_f * weights_s)
+                var_f = np.dot(weights_s.values.T, np.dot(S_f, weights_s.values))
+                vol_f = np.sqrt(var_f) if var_f >= 0 else 0
+                sharpe_f = (ret_f - risk_free_rate) / vol_f if vol_f > 1e-6 else 0
+                opt_perf_data = {"annual_return": ret_f, "annual_volatility": vol_f, "sharpe_ratio": sharpe_f, "daily_return": ret_f/252}
+            else:
+                st.sidebar.warning("Konnte Performance des optimierten Portfolios nicht präzise berechnen (Dimensionen mu/S/Gewichte passen nicht).")
+            
+            approx_invest_cap_for_details = CURRENT_PORTFOLIO_VALUE_USD * (1 - st.session_state.get('target_cash_allocation_pct_final', 0.30))
+
+            for asset, weight in sorted(final_weights.items(), key=lambda x: x[1], reverse=True):
+                if weight > 0.0001:
+                    asset_base = asset.split('/')[0]
+                    cg_id = coingecko_ids_map.get(asset_base)
+                    details = {"categories":["Unbekannt"],"description":"N/A", "homepage": None}
+                    if cg_id and cg_id not in coingecko_categories_cache:
+                        coingecko_categories_cache[cg_id] = get_coingecko_coin_details_cached(cg_id); time.sleep(0.1)
+                    if cg_id: details = coingecko_categories_cache.get(cg_id, details)
+                    current_price = current_tickers_dict.get(asset, {}).get('last', 0)
+                    if current_price == 0 and prices_df is not None and not prices_df.empty and asset in prices_df.columns:
+                        current_price = prices_df[asset].iloc[-1]
+                    current_rsi_val = "N/A"; perf_30d_val = "N/A"; ta_signal_text = "Neutral"
+                    if asset in assets_with_ta_data and not assets_with_ta_data[asset].empty:
+                        df_asset_ta = assets_with_ta_data[asset]
+                        if 'RSI' in df_asset_ta.columns and not pd.isna(df_asset_ta['RSI'].iloc[-1]):
+                            rsi_val_num = df_asset_ta['RSI'].iloc[-1]; current_rsi_val = f"{rsi_val_num:.1f}"
+                            if rsi_val_num > 75: current_rsi_val += " (🔥 SEHR Überkauft!)"
+                            elif rsi_val_num > 70: current_rsi_val += " (Überkauft)"
+                            elif rsi_val_num < 25: current_rsi_val += " (🧊 SEHR Überverkauft!)"
+                            elif rsi_val_num < 30: current_rsi_val += " (Überverkauft)"
+                        if 'close' in df_asset_ta.columns and len(df_asset_ta['close']) >= 31 and current_price > 0:
+                            price_30d_ago = df_asset_ta['close'].iloc[-31]
+                            if price_30d_ago > 0:
+                                perf_30d = ((current_price - price_30d_ago) / price_30d_ago); perf_30d_val = f"{perf_30d:.1%}"
+                                if perf_30d > PROFIT_TAKING_THRESHOLD_PCT_CONFIG : perf_30d_val += " (💰 Profit-Taking erwägen!)"
+                        latest_ta_p = df_asset_ta.iloc[-1]
+                        if latest_ta_p.get('RSI', 50) < 40 and latest_ta_p.get('MACD_hist', 0) > 0 and latest_ta_p.get('close',0) > latest_ta_p.get('SMA20', float('inf')):
+                            ta_signal_text = "Leicht Bullisch"
+                        elif latest_ta_p.get('RSI', 50) > 60 and latest_ta_p.get('MACD_hist', 0) < 0 and latest_ta_p.get('close',0) < latest_ta_p.get('SMA20', 0):
+                            ta_signal_text = "Leicht Bärisch"
+                    asset_details_for_df.append({
+                        "Asset": asset, "Gewichtung": f"{weight:.2%}", "Wert (USD)": f"${weight * approx_invest_cap_for_details:,.2f}",
+                        "Akt. Preis": f"${format_price(current_price)}", "Akt. RSI(14)": current_rsi_val, "Perf. 30T": perf_30d_val,
+                        "TA Signal": ta_signal_text, "Erw. Rend. (p.a.)": f"{mu_to_use.get(asset, 0)*100:.2f}%",
+                        "Asset Vola (p.a.)": f"{np.sqrt(S.loc[asset,asset])*100:.2f}%" if asset in S.index else "N/A",
+                        "Sektor(en)": ", ".join(details["categories"]),
+                        "Konzept. SL": f"${format_price(current_price * (1 - PORTFOLIO_ASSET_STOP_LOSS_PCT))}" if current_price > 0 else "N/A",
+                        "Homepage": details["homepage"], "Beschreibung": details["description"]
+                    })
+        except Exception as e_perf: st.sidebar.error(f"Fehler Perf-Berechnung/Asset-Details: {e_perf}"); traceback.print_exc()
+    return final_weights, opt_perf_data, prices_df, pd.DataFrame(asset_details_for_df)
+
+def analyze_weekday_performance(assets_data_dict, assets_to_analyze):
+    weekday_names = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]; results = {}
+    for symbol in assets_to_analyze:
+        if symbol not in assets_data_dict or assets_data_dict[symbol].empty or len(assets_data_dict[symbol]) < 20: continue
+        df = assets_data_dict[symbol].copy(); df['daily_return'] = df['close'].pct_change(); df['weekday'] = df.index.weekday
+        try:
+            stats = df.groupby('weekday')['daily_return'].agg(['mean', 'count', 'std']).reindex(range(7))
+            stats['weekday_name'] = weekday_names; stats.set_index('weekday_name', inplace=True); results[symbol] = stats
+        except Exception: pass
+    if not results: return None
+    output_df_data = {sym: stats_df['mean'].apply(lambda x: x*100 if pd.notna(x) else np.nan) for sym, stats_df in results.items()}
+    if output_df_data: return pd.DataFrame(output_df_data)
+    return None
+
+def run_monte_carlo_simulation(portfolio_expected_annual_return, portfolio_annual_volatility,
+                               num_simulations, num_days, initial_portfolio_value=100, title_suffix="", create_plot=True):
+    if portfolio_expected_annual_return is None or portfolio_annual_volatility is None or portfolio_annual_volatility <= 1e-6 :
+        print(f"Warning: Ungültige Eingaben für Monte-Carlo ({title_suffix}).")
+        return None, None
+    daily_return_avg = portfolio_expected_annual_return / 252
+    daily_volatility = portfolio_annual_volatility / np.sqrt(252)
+    if daily_volatility <= 1e-8:
+        print(f"Warning: Tägliche Vola für MC ({title_suffix}) zu gering.")
+        return None, None
+        
+    simulation_results = np.zeros((num_days + 1, num_simulations))
+    simulation_results[0, :] = initial_portfolio_value
+    for i in range(num_simulations):
+        for day in range(1, num_days + 1):
+            daily_random_return = np.random.normal(daily_return_avg, daily_volatility)
+            simulation_results[day, i] = simulation_results[day - 1, i] * (1 + daily_random_return)
+    
+    final_values = simulation_results[-1, :]
+    mc_stats = {"mean": np.mean(final_values), "median": np.median(final_values), 
+                "p5": np.percentile(final_values, 5), "p95": np.percentile(final_values, 95), 
+                "days": num_days}
+    fig = None
+    if create_plot:
+        fig, ax = plt.subplots(figsize=(10, 5))
+        sns.histplot(final_values, kde=True, bins=50, ax=ax)
+        ax.set_title(f'Verteilung Portfolio-Endwerte nach {num_days} Tagen ({title_suffix})')
+        ax.set_xlabel(f'Portfolio Endwert (Start={initial_portfolio_value})'); ax.set_ylabel('Häufigkeit')
+        ax.axvline(mc_stats['mean'], color='r', ls='--', lw=1, label=f'Mean: {format_price(mc_stats["mean"])}')
+        ax.axvline(mc_stats['median'], color='g', ls='--', lw=1, label=f'Median: {format_price(mc_stats["median"])}')
+        ax.axvline(mc_stats['p5'], color='b', ls=':', lw=1, label=f'5% Pctl: {format_price(mc_stats["p5"])}')
+        ax.axvline(mc_stats['p95'], color='b', ls=':', lw=1, label=f'95% Pctl: {format_price(mc_stats["p95"])}')
+        ax.legend(); ax.grid(True)
+    return fig, mc_stats
+
+
+def generate_trade_recommendations(top_candidates_dict, current_portfolio_value, risk_profile_trades, optimized_portfolio_assets, assets_with_ta_data, current_tickers_dict):
+    recommendations_data = []
+    long_candidates = top_candidates_dict.get("long", [])
+    short_candidates = top_candidates_dict.get("short", [])
+    selected_ideas = []
+    trades_long_portfolio = [tc for tc in long_candidates if tc['symbol'] in optimized_portfolio_assets]
+    trades_long_new = [tc for tc in long_candidates if tc['symbol'] not in optimized_portfolio_assets]
+    if trades_long_portfolio: selected_ideas.extend(trades_long_portfolio[:1])
+    if trades_long_new: selected_ideas.extend(trades_long_new[:1])
+    if short_candidates: selected_ideas.extend(short_candidates[:1])
+    selected_ideas = list({(idea['symbol'], "Long" if idea in long_candidates else "Short"): idea for idea in selected_ideas}.values())[:3]
+    if not selected_ideas: return pd.DataFrame()
+
+    current_atr_risk_trade_usd = current_portfolio_value * risk_profile_trades.get('atr_risk_pct', 0.005)
+
+    for trade_idea in selected_ideas:
+        asset = trade_idea['symbol']
+        entry_price = current_tickers_dict.get(asset, {}).get('last', trade_idea['price'])
+        if entry_price == 0 or pd.isna(entry_price): entry_price = trade_idea['price']
+        if entry_price == 0 or pd.isna(entry_price): continue
+        reason = trade_idea['reason']
+        direction = "Long" if any(idea['symbol'] == asset and idea['price'] == trade_idea['price'] for idea in long_candidates if idea) else "Short"
+        in_opt_str = "Ja" if asset in optimized_portfolio_assets else "Nein"
+        atr_value = trade_idea.get('atr');
+
+        if direction == "Long": sl_price_default = entry_price * (1 - risk_profile_trades['max_drawdown_per_trade_pct'])
+        else: sl_price_default = entry_price * (1 + risk_profile_trades['max_drawdown_per_trade_pct'])
+        sl_price = sl_price_default
+        pos_size_usd = current_portfolio_value * 0.005 
+        sl_type = "Std %"
+
+        if USE_ATR_FOR_RISK_MANAGEMENT and atr_value is not None and atr_value > 1e-8:
+            if direction == "Long":
+                sl_price_atr = entry_price - (ATR_STOP_LOSS_MULTIPLIER * atr_value)
+                if sl_price_atr < entry_price * (1 - 0.25) : sl_price_atr = entry_price * (1-0.25) 
+                if sl_price_atr > 0 and sl_price_atr < entry_price : sl_price = sl_price_atr
+            else: 
+                sl_price_atr = entry_price + (ATR_STOP_LOSS_MULTIPLIER * atr_value)
+                if sl_price_atr > entry_price * (1 + 0.25) : sl_price_atr = entry_price * (1+0.25) 
+                if sl_price_atr > entry_price : sl_price = sl_price_atr
+            risk_per_unit = abs(entry_price - sl_price)
+            sl_type = f"ATR ({format_price(atr_value)})"
+            if risk_per_unit > 1e-8:
+                pos_size_units_atr = current_atr_risk_trade_usd / risk_per_unit
+                pos_size_usd = pos_size_units_atr * entry_price
+        else: 
+             risk_per_unit = abs(entry_price - sl_price_default)
+             if risk_per_unit > 1e-8:
+                pos_size_units_std = (current_portfolio_value * risk_profile_trades['max_drawdown_per_trade_pct']) / risk_per_unit
+                pos_size_usd = pos_size_units_std * entry_price
+        pos_size_asset = pos_size_usd / entry_price if entry_price > 0 else 0
+        tp1_val, tp2_val = 0, 0
+        if direction == "Long":
+            tp1_val = entry_price + (entry_price - sl_price) * 1.5; tp2_val = entry_price + (entry_price - sl_price) * 2.5
+        else: 
+            tp1_val = entry_price - (sl_price - entry_price) * 1.5; tp2_val = entry_price - (sl_price - entry_price) * 2.5
+        trailing_stop_suggestion = ""
+        if USE_ATR_FOR_RISK_MANAGEMENT and atr_value and atr_value > 1e-8 and direction == "Long":
+            trailing_stop_suggestion = f" (Trailing SL: {ATR_STOP_LOSS_MULTIPLIER:.1f} ATR erwägen nach TP1)"
+        recommendations_data.append({
+            "Richtung": direction, "Asset": asset, "Akt. Preis (Einstieg)": f"{format_price(entry_price)}",
+            "Stop-Loss": f"{format_price(sl_price)}", "SL Typ": sl_type,
+            "TP1": f"{format_price(tp1_val)}", "TP2 / Trailing": f"{format_price(tp2_val)}{trailing_stop_suggestion}",
+            "Pos.Größe (USD)": f"{pos_size_usd:,.2f}", "Grund": reason,
+            "Im Opt. Portfolio?": in_opt_str,
+            "TradingView Link": f"https://www.tradingview.com/chart/?symbol=BINANCE:{asset.replace('/', '')}"
+        })
+    return pd.DataFrame(recommendations_data)
+
+def generate_portfolio_limit_order_suggestions(optimized_assets, assets_with_ta_data, current_tickers_dict, current_portfolio_value, target_weights, min_usd_allocation_per_asset):
+    suggestions = []
+    if not optimized_assets or not assets_with_ta_data or not target_weights:
+        return pd.DataFrame()
+
+    cash_sym_portfolio = next((cs for cs in ['USDC','USDT'] if cs in CURRENT_PORTFOLIO_ALLOCATION), 'USDC')
+    current_cash_pct_portfolio = st.session_state.get('target_cash_allocation_pct_final', CURRENT_PORTFOLIO_ALLOCATION.get(cash_sym_portfolio, 0.30))
+    investable_capital_total = current_portfolio_value * (1 - current_cash_pct_portfolio)
+
+    for asset in optimized_assets: # Iteriere nur über Assets im optimierten Portfolio
+        if asset not in assets_with_ta_data or assets_with_ta_data[asset].empty:
+            continue
+        
+        df_asset = assets_with_ta_data[asset]
+        if not all(col in df_asset.columns for col in ['close', 'SMA20', 'SMA50', 'BB_low', 'RSI']):
+            continue
+
+        latest_ta = df_asset.iloc[-1]
+        current_price = current_tickers_dict.get(asset, {}).get('last', latest_ta['close'])
+        if pd.isna(current_price) or current_price == 0:
+            continue
+
+        target_weight_for_asset = target_weights.get(asset, 0)
+        if target_weight_for_asset == 0: # Nicht im Zielportfolio, überspringen
+            continue
+            
+        target_value_for_asset = target_weight_for_asset * investable_capital_total
+        
+        limit_price = None
+        reason = ""
+        confidence = "Mittel"
+
+        # Szenario 1: Preis nahe unterem Bollinger Band (max 3% darüber), RSI < 50
+        if not pd.isna(latest_ta['BB_low']) and latest_ta['BB_low'] > 0 and \
+           current_price > latest_ta['BB_low'] and ((current_price - latest_ta['BB_low']) / current_price) < 0.03 and \
+           not pd.isna(latest_ta['RSI']) and latest_ta['RSI'] < 50 :
+            limit_price = latest_ta['BB_low'] * 1.002 # Knapp über dem Band
+            reason = f"Kauf nahe Unt. BB (aktuell {format_price(latest_ta['BB_low'])})"
+            if latest_ta['RSI'] < 35: confidence = "Hoch"
+        
+        # Szenario 2: Rücksetzer zur SMA20 (max 2.5% darüber) in Aufwärtstrend (SMA20 > SMA50), RSI < 60
+        elif not pd.isna(latest_ta['SMA20']) and latest_ta['SMA20'] > 0 and \
+             not pd.isna(latest_ta['SMA50']) and latest_ta['SMA20'] > latest_ta['SMA50'] and \
+             current_price > latest_ta['SMA20'] and ((current_price - latest_ta['SMA20']) / current_price) < 0.025 and \
+             not pd.isna(latest_ta['RSI']) and latest_ta['RSI'] < 60 and latest_ta['RSI'] > 35:
+            limit_price = latest_ta['SMA20']
+            reason = f"Kauf Rücksetzer SMA20 i. Trend (SMA20 {format_price(latest_ta['SMA20'])})"
+            if df_asset['SMA20'].iloc[-1] > df_asset['SMA20'].iloc[-5]: # SMA20 steigend
+                 confidence = "Hoch"
+
+        # Szenario 3: Stark überverkauft (RSI < 30)
+        elif not pd.isna(latest_ta['RSI']) and latest_ta['RSI'] < 30:
+            limit_price = current_price * 0.99 # 1% unter aktuellem Preis
+            reason = f"Stark überverkauft (RSI {latest_ta['RSI']:.1f})"
+            confidence = "Hoch"
+        
+        # Szenario 4: RSI < 40 und Preis über SMA50 (konservativer), nicht schon durch andere Regeln abgedeckt
+        elif limit_price is None and not pd.isna(latest_ta['RSI']) and latest_ta['RSI'] < 40 and \
+             not pd.isna(latest_ta['SMA50']) and latest_ta['SMA50'] > 0 and current_price > latest_ta['SMA50']:
+             limit_price = current_price * 0.995 # 0.5% unter aktuellem Preis
+             reason = f"Überverkauft (RSI {latest_ta['RSI']:.1f}) & >SMA50"
+             confidence = "Mittel"
+
+        if limit_price and limit_price < current_price and limit_price > 0:
+            # Positionsgröße: Ziel ist es, das Delta zur Zielallokation zu füllen,
+            # oder einen Standardbetrag, falls Delta klein / Asset schon gut gewichtet.
+            order_value_usd = max(min_usd_allocation_per_asset * 0.5, target_value_for_asset * 0.10) # Mind. 0.5*Min-Allokation oder 10% des Zielwerts
+            order_value_usd = min(order_value_usd, target_value_for_asset * 0.33) # Aber nicht mehr als 33% des Zielwerts auf einmal
+            order_value_usd = min(order_value_usd, current_portfolio_value * 0.05) # Max 5% des Gesamtportfolios pro Order
+
+            if order_value_usd < min_usd_allocation_per_asset * 0.25: # Zu kleine Order, um signifikant zu sein
+                continue
+
+            units_to_buy = order_value_usd / limit_price
+
+            suggestions.append({
+                "Asset": asset, "Aktion": "LIMIT KAUF",
+                "Limit Preis": f"${format_price(limit_price)}", "Akt. Preis": f"${format_price(current_price)}",
+                "Ziel Stück": f"{units_to_buy:.4f}", "Ziel Wert (USD)": f"${order_value_usd:,.2f}",
+                "Begründung": reason, "Konfidenz": confidence,
+                "TV Chart": f"https://www.tradingview.com/chart/?symbol=BINANCE:{asset.replace('/', '')}"
+            })
+    return pd.DataFrame(suggestions)
+
+
+def get_correlation_matrix(data_dict, assets_list):
+    valid_assets = list(set([a for a in assets_list if a in data_dict and not data_dict[a].empty and a.split('/')[0].upper() not in STABLECOINS_TO_IGNORE and a.upper() != 'USDC/USDT']))
+    if len(valid_assets) < 2: return None
+    closes = [data_dict[a]['close'].rename(a) for a in valid_assets if a in data_dict and not data_dict[a].empty]
+    if not closes or len(closes) < 2: return None
+    all_closes_df = pd.concat(closes, axis=1).ffill().bfill()
+    if all_closes_df.shape[1] < 2: return None
+    return all_closes_df.pct_change().corr()
+
+def plot_portfolio_allocation_st(allocation_dict, title="Portfolio Allokation", max_items=15):
+    if not allocation_dict: st.warning(f"Keine Daten für Plot: {title}"); return None
+    plot_dict = allocation_dict.copy()
+    if "optimiert" in title.lower(): plot_dict = {k:v for k,v in plot_dict.items() if not (k.upper() in ['USDT','USDC'] and v < 0.0001)}
+    lbls = list(plot_dict.keys()); sizs = list(plot_dict.values())
+    if not lbls or not sizs or sum(sizs) < 1e-5: st.warning(f"Keine Daten für Plot '{title}' (nach Filter)."); return None
+    srt_alloc = sorted(zip(lbls, sizs), key=lambda x: x[1], reverse=True)
+    plot_lbls = [i[0] for i in srt_alloc[:max_items]]; plot_sizs = [i[1] for i in srt_alloc[:max_items]]
+    if len(srt_alloc) > max_items: plot_lbls.append('Andere'); plot_sizs.append(sum(i[1] for i in srt_alloc[max_items:]))
+    if not plot_sizs or sum(plot_sizs) < 1e-5: st.warning(f"Keine plotbaren Größen für '{title}'."); return None
+    fig, ax = plt.subplots(figsize=(8,4)); ax.pie(plot_sizs, labels=plot_lbls, autopct='%1.1f%%', startangle=90, pctdistance=0.85)
+    ax.axis('equal'); ax.set_title(title);
+    return fig
+
+def plot_correlation_matrix_heatmap_st(corr_matrix, title="Korrelationsmatrix"):
+    if corr_matrix is None or corr_matrix.empty: st.warning(f"Keine Daten für Korr-Plot: {title}"); return None
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=.5, annot_kws={"size":7}, ax=ax)
+    ax.set_title(title);
+    return fig
+
+def plot_asset_chart_st(df_asset, symbol, indicators_to_plot=None, title_prefix="Preisverlauf"):
+    if df_asset is None or df_asset.empty or 'close' not in df_asset.columns or len(df_asset) < 5:
+        return None
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.plot(df_asset.index, df_asset['close'], label='Schlusskurs', color='black', lw=1.5)
+    if indicators_to_plot:
+        if 'SMA20' in indicators_to_plot and 'SMA20' in df_asset.columns and not df_asset['SMA20'].isnull().all():
+            ax.plot(df_asset.index, df_asset['SMA20'], label='SMA20', color='blue', ls='--', lw=1)
+        if 'SMA50' in indicators_to_plot and 'SMA50' in df_asset.columns and not df_asset['SMA50'].isnull().all():
+            ax.plot(df_asset.index, df_asset['SMA50'], label='SMA50', color='orange', ls=':', lw=1)
+        if 'BB' in indicators_to_plot and all(c in df_asset.columns for c in ['BB_high', 'BB_low']) \
+           and not df_asset['BB_high'].isnull().all() and not df_asset['BB_low'].isnull().all():
+            ax.fill_between(df_asset.index, df_asset['BB_low'], df_asset['BB_high'], color='gray', alpha=0.2, label='Bollinger Bänder')
+    ax.set_title(f"{title_prefix}: {symbol}")
+    ax.set_ylabel(f"Preis ({symbol.split('/')[1] if '/' in symbol else 'USD'})")
+    ax.legend(fontsize='small'); ax.grid(True, linestyle=':', alpha=0.7); fig.autofmt_xdate()
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%d.%m')); plt.xticks(rotation=30, ha='right'); plt.tight_layout()
+    return fig
+
+def print_footer_st():
+    st.markdown("---")
+    st.caption("HINWEIS: Diese Analyse ist experimentell und dient nur zu Informationszwecken. KEINE ANLAGEBERATUNG. Kryptowährungen sind hochvolatil und risikoreich. Das Skript führt KEINE ECHTEN TRADES AUS.")
+
+# --- HAUPTABLAUF des Streamlit Dashboards ---
+def run_analysis():
+    global LAST_DATA_DOWNLOAD_TIMESTAMP_UTC, exchange_instance
+
+    st.session_state.setdefault('analysis_in_progress', False)
+    st.session_state.setdefault('results_ready', False)
+    st.session_state.setdefault('last_opt_weights', {})
+    st.session_state.setdefault('last_target_cash_pct', CURRENT_PORTFOLIO_ALLOCATION.get(next((cs for cs in ['USDC','USDT'] if cs in CURRENT_PORTFOLIO_ALLOCATION), 'USDC'), 0.30))
+
+    if 'exchange_initialized_for_session' not in st.session_state:
+        initialize_exchange(); st.session_state.exchange_initialized_for_session = True
+    if 'coingecko_ids_map' not in st.session_state:
+        with st.spinner("Lade CoinGecko Coin-Liste..."): st.session_state.coingecko_ids_map = get_coingecko_coin_list_cached()
+    if 'coingecko_categories_cache' not in st.session_state:
+        st.session_state.coingecko_categories_cache = {}
+
+    if st.sidebar.button("🚀 Analyse Starten / Aktualisieren", type="primary", use_container_width=True):
+        st.session_state['analysis_in_progress'] = True; st.session_state['results_ready'] = False
+        keys_to_reset = ['fig_fng', 'mc_figs_dict', 'mc_all_stats_dict', 'fig_alloc', 'fig_corr', 
+                         'weekday_df', 'corr_matrix', 'opt_asset_details_df', 'trade_recs_df', 
+                         'opt_weights_current_run', 'opt_perf_data_current_run', 'rebalancing_advice_df', 
+                         'sentiment_data', 'trading_universe', 'hist_data', 'top_candidates_dict', 
+                         'assets_with_ta_data', 'curr_sharpe', 'prices_df_discrete', 'opt_assets_list', 
+                         'target_cash_allocation_pct_final', 'current_tickers_dict', 
+                         'portfolio_limit_order_suggestions_df'] # NEU
+        for key in keys_to_reset:
+            if key in st.session_state: del st.session_state[key]
+
+        with st.spinner("Führe vollständige Analyse durch... Bitte warten. Dies kann einige Minuten dauern."):
+            st.session_state.ATR_RISK_PER_TRADE_USD = CURRENT_PORTFOLIO_VALUE_USD * ATR_RISK_PER_TRADE_USD_PCT_CONFIG
+            st.session_state.sentiment_data = get_market_sentiment_data()
+            quote_curr = 'USDT'
+            markets_tuple_for_cache = tuple(sorted(exchange_instance.markets.keys())) if exchange_instance and exchange_instance.markets else tuple()
+            st.session_state.trading_universe = get_top_n_coins_from_coingecko_cached(n=NUMBER_OF_TOP_COINS_TO_SCAN, quote=quote_curr, ignore_stables=STABLECOINS_TO_IGNORE, _exchange_markets_tuple=markets_tuple_for_cache)
+            if not st.session_state.trading_universe: st.error("Kein Handelsuniversum."); st.stop()
+            current_portfolio_pairs = [s for s in CURRENT_PORTFOLIO_ALLOCATION.keys() if '/' in s]
+            symbols_to_fetch_hist = list(set(st.session_state.trading_universe + current_portfolio_pairs))
+            symbols_to_fetch_hist = [s for s in symbols_to_fetch_hist if not (s.split('/')[0]=='USDC' and s.split('/')[1]=='USDT')]
+            st.session_state.hist_data = fetch_crypto_data_cached(symbols_to_fetch_hist, timeframe='1d', limit=365)
+            if not st.session_state.hist_data: st.error("Fehler beim Laden der historischen Daten."); st.stop()
+
+            assets_for_tickers = [s for s in st.session_state.hist_data.keys()]
+            if assets_for_tickers:
+                try: st.session_state.current_tickers_dict = exchange_instance.fetch_tickers(assets_for_tickers)
+                except Exception as e_tickers: st.sidebar.warning(f"Fehler Ticker-Preise: {e_tickers}."); st.session_state.current_tickers_dict = {}
+            else: st.session_state.current_tickers_dict = {}
+
+            st.session_state.top_candidates_dict, st.session_state.assets_with_ta_data = perform_technical_analysis(st.session_state.hist_data)
+            if not st.session_state.assets_with_ta_data: st.warning("Keine validen Daten nach TA."); st.stop()
+            data_curr_pf = {ast: st.session_state.assets_with_ta_data[ast] for ast in current_portfolio_pairs if ast in st.session_state.assets_with_ta_data and not st.session_state.assets_with_ta_data[ast].empty}
+            alloc_curr_pf_invested = {k:v for k,v in CURRENT_PORTFOLIO_ALLOCATION.items() if k in data_curr_pf}
+            if alloc_curr_pf_invested: _, _, st.session_state.curr_sharpe = calculate_portfolio_metrics(data_curr_pf, alloc_curr_pf_invested, RISK_FREE_RATE)
+            else: st.session_state.curr_sharpe = None
+            assets_for_opt = [s for s in st.session_state.trading_universe if s in st.session_state.assets_with_ta_data and s.split('/')[0].upper() not in STABLECOINS_TO_IGNORE and s.upper() not in PAIRS_TO_EXCLUDE_FROM_OPTIMIZATION and s.upper() != 'USDC/USDT']
+
+            if assets_for_opt:
+                 st.session_state.opt_weights_current_run, st.session_state.opt_perf_data_current_run, st.session_state.prices_df_discrete, st.session_state.opt_asset_details_df = \
+                     optimize_portfolio_sharpe(st.session_state.hist_data, RISK_FREE_RATE, assets_for_opt, MAX_ASSETS_IN_OPTIMIZED_PORTFOLIO, st.session_state.assets_with_ta_data, st.session_state.coingecko_ids_map, st.session_state.coingecko_categories_cache, st.session_state.current_tickers_dict)
+
+            st.session_state.opt_assets_list = list(st.session_state.opt_weights_current_run.keys()) if st.session_state.opt_weights_current_run else []
+            target_cash_pct = CURRENT_PORTFOLIO_ALLOCATION.get(next((cs for cs in ['USDC','USDT'] if cs in CURRENT_PORTFOLIO_ALLOCATION), 'USDC'), 0.30)
+            fng_hist_for_cash = st.session_state.sentiment_data.get("fng_history_df")
+            if ENABLE_DYNAMIC_CASH and fng_hist_for_cash is not None and not fng_hist_for_cash.empty and 'value' in fng_hist_for_cash.columns and fng_hist_for_cash['value'].notna().any():
+                fng_df = fng_hist_for_cash.copy()
+                if len(fng_df) >= FNG_SMA_LONG:
+                    fng_df['sma_short'] = ta.trend.SMAIndicator(fng_df['value'], window=FNG_SMA_SHORT, fillna=False).sma_indicator()
+                    fng_df['sma_long'] = ta.trend.SMAIndicator(fng_df['value'], window=FNG_SMA_LONG, fillna=False).sma_indicator()
+                    if not fng_df.empty and 'value' in fng_df.columns and 'sma_short' in fng_df.columns and len(fng_df) > 1 and not pd.isna(fng_df['value'].iloc[-1]) and not pd.isna(fng_df['sma_short'].iloc[-1]):
+                        latest_fng = fng_df.iloc[-1]; reason_cash_change = []
+                        if latest_fng['value'] >= FNG_TA_EXTREME_GREED_SELL_THRESHOLD and latest_fng['value'] < latest_fng['sma_short']:
+                            target_cash_pct = min(target_cash_pct + DYNAMIC_CASH_ADJUSTMENT_PCT, MAX_TOTAL_CASH_PCT); reason_cash_change.append(f"F&G Gier ({latest_fng['value']:.0f}) & <SMA_S")
+                        elif latest_fng['value'] <= FNG_TA_EXTREME_FEAR_BUY_THRESHOLD and latest_fng['value'] > latest_fng['sma_short']:
+                            target_cash_pct = max(target_cash_pct - DYNAMIC_CASH_ADJUSTMENT_PCT, MIN_TOTAL_CASH_PCT); reason_cash_change.append(f"F&G Angst ({latest_fng['value']:.0f}) & >SMA_S")
+                        if reason_cash_change: st.sidebar.info(f"Dyn. Cash: Ziel auf {target_cash_pct:.0%}. Grund: {', '.join(reason_cash_change)}")
+                else: st.sidebar.warning("Zu wenig F&G Historiendaten für SMA-Berechnung.")
+            st.session_state.target_cash_allocation_pct_final = target_cash_pct
+
+            st.session_state.mc_all_stats_dict = {}
+            opt_perf_mc_calc = st.session_state.get('opt_perf_data_current_run', {})
+            if opt_perf_mc_calc and opt_perf_mc_calc.get("annual_return") is not None and opt_perf_mc_calc.get("annual_volatility") is not None:
+                summary_mc_days = [d for d in MC_DAYS_TO_SIMULATE_SHORT_TERM if d <= 7] 
+                for days_for_summary_stats in summary_mc_days:
+                    _fig_dummy, mc_stats_calc = run_monte_carlo_simulation(opt_perf_mc_calc["annual_return"], opt_perf_mc_calc["annual_volatility"], MC_SIMULATIONS, days_for_summary_stats, 100, f"{days_for_summary_stats}-Tage-SummaryStats", False)
+                    if mc_stats_calc: st.session_state.mc_all_stats_dict[days_for_summary_stats] = mc_stats_calc
+
+            if st.session_state.opt_assets_list:
+                st.session_state.weekday_df = analyze_weekday_performance(st.session_state.assets_with_ta_data, st.session_state.opt_assets_list[:7])
+                corr_plot_assets = st.session_state.opt_assets_list[:10]
+                if corr_plot_assets: st.session_state.corr_matrix = get_correlation_matrix(st.session_state.assets_with_ta_data, corr_plot_assets)
+            
+            st.session_state.risk_profile_trades = {"max_drawdown_per_trade_pct": MAX_DRAWDOWN_PER_TRADE_PCT_CONFIG, "atr_risk_pct": ATR_RISK_PER_TRADE_USD_PCT_CONFIG}
+            st.session_state.trade_recs_df = generate_trade_recommendations(st.session_state.top_candidates_dict, CURRENT_PORTFOLIO_VALUE_USD, st.session_state.risk_profile_trades, st.session_state.opt_assets_list, st.session_state.assets_with_ta_data, st.session_state.current_tickers_dict)
+            
+            # NEU: Limit-Order-Vorschläge für Portfolio
+            if st.session_state.opt_assets_list and st.session_state.opt_weights_current_run:
+                st.session_state.portfolio_limit_order_suggestions_df = generate_portfolio_limit_order_suggestions(
+                    optimized_assets=st.session_state.opt_assets_list,
+                    assets_with_ta_data=st.session_state.assets_with_ta_data,
+                    current_tickers_dict=st.session_state.current_tickers_dict,
+                    current_portfolio_value=CURRENT_PORTFOLIO_VALUE_USD,
+                    target_weights=st.session_state.opt_weights_current_run,
+                    min_usd_allocation_per_asset=MIN_USD_ALLOCATION_PER_ASSET
+                )
+            else:
+                st.session_state.portfolio_limit_order_suggestions_df = pd.DataFrame()
+
+            if 'last_opt_weights' in st.session_state and st.session_state.last_opt_weights and st.session_state.opt_weights_current_run:
+                rebal_advice = []; all_assets_rebal = set(st.session_state.last_opt_weights.keys()) | set(st.session_state.opt_weights_current_run.keys())
+                last_cash_pct_rebal = st.session_state.get('last_target_cash_pct', target_cash_pct); current_cash_pct_rebal = st.session_state.target_cash_allocation_pct_final
+                old_invest_capital = CURRENT_PORTFOLIO_VALUE_USD * (1 - last_cash_pct_rebal); new_invest_capital = CURRENT_PORTFOLIO_VALUE_USD * (1 - current_cash_pct_rebal)
+                for asset in all_assets_rebal:
+                    old_weight = st.session_state.last_opt_weights.get(asset, 0); new_weight = st.session_state.opt_weights_current_run.get(asset, 0)
+                    old_value = old_weight * old_invest_capital; new_value = new_weight * new_invest_capital; change_value = new_value - old_value
+                    price_for_rebal_calc = st.session_state.current_tickers_dict.get(asset, {}).get('last')
+                    if price_for_rebal_calc is None or price_for_rebal_calc == 0:
+                        if st.session_state.prices_df_discrete is not None and asset in st.session_state.prices_df_discrete.columns: price_for_rebal_calc = st.session_state.prices_df_discrete[asset].iloc[-1]
+                        else: price_for_rebal_calc = 0
+                    change_units_str = f"{change_value / price_for_rebal_calc:.4f}" if price_for_rebal_calc > 0 else "N/A"
+                    if abs(change_value) > MIN_USD_ALLOCATION_PER_ASSET * 0.05 :
+                         rebal_advice.append({"Asset": asset, "Alte Gew.": f"{old_weight:.2%}", "Neue Gew.": f"{new_weight:.2%}", "Neuwert USD": f"${new_value:,.0f}", "Änderung USD": f"${change_value:,.0f}", "Aktion (Stück)": f"{'KAUFEN' if change_value > 0 else 'VERKAUFEN'}: {change_units_str}"})
+                st.session_state.rebalancing_advice_df = pd.DataFrame(rebal_advice)
+            st.session_state.last_opt_weights = st.session_state.opt_weights_current_run.copy() if st.session_state.opt_weights_current_run else {}
+            st.session_state.last_target_cash_pct = st.session_state.target_cash_allocation_pct_final
+            st.session_state['results_ready'] = True; st.session_state['analysis_in_progress'] = False; st.rerun()
+
+    if st.session_state.get('results_ready', False) and not st.session_state.get('analysis_in_progress', False):
+        st.header(f"📊 Ergebnisse der Analyse")
+        col_sum1, col_sum2 = st.columns(2)
+        with col_sum1:
+            st.subheader("📄 Executive Summary")
+            if LAST_DATA_DOWNLOAD_TIMESTAMP_UTC: st.write(f"**Datenstand (hist. OHLCV):** Bis ca. {LAST_DATA_DOWNLOAD_TIMESTAMP_UTC.strftime('%d.%m.%Y %H:%M')} UTC")
+            fng_val_sum = st.session_state.sentiment_data.get('fear_greed_value')
+            fng_cls_sum = st.session_state.sentiment_data.get('fear_greed_classification')
+            st.metric("Fear & Greed Index", f"{fng_val_sum} ({fng_cls_sum})")
+            st.markdown(f"[Quelle: alternative.me](https://alternative.me/crypto/fear-and-greed-index/)", unsafe_allow_html=True)
+            if st.session_state.curr_sharpe is not None: st.metric("Sharpe Aktuell (investiert, annualisiert)", f"{st.session_state.curr_sharpe:.2f}")
+            else: st.metric("Sharpe Aktuell (investiert)", "N/A")
+            st.info(f"**Automatischer Ziel-Cash-Anteil:** {st.session_state.target_cash_allocation_pct_final:.0%}")
+        with col_sum2:
+            st.subheader("⭐ Performance des optimierten Portfolios")
+            opt_perf_sum = st.session_state.get('opt_perf_data_current_run', {})
+            opt_w_sum = st.session_state.get('opt_weights_current_run')
+            if opt_perf_sum and opt_perf_sum.get("annual_return") is not None and opt_w_sum:
+                st.metric("Progn. Tagesrendite (aus pypfopt)", f"{opt_perf_sum.get('daily_return', 0):.4%}")
+                mc_stats_summary = st.session_state.get('mc_all_stats_dict', {})
+                for days_mc_sum in MC_DAYS_TO_SIMULATE_SHORT_TERM:
+                    if days_mc_sum in mc_stats_summary:
+                        median_ret_mc = (mc_stats_summary[days_mc_sum]['median'] / 100) - 1 
+                        st.metric(f"Progn. Median Rendite ({days_mc_sum}T - MC)", f"{median_ret_mc:.2%}")
+                st.metric("Progn. Sharpe Ratio (annualisiert)", f"{opt_perf_sum.get('sharpe_ratio', 0):.2f}")
+                st.metric("Progn. Jährl. Rendite (annualisiert)", f"{opt_perf_sum.get('annual_return', 0):.2%}")
+                st.metric("Progn. Jährl. Volatilität (annualisiert)", f"{opt_perf_sum.get('annual_volatility', 0):.2%}")
+                st.caption(f"({len(opt_w_sum)} Assets von max. {MAX_ASSETS_IN_OPTIMIZED_PORTFOLIO})")
+            else: st.warning("Optimiertes Zielportfolio konnte nicht berechnet werden oder hat keine Performance-Daten.")
+        st.markdown("---")
+
+        if st.session_state.get('opt_asset_details_df') is not None and not st.session_state.opt_asset_details_df.empty:
+            st.subheader("🎯 Optimiertes Zielportfolio - Details & Projektinfos")
+            df_display_opt = st.session_state.opt_asset_details_df.copy()
+            def make_clickable(link_val, text_val=None):
+                if text_val is None: text_val = link_val
+                if link_val and isinstance(link_val, str) and link_val.startswith("http"): return f'<a target="_blank" href="{link_val}">{text_val}</a>'
+                return "N/A" if pd.isna(link_val) else link_val
+            if 'Homepage' in df_display_opt.columns: df_display_opt['Homepage'] = df_display_opt['Homepage'].apply(lambda x: make_clickable(x, "Website"))
+            if 'Asset' in df_display_opt.columns: df_display_opt['TV Chart'] = df_display_opt['Asset'].apply(lambda x: make_clickable(f"https://www.tradingview.com/chart/?symbol=BINANCE:{x.replace('/', '')}", "Chart"))
+            cols_to_display_in_html = ["Gewichtung", "Wert (USD)", "Akt. Preis", "Akt. RSI(14)", "Perf. 30T", "TA Signal", "Sektor(en)", "Homepage", "TV Chart", "Konzept. SL", "Beschreibung", "Erw. Rend. (p.a.)", "Asset Vola (p.a.)"]
+            final_cols_for_html = [col for col in cols_to_display_in_html if col in df_display_opt.columns]
+            if 'Asset' in df_display_opt.columns:
+                df_to_render_html = df_display_opt.set_index('Asset')[final_cols_for_html]
+                st.markdown(df_to_render_html.to_html(escape=False, render_links=True), unsafe_allow_html=True)
+            else: st.warning("Spalte 'Asset' für Detailansicht nicht gefunden.")
+            with st.expander("Hinweis zur Coin-Wahl im optimierten Portfolio"):
+                st.markdown("""Die Auswahl und Gewichtung der Assets basiert auf der Maximierung der erwarteten risikoadjustierten Rendite (Sharpe Ratio). Faktoren für höhere Gewichtung: Höhere erw. Rendite (ggf. angepasst durch Vola-Penalty), geringere Volatilität, geringe/negative Korrelation zu anderen Assets. Assets mit extrem hoher relativer Volatilität (normalisierter ATR basierend auf aktuellem Preis) erhalten einen Malus auf ihre erwartete Rendite. Sektoren/Beschreibungen: CoinGecko.""")
+        st.markdown("---")
+
+        if st.session_state.get('opt_assets_list') and st.session_state.get('assets_with_ta_data'):
+            st.subheader("📈 Charts der optimierten Portfolio-Assets")
+            opt_assets_for_charts = st.session_state.opt_assets_list[:MAX_ASSETS_IN_OPTIMIZED_PORTFOLIO] 
+            num_opt_assets = len(opt_assets_for_charts); cols_per_row_opt_assets = min(num_opt_assets, 2) if num_opt_assets > 0 else 1
+            for i in range(0, num_opt_assets, cols_per_row_opt_assets):
+                cols_opt_assets = st.columns(cols_per_row_opt_assets)
+                for j in range(cols_per_row_opt_assets):
+                    if i + j < num_opt_assets:
+                        current_col_opt = cols_opt_assets[j] if cols_per_row_opt_assets > 1 else cols_opt_assets[0]
+                        with current_col_opt:
+                            asset_symbol_opt = opt_assets_for_charts[i+j]
+                            if asset_symbol_opt in st.session_state.assets_with_ta_data:
+                                df_for_plot_opt = st.session_state.assets_with_ta_data[asset_symbol_opt].copy()
+                                if not df_for_plot_opt.empty:
+                                    ta_signal_opt_asset = "N/A"; opt_details_df_loc = st.session_state.get('opt_asset_details_df')
+                                    if opt_details_df_loc is not None and not opt_details_df_loc.empty and 'Asset' in opt_details_df_loc.columns:
+                                        signal_row = opt_details_df_loc[opt_details_df_loc['Asset'] == asset_symbol_opt]
+                                        if not signal_row.empty and 'TA Signal' in signal_row.columns: ta_signal_opt_asset = signal_row['TA Signal'].iloc[0]
+                                    with st.expander(f"Chart für {asset_symbol_opt} (TA: {ta_signal_opt_asset})", expanded=False):
+                                        fig_opt_asset = plot_asset_chart_st(df_for_plot_opt.tail(120), asset_symbol_opt, indicators_to_plot=['SMA20', 'SMA50', 'BB'], title_prefix=f"Portfolio-Asset")
+                                        if fig_opt_asset: st.pyplot(fig_opt_asset); plt.close(fig_opt_asset)
+                                        else: st.caption("Chart konnte nicht erstellt werden.")
+                            else: st.caption(f"Keine Chartdaten für Portfolio-Asset {asset_symbol_opt} gefunden.")
+            st.markdown("---")
+
+        st.subheader("😨 Fear & Greed Index Verlauf & TA")
+        fng_hist_df_for_plot = st.session_state.sentiment_data.get("fng_history_df")
+        if fng_hist_df_for_plot is not None and not fng_hist_df_for_plot.empty and 'value' in fng_hist_df_for_plot.columns and fng_hist_df_for_plot['value'].notna().any():
+            fig_fng = None; df_fng_plot = fng_hist_df_for_plot.copy()
+            if len(df_fng_plot['value'].dropna()) >= max(FNG_SMA_SHORT, FNG_SMA_LONG, 10):
+                try:
+                    df_fng_plot['sma_short'] = ta.trend.SMAIndicator(df_fng_plot['value'], window=FNG_SMA_SHORT, fillna=False).sma_indicator()
+                    df_fng_plot['sma_long'] = ta.trend.SMAIndicator(df_fng_plot['value'], window=FNG_SMA_LONG, fillna=False).sma_indicator()
+                    fig_fng, ax_fng = plt.subplots(figsize=(12,5))
+                    ax_fng.plot(df_fng_plot.index, df_fng_plot['value'], label='F&G Index', color='black', lw=1.5)
+                    if df_fng_plot['sma_short'].notna().any(): ax_fng.plot(df_fng_plot.index, df_fng_plot['sma_short'], label=f'SMA({FNG_SMA_SHORT})', color='blue', ls='--', lw=1)
+                    if df_fng_plot['sma_long'].notna().any(): ax_fng.plot(df_fng_plot.index, df_fng_plot['sma_long'], label=f'SMA({FNG_SMA_LONG})', color='orange', ls=':', lw=1)
+                    ax_fng.axhline(FNG_TA_EXTREME_FEAR_BUY_THRESHOLD, color='green', ls='-.', lw=0.8, label=f'Angst Zone (<{FNG_TA_EXTREME_FEAR_BUY_THRESHOLD})')
+                    ax_fng.axhline(FNG_TA_EXTREME_GREED_SELL_THRESHOLD, color='red', ls='-.', lw=0.8, label=f'Gier Zone (>{FNG_TA_EXTREME_GREED_SELL_THRESHOLD})')
+                    ax_fng.set_title("Fear & Greed Index mit SMAs und Zonen"); ax_fng.set_ylabel("Index Wert"); ax_fng.legend(loc='upper left'); ax_fng.grid(True, ls=':', alpha=0.7); fig_fng.autofmt_xdate(); ax_fng.xaxis.set_major_formatter(mdates.DateFormatter('%d.%m'))
+                except Exception as e_fng_plot: st.caption(f"Fehler beim Erstellen des F&G Detail-Charts: {e_fng_plot}"); fig_fng = None
+            else: st.info("Zu wenig historische F&G-Daten für SMA-Berechnung. Zeige Rohdaten oder simulierte Historie.")
+            
+            if fig_fng: st.pyplot(fig_fng); plt.close(fig_fng)
+            elif not fng_hist_df_for_plot.empty and 'value' in fng_hist_df_for_plot.columns and fng_hist_df_for_plot['value'].notna().any():
+                fig_fng_raw, ax_fng_raw = plt.subplots(figsize=(12,5)); ax_fng_raw.plot(fng_hist_df_for_plot.index, fng_hist_df_for_plot['value'], label='F&G Index (Roh/Simuliert)', color='black', lw=1.5)
+                ax_fng_raw.set_title("Fear & Greed Index (Rohdaten/Simulierte Historie)"); ax_fng_raw.set_ylabel("Index Wert"); ax_fng_raw.legend(loc='upper left'); ax_fng_raw.grid(True, ls=':', alpha=0.7); fig_fng_raw.autofmt_xdate(); ax_fng_raw.xaxis.set_major_formatter(mdates.DateFormatter('%d.%m')); st.pyplot(fig_fng_raw); plt.close(fig_fng_raw)
+            else: # Dieser Fall sollte jetzt seltener auftreten wegen des Fallbacks in get_fear_and_greed_index_data_cached
+                 st.info("Fear & Greed Index Chart nicht verfügbar (Historie nicht geladen oder 'value'-Spalte fehlt trotz Fallback).")
+        else: st.info("Fear & Greed Index Chart nicht verfügbar (Historie nicht geladen, 'value'-Spalte fehlt oder enthält keine gültigen Daten).")
+        st.markdown("---")
+
+        if st.session_state.get('rebalancing_advice_df') is not None and not st.session_state.rebalancing_advice_df.empty:
+            st.subheader("🔄 Rebalancing Vorschläge (Vergleich zu vorheriger Optimierung)")
+            st.dataframe(st.session_state.rebalancing_advice_df.set_index('Asset'))
+        st.markdown("---")
+
+        if 'trade_recs_df' in st.session_state and not st.session_state.trade_recs_df.empty:
+            st.subheader("💡 Taktische Trade-Vorschläge (Neue Positionen)")
+            df_trade_recs_display = st.session_state.trade_recs_df.copy()
+            if 'TradingView Link' in df_trade_recs_display.columns: df_trade_recs_display['TradingView Link'] = df_trade_recs_display['TradingView Link'].apply(lambda x: make_clickable(x, "Chart") if isinstance(x,str) else x)
+            st.markdown(df_trade_recs_display.set_index('Asset').to_html(escape=False, render_links=True), unsafe_allow_html=True)
+            st.warning("ACHTUNG: Short-Trades sind mit sehr hohem Risiko verbunden und erfordern spezielle Konten (Margin/Futures). Diese Empfehlungen sind rein informativ und stellen keine Anlageberatung dar!")
+            st.write("**Charts zu den taktischen Trade-Vorschlägen:**")
+            num_trades = len(st.session_state.trade_recs_df); cols_per_row_trades = min(num_trades, 2) if num_trades > 0 else 1
+            for i in range(0, num_trades, cols_per_row_trades):
+                cols_trades = st.columns(cols_per_row_trades)
+                for j in range(cols_per_row_trades):
+                    if i + j < num_trades:
+                        current_col = cols_trades[j] if cols_per_row_trades > 1 else cols_trades[0]
+                        with current_col:
+                            rec = st.session_state.trade_recs_df.iloc[i+j]; asset_symbol_trade = rec['Asset']
+                            if asset_symbol_trade in st.session_state.assets_with_ta_data:
+                                df_for_plot = st.session_state.assets_with_ta_data[asset_symbol_trade].copy()
+                                if not df_for_plot.empty:
+                                    with st.expander(f"Chart für {asset_symbol_trade} ({rec['Richtung']}) - {rec['Grund']}", expanded=False):
+                                        fig_trade_asset = plot_asset_chart_st(df_for_plot.tail(120), asset_symbol_trade, indicators_to_plot=['SMA20', 'SMA50', 'BB'], title_prefix=f"{rec['Richtung']} Signal für")
+                                        if fig_trade_asset: st.pyplot(fig_trade_asset); plt.close(fig_trade_asset)
+                                        else: st.caption("Chart konnte nicht erstellt werden.")
+                            else: st.caption(f"Keine Chartdaten für {asset_symbol_trade} gefunden.")
+        else: st.info("Keine überzeugenden taktischen Trade-Vorschläge gefunden.")
+        st.markdown("---")
+        
+        # NEU: Anzeige Limit-Order-Vorschläge
+        if 'portfolio_limit_order_suggestions_df' in st.session_state and not st.session_state.portfolio_limit_order_suggestions_df.empty:
+            st.subheader("📈 Limit-Order Kaufvorschläge zur Portfolio-Optimierung (Tagesbasis)")
+            df_lim_ord_display = st.session_state.portfolio_limit_order_suggestions_df.copy()
+            if 'TV Chart' in df_lim_ord_display.columns:
+                df_lim_ord_display['TV Chart'] = df_lim_ord_display['TV Chart'].apply(lambda x: make_clickable(x, "Chart") if isinstance(x,str) else x)
+            cols_to_show_limit = ["Aktion", "Limit Preis", "Akt. Preis", "Ziel Stück", "Ziel Wert (USD)", "Begründung", "Konfidenz", "TV Chart"]
+            existing_cols_limit = [col for col in cols_to_show_limit if col in df_lim_ord_display.columns]
+            if 'Asset' in df_lim_ord_display.columns and existing_cols_limit:
+                st.markdown(df_lim_ord_display.set_index('Asset')[existing_cols_limit].to_html(escape=False, render_links=True), unsafe_allow_html=True)
+            elif not df_lim_ord_display.empty: st.dataframe(df_lim_ord_display)
+            st.caption("Hinweis: Diese Limit-Vorschläge basieren auf Tages-Chart-Analysen (z.B. Kauf bei Rücksetzern zu Unterstützungen wie unteres Bollinger Band oder SMA20). Sie sind für eine schrittweise Optimierung des Zielportfolios gedacht, nicht für hochfrequentes Daytrading, da keine Intraday-Daten verwendet werden.")
+        else: st.info("Keine spezifischen Limit-Order Kaufvorschläge zur Portfolio-Optimierung auf Tagesbasis gefunden.")
+        st.markdown("---")
+
+
+        if st.session_state.get('opt_weights_current_run') and st.session_state.get('prices_df_discrete') is not None:
+            st.subheader("💰 Diskrete Allokation (Rebalancing zum Zielportfolio)")
+            try:
+                latest_prices_da_raw = st.session_state.get('current_tickers_dict', {}); latest_prices_da = {}
+                if st.session_state.opt_weights_current_run:
+                    for asset_symbol in st.session_state.opt_weights_current_run.keys():
+                        price = latest_prices_da_raw.get(asset_symbol, {}).get('last')
+                        if price is not None and price > 0: latest_prices_da[asset_symbol] = price
+                        elif st.session_state.prices_df_discrete is not None and asset_symbol in st.session_state.prices_df_discrete.columns: latest_prices_da[asset_symbol] = st.session_state.prices_df_discrete[asset_symbol].iloc[-1]
+                invest_capital = CURRENT_PORTFOLIO_VALUE_USD * (1 - st.session_state.target_cash_allocation_pct_final)
+                st.write(f"**Kapital für Rebalancing (investierter Teil, nach dyn. Cash):** ${invest_capital:,.2f}")
+                final_w_discrete = {}; temp_sum_w = 0
+                for asset, weight in st.session_state.opt_weights_current_run.items():
+                    current_asset_price_for_min_check = latest_prices_da.get(asset)
+                    if current_asset_price_for_min_check and current_asset_price_for_min_check > 0:
+                        if weight * invest_capital >= MIN_USD_ALLOCATION_PER_ASSET: final_w_discrete[asset] = weight; temp_sum_w += weight
+                if temp_sum_w > 0:
+                    norm_discrete_w = {k: v / temp_sum_w for k, v in final_w_discrete.items()}
+                    actual_capital_discrete = invest_capital * temp_sum_w
+                    st.write(f"Assets nach Mindestfilter ({MIN_USD_ALLOCATION_PER_ASSET}$): {len(norm_discrete_w)}, Kapital dafür: ${actual_capital_discrete:,.2f}")
+                    if norm_discrete_w and actual_capital_discrete > 1 :
+                        prices_for_da_final = {k: v for k,v in latest_prices_da.items() if k in norm_discrete_w and v > 0}
+                        missing_prices_assets = [asset for asset in norm_discrete_w if asset not in prices_for_da_final]
+                        if missing_prices_assets:
+                            st.warning(f"Fehlende Preise für diskrete Allokation: {', '.join(missing_prices_assets)}. Diese Assets werden ignoriert.")
+                            norm_discrete_w = {k:v for k,v in norm_discrete_w.items() if k in prices_for_da_final}
+                            if not norm_discrete_w: raise ValueError("Keine Assets mit Preisen für diskrete Allokation.")
+                        if not norm_discrete_w: st.info("Keine Assets nach Preisfilterung für diskrete Allokation.")
+                        else:
+                            da = DiscreteAllocation(norm_discrete_w, pd.Series(prices_for_da_final), total_portfolio_value=actual_capital_discrete, short_ratio=None)
+                            allocation, leftover = da.greedy_portfolio(); alloc_data_discrete = []; total_alloc_val_check = 0
+                            for sym, num in allocation.items():
+                                price_for_val = prices_for_da_final.get(sym)
+                                if price_for_val and price_for_val > 0:
+                                    val = num * price_for_val; total_alloc_val_check += val
+                                    alloc_data_discrete.append({"Asset": sym, "Stückzahl": f"{num:.4f}", "Zielwert (USD)": f"${val:,.2f}"})
+                            if alloc_data_discrete: st.dataframe(pd.DataFrame(alloc_data_discrete).set_index('Asset'))
+                            st.write(f"**Summe Zielwerte diskrete Allokation:** ${total_alloc_val_check:,.2f}"); st.write(f"**Nicht zugewiesenes Kapital (Rest):** ${leftover:.2f}")
+                    else: st.info("Keine Assets nach Filter/Normalisierung oder zu wenig Kapital für diskrete Allokation.")
+                else: st.info(f"Keine Assets erfüllen Mindestallokation von {MIN_USD_ALLOCATION_PER_ASSET}$.")
+            except Exception as e: st.error(f"FEHLER Diskrete Allokation: {e}"); traceback.print_exc()
+        st.markdown("---")
+
+        opt_perf_mc = st.session_state.get('opt_perf_data_current_run', {})
+        if opt_perf_mc and opt_perf_mc.get("annual_return") is not None and opt_perf_mc.get("annual_volatility") is not None :
+            st.subheader("🎲 Monte Carlo Simulationen des optimierten Portfolios")
+            tab_titles_mc = [f"{d} Tag(e)" for d in MC_DAYS_TO_SIMULATE_SHORT_TERM] + [f"{MC_DAYS_TO_SIMULATE_LONG_TERM} Tage"]
+            tabs_mc = st.tabs(tab_titles_mc)
+            for i, days_to_sim_mc in enumerate(MC_DAYS_TO_SIMULATE_SHORT_TERM + [MC_DAYS_TO_SIMULATE_LONG_TERM]):
+                with tabs_mc[i]:
+                    mc_fig, mc_stats = run_monte_carlo_simulation(opt_perf_mc["annual_return"], opt_perf_mc["annual_volatility"], MC_SIMULATIONS, days_to_sim_mc, 100, f"{days_to_sim_mc}-Tage", True)
+                    if mc_fig: st.pyplot(mc_fig); plt.close(mc_fig) 
+                    if mc_stats: st.caption(f"Statistiken ({days_to_sim_mc} T.): Mean={format_price(mc_stats['mean'])}, Median={format_price(mc_stats['median'])}, 5%={format_price(mc_stats['p5'])}, 95%={format_price(mc_stats['p95'])}")
+        else: st.info("Monte-Carlo nicht möglich (Performance-Daten des optimierten Portfolios fehlen oder sind ungültig).")
+        st.markdown("---")
+
+        col_wd, col_corr = st.columns(2)
+        with col_wd:
+            if 'weekday_df' in st.session_state and st.session_state.weekday_df is not None and not st.session_state.weekday_df.empty:
+                st.subheader("📅 Hist. Wochentags-Performance"); st.dataframe(st.session_state.weekday_df.style.format("{:.2f}%", na_rep="N/A"))
+                today_wd_num = datetime.now(timezone.utc).weekday(); wd_names = ["Mo","Di","Mi","Do","Fr","Sa","So"]
+                st.caption(f"Heute ist {wd_names[today_wd_num]}. Hist. Daten sind keine Zukunftsgarantie!")
+            else: st.info("Keine Daten für Wochentagsanalyse.")
+        with col_corr:
+            st.subheader("🔗 Korrelationsmatrix"); corr_m_plot = st.session_state.get('corr_matrix')
+            if corr_m_plot is not None and not corr_m_plot.empty:
+                fig_corr = plot_correlation_matrix_heatmap_st(corr_m_plot, title="Korrelation (Top Optimierte Assets)")
+                if fig_corr: st.pyplot(fig_corr); plt.close(fig_corr)
+            else: st.info("Keine Daten für Korrelationsmatrix.")
+        st.markdown("---")
+
+        st.subheader("🥧 Zielportfolio Allokation"); opt_w_plot = st.session_state.get('opt_weights_current_run')
+        if opt_w_plot:
+            plot_opt_w = {k:v for k,v in opt_w_plot.items() if v > 0.0001}
+            if plot_opt_w:
+                fig_alloc = plot_portfolio_allocation_st(plot_opt_w, title=f"Optimierte Zielallokation (Investierter Teil)")
+                if fig_alloc: st.pyplot(fig_alloc); plt.close(fig_alloc)
+            else: st.info("Keine signifikanten Gewichte im optimierten Portfolio für Plot.")
+        else: st.info("Kein optimiertes Portfolio für Plot.")
+        print_footer_st()
+    elif st.session_state.get('analysis_in_progress', False): pass
+    else: st.info("Willkommen! Bitte passe die Konfigurationen in der Sidebar an und klicke auf '🚀 Analyse Starten / Aktualisieren', um die Analyse zu beginnen.")
+
+if __name__ == "__main__":
+    try: import sklearn
+    except ImportError: st.error("FEHLER: 'scikit-learn' nicht gefunden. Bitte mit `pip install scikit-learn` installieren."); st.stop()
+    run_analysis()

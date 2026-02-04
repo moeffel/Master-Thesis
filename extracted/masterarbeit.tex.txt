@@ -1,0 +1,510 @@
+Source: masterarbeit.tex
+Type: tex
+
+\chapter{Literature Review and Theoretical Background}
+\label{chap:Literature Review and Theoretical Background}
+
+This chapter provides the theoretical foundation and reviews relevant academic research on the financial characteristics of cryptocurrencies and the application of time-series models, particularly ARIMA-GARCH, for their analysis.
+
+\section{Overview of Selected Cryptocurrencies}
+\label{sec:lit_review_assets}
+
+This section introduces the four cryptocurrencies analyzed in this thesis. Bitcoin (BTC), Ethereum (ETH), Dogecoin (DOGE), and Solana (SOL). These assets were selected to represent a broad spectrum of technological purposes, user dynamics, and market behaviors - ranging from dominant assets such as Bitcoin to emerging platforms like Solana and sentiment-driven tokens like Dogecoin.
+
+
+\textbf{Bitcoin (BTC)} was introduced in 2009 by the pseudonymous Satoshi Nakamoto as the first decentralized cryptocurrency.\footnote{\ Cf.\ \citeauthor{nakamoto2008} (\citeyear{nakamoto2008}).} Bitcoin is often compared to 'digital gold' because of its characteristics such as programmed scarcity, decentralized structure, and potential as a store of value.\footnote{\ Cf.\ \citeauthor{Ammous2018Bitcoin} (\citeyear{Ammous2018Bitcoin}).}
+
+\textbf{Ethereum (ETH)} Ethereum (ETH) was launched in 2015 by Vitalik Buterin and others as a general-purpose, programmable blockchain. Unlike Bitcoin, Ethereum was explicitly designed to support Turing-complete smart contracts and decentralized applications (dApps), enabling a wide range of use cases beyond digital currency.\footnote{\ Cf.\ \citeauthor{antonopoulos2018ethereum} (\citeyear{antonopoulos2018ethereum}), p.~33ff.} It forms the backbone of the decentralized finance ecosystem (DeFi) and the broader token economy, allowing use cases beyond simple value transfer.
+
+\textbf{Dogecoin (DOGE)} originated in 2013 as a meme‑inspired fork of Litecoin and was created as a satirical commentary on the speculative nature of cryptocurrencies. However, it quickly gained traction through social media communities and endorsements by high-profile individuals. Unlike Bitcoin, Dogecoin has no supply cap and is primarily driven by speculative sentiment and community enthusiasm.\footnote{\ Cf.\ \citeauthor{Nani2022Doge} (\citeyear{Nani2022Doge}), p.~1720 ff.}
+
+\textbf{Solana (SOL)} is a high-performance blockchain designed as a scalable and secure platform for decentralized applications (dApps). It utilizes innovations such as its unique Proof of History (PoH) consensus mechanism, often combined with Proof of Stake (PoS), to differentiate itself. This architecture allows Solana to achieve significantly higher transaction throughput, processing thousands of transactions per second, and offers lower transaction fees compared to many other blockchain platforms like Ethereum. Consequently, Solana is well suited to support large-scale dApps, including those in decentralized finance (DeFi) and gaming.\footnote{\ Cf.\ \citeauthor{Mishra2024SolanaReview} (\citeyear{Mishra2024SolanaReview}), p.~197 ff.}
+\vspace{0.5em}
+ 
+Table~\ref{tab:crypto_overview} summarizes the key characteristics of these four cryptocurrencies, highlighting their different origins, primary functions, and notable features that contribute to their distinct market behaviors.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{cccc p{6cm}}  % <- Textumbruch in letzter Spalte
+        \toprule
+        \textbf{Coin} & \textbf{Launched} & \textbf{Primary Use} & \textbf{Notable Features} \\
+        \midrule
+        BTC & 2009 & Store of Value & First-mover, limited supply, "digital gold" \\
+        ETH & 2015 & Smart Contracts & dApps, DeFi, strong developer ecosystem \\
+        DOGE & 2013 & Meme / Tipping & Viral growth, inflationary, community-driven \\
+        SOL & 2020 & Scalable Platform
+        & Proof of History, fast throughput, low fees \\
+        \bottomrule
+    \end{tabular}
+    \caption{Key characteristics of the selected cryptocurrencies. Source: Own illustration .} % Added source clarification
+    \label{tab:crypto_overview}
+\end{table}
+\vspace{0.5em}
+
+\section{Characteristics of Cryptocurrency Markets}
+\label{sec:lit_review_characteristics}
+
+Cryptocurrencies represent a novel asset class displaying several distinct features. Primarily, they are digital or virtual assets secured through cryptography, typically operating on decentralized ledger technologies like blockchain, which ensures transparency and immutability of transactions.\footnote{\ Cf.\ \citeauthor{valdivia2019} (\citeyear{valdivia2019}), p.~34.} 
+
+\subsection{Extreme Volatility}
+
+Despite their technological and functional differences, a common characteristic across many cryptocurrencies is their extreme price volatility. This extreme volatility has been a frequent point of criticism and academic studies. Research has indicated the prevalence of speculative bubbles and herd behavior in these markets. For instance, \citeauthor{cheah2015} (\citeyear{cheah2015}) provided early evidence suggesting that Bitcoin prices often deviated substantially from estimates of fundamental value, indicative of speculative bubble activity.\footnote{\ Cf.\ \citeauthor{cheah2015} (\citeyear{cheah2015}), p.~33ff.}
+ 
+Such volatility complicates traditional valuation approaches and increases uncertainty for investors and analysts. Consequently, accurately modeling and forecasting volatility is paramount for effective risk management and valuation within the cryptocurrency space.
+
+Building upon the descriptive overview, Figure~\ref{fig:price_log} and Figure~\ref{fig:volatility_compare} illustrate key market characteristics – namely extreme price fluctuations and volatility clustering – that are typical for cryptocurrencies.
+
+% --- Intro: What is shown ---
+To illustrate different market dynamics, Figure~\ref{fig:price_lin} shows the historical price development (linear price scale) from early 2020 to 2025. 
+
+% --- Figure 1: Lin Price Development ---
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Masterarbeit/figures/Prices linear scale.png}
+    \caption{Linear Price Development of BTC, ETH, DOGE, and SOL (2020–2024)}
+    \label{fig:price_lin}
+\end{figure}
+
+% --- Figure 1: Log Price Development ---
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Masterarbeit/figures/price_trends_2020_2024.png}
+    \caption{Logarithmic Price Development of BTC, ETH, DOGE, and SOL (2020–2024)}
+    \label{fig:price_log}
+\end{figure}
+
+% --- Description of Figure 1 ---
+Figure~\ref{fig:price_log} highlights the distinct price trajectories of the selected cryptocurrencies. The logarithmic scale shows relative price changes despite large differences in levels.
+
+Bitcoin (BTC) maintains the highest and most stable trend. Ethereum (ETH) follows a similar but lower-magnitude pattern. Solana (SOL), entering later, shows rapid growth in 2021 followed by corrections. Dogecoin (DOGE) exhibits sharp, short-lived spikes, especially in early 2021, reflecting its speculative nature. All assets show significant price fluctuations typical for crypto markets. Figure~\ref{fig:volatility_compare} complements this view by comparing the 30-day rolling realized volatility over the same period.
+
+% --- Figure 2: Realized Volatility ---
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Masterarbeit/figures/figure_2_2_realized_volatility_minimal.png}
+    \caption{30-Day Rolling Realized Volatility of Selected Cryptocurrencies (2020–2024)}
+    \label{fig:volatility_compare}
+\end{figure}
+
+% --- Description of Figure 2 ---
+ Bitcoin (BTC) shows the lowest and most stable volatility. Ethereum (ETH) is slightly more volatile, often tracking BTC. Dogecoin (DOGE) experiences extreme spikes, aligned with its speculative price moves. Solana (SOL) also displays high volatility, especially during 2021.
+
+The chart illustrates volatility clustering: periods of high (or low) volatility persist. Annualized volatility often exceeds 1 (or 100\%), especially for DOGE and SOL, indicating considerable risk exposure.
+
+\subsection{Heavy Tails and Excess Kurtosis}
+
+A defining characteristic of cryptocurrency return distributions is their significant deviation from the Gaussian (normal) distribution. 
+Formal statistical tests, such as the Jarque-Bera test which assesses skewness and kurtosis, routinely reject the null hypothesis of normality for cryptocurrency returns. Sample kurtosis values typically far exceed the benchmark of 3 associated with the normal distribution, indicating substantial excess kurtosis.\footnote{\ Cf.\ \citeauthor{dorfleitner2018cryptocurrencies} (\citeyear{dorfleitner2018cryptocurrencies}), p.~478f.} 
+  
+Empirical analysis consistently reveals that cryptocurrency returns exhibit leptokurtosis, meaning their distributions are characterized by "heavy" or "fat" tails and a higher peak around the mean compared to a normal distribution. This implies that extreme price movements, both positive and negative, occur with much greater frequency than would be predicted under the assumption of normality.\footnote{\ Cf.\ \citeauthor{cheah2015} (\citeyear{cheah2015}), p.~35.} 
+ 
+% --- Figure 2: Realized Volatility ---
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Masterarbeit/figures/distribution.png}
+    \caption{Distribution Cryptocurrencies (2020–2025)}
+    \label{fig:distribution}
+\end{figure}
+
+The presence of such heavy tails has profound implications for risk management. Standard financial models and risk metrics, such as Value-at-Risk (VaR) or Expected Shortfall (ES), that rely on the assumption of normality will systematically underestimate the probability and potential magnitude of large losses in cryptocurrency portfolios.\footnote{\ Cf.\ \citeauthor{bowala2022optimizing} (\citeyear{bowala2022optimizing}), p.~1.}
+
+ 
+\subsection{Volatility Persistence (Long Memory)}
+
+Bollerslev (1986) demonstrated with the GARCH(1,1) model that today’s volatility is largely driven by past volatility—most notably by yesterday’s variance. This phenomenon is known as volatility clustering.\footnote{\ Cf.\ \citeauthor{Bollerslev1987} (\citeyear{Bollerslev1987}), p.~543f.}
+ 
+Classical GARCH models assume a rapid, exponential decay of past shocks, corresponding to an I(0) process.  In contrast, IGARCH models suggest full persistence—i.e., no decay at all—equivalent to an I(1) process.
+Baillie, Bollerslev, and Mikkelsen (1996) argue that these two extreme assumptions are too restrictive in practice.  Many financial time series are in fact \emph{fractionally integrated} with order $0<d<1$, meaning that volatility shocks decay only \emph{hyperbolically} slowly—a behavior termed \emph{long memory}. To capture this intermediate persistence, they introduced the Fractionally Integrated Generalized
+AutoRegressive Conditionally Heteroskedastic (FIGARCH) model, which modify GARCH with fractional differencing of order $d$. This slower decay of volatility shocks implies that standard GARCH models tend to \emph{underestimate} the real future volatility - especially over longer horizons. \footnote{\ Cf.\ \citeauthor{Baillie1996FIGARCH} (\citeyear{Baillie1996FIGARCH}), p.~4ff.}
+
+ The following figure (Baillie et al. (1996) compares the dynamic behaviour of these three model types in terms of their cumulative impulse response functions.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.75\linewidth]{Masterarbeit/figures/Cumulative impulse response function.png}
+  \caption{%
+    Cumulative impulse response functions for different conditional volatility models.\\
+    Source: Baillie \textit{et al.} (1996), p.~26.
+  }
+  \label{fig:Cumulative impulse response function}
+\end{figure}
+
+\noindent
+Figure~\ref{fig:Cumulative impulse response function} shows how the cumulative impulse response evolves over time across different conditional volatility models. The horizontal axis indicates the lag $k$, i.e., the number of periods since an initial unit shock. The vertical axis displays the cumulative effect of that shock on the one-step-ahead conditional variance.
+
+The impulse response of the GARCH model decays quickly and converges to a low level, indicating short memory in volatility. In contrast, the IGARCH response remains constant over time, implying that shocks never decay and persist indefinitely. The FIGARCH model exhibits intermediate behaviour: the response declines gradually at a hyperbolic rate, capturing the long-memory property often observed in financial time series.
+
+This comparison illustrates how FIGARCH provides a flexible structure that accommodates both short- and long-term persistence in volatility, bridging the gap between the extremes assumed by GARCH and IGARCH.
+
+
+\subsection{Jumps / Discontinuities}
+%A salient feature of cryptocurrency prices is their tendency to move in sudden, outsized leaps—so‑called jumps—rather than in smooth, continuous increments.
+%Using one‑minute Bitcoin data for mid‑2017, Chaim and Laurini (2018) estimate a Poisson‑jump stochastic‑volatility model and find that jump magnitudes are heavy‑tailed and cluster around news‑intensive trading hours (pp.159–161).  They further demonstrate via Monte‑Carlo simulation that neglecting jumps causes one‑day‑ahead GARCH volatility forecasts to be under‑stated by up to 25\% (p.162).
+%Because similar intraday spikes have been observed for Ethereum, Dogecoin and Solana, these results suggest that a standard ARIMA‑GARCH—whose innovations are continuous—may systematically miss extreme moves and under‑predict risk across all four coins considered in this thesis.\footnote{Cf.\citeauthor{Chaim2018JumpsCrypto}(\citeyear{Chaim2018JumpsCrypto}), pp.159–162.}
+\subsection{Day-of-Week / Weekend Effect}
+%Although cryptocurrencies trade 24hours a day, market behaviour still varies with the calendar.
+%Examining daily Bitcoin data from 2010to2017, Aharon and Qadan (2019) identify a “Monday premium’’: average Monday returns are ≈0.9\% and conditional variance is roughly 30\% higher on Mondays than the weekly mean (pp.418–419).  Robust EGARCH checks confirm Mondays account for a disproportionate share of volatility clustering (p.421).
+%If Bitcoin and Ethereum share this pattern while Dogecoin or Solana do not, a single ARIMA‑GARCH specification—one that ignores weekday effects—could perform unevenly across assets. Calendar dummies or periodic GARCH terms may therefore improve model accuracy, an issue investigated in the empirical section.\footnote{Cf.\citeauthor{Aharon2019WeekdayBTC}(\citeyear{Aharon2019WeekdayBTC}), pp.418–421.}
+\subsection{Volatility Spillovers / Connectedness}
+%Volatility shocks in one cryptocurrency often propagate to others.
+%In a BEKK‑MGARCH analysis of Bitcoin, Ethereum and Litecoin (Jan2015–Feb2018), Katsiampa,orbet andLucey (2019) find bi‑directional shock and volatility spillovers, with the strongest transmission running from Bitcoin to the alt‑coins (pp.70–72).  Conditional correlations rise sharply in stress periods, underscoring Bitcoin’s role as a volatility “sender.’’
+%Ignoring such linkages—and modelling each coin in isolation—may cause an ARIMA‑GARCH to miss an important driver of risk, especially for Ethereum, Dogecoin and Solana, whose volatility often follows movements in Bitcoin.\footnote{Cf.\citeauthor{Katsiampa2019Spillovers}(\citeyear{Katsiampa2019Spillovers}), pp.70–72.}
+\subsection{Leverage Effect (Asymmetry)}
+%The leverage effect—whereby negative returns raise future volatility more than positive returns—is well established for equities, but evidence in crypto remains mixed.
+%Using weekly Bitcoin data (Apr2013–Sep2020), Eroğlu Sevinç and Yüce Akıncı (2021) estimate an EGARCH(1,1) model and report a significant negative asymmetry parameter (γ=–0.18,p<0.01), indicating that price drops increase subsequent volatility more than price rises (pp.793–794).  Persistence remains above 0.95, so these volatility elevations linger.
+%Because the symmetric GARCH component in an ARIMA‑GARCH treats gains and losses alike, forecasts may understate risk after downturns—especially for Bitcoin. Whether similar asymmetry exists for Ethereum, Dogecoin or Solana is tested in our model‑selection exercises.\footnote{Cf.\citeauthor{ErogluSevinc2021LeverageBTC} (\citeyear{ErogluSevinc2021LeverageBTC}), pp.793–794.}
+ 
+%Further stylized facts common in financial time series are also observed in cryptocurrencies, often in exaggerated forms. These include:
+
+\section{Market Efficiency in Cryptocurrency Markets}
+\label{sec:lit_review_efficiency}
+
+In recent years, cryptocurrencies have evolved from a fringe phenomenon into a significant part of global financial markets. As their relevance grows, understanding whether their price movements are predictable becomes increasingly important. Central to this discussion is the concept of information efficiency, the idea that asset prices fully reflect available information. If this holds true, consistent outperformance through historical data analysis becomes unlikely. Assessing the efficiency of cryptocurrency markets is, therefore, not merely theoretical but crucial for developing sound trading strategies, regulatory policies, and evaluating the long-term viability of crypto assets. 
+  
+The Efficient Market Hypothesis (EMH), a foundational concept in financial economics, offers a framework for evaluating such questions. As originally developed by Fama (1970), the EMH posits that asset prices reflect all available information, making it impossible to consistently achieve returns that exceed average market performance through information-based trading. The EMH exists in three forms: weak, semi-strong, and strong. Weak form efficiency implies that current prices reflect all information contained in past prices, making technical analysis based solely on historical price patterns unprofitable. In such a market, studying historical price movements and trading volumes would not yield systematic trading profits beyond what could be expected from a simple buy-and-hold strategy. Any patterns observed in past price data would be purely random and would lack predictive power for future price changes. The core idea is that all relevant information extractable from past trading data is already fully incorporated into the current price.
+Semi-strong-form efficiency assumes that all publicly available information, including not only past prices, but also financial statements, earnings announcements, economic data, and news, is already reflected in asset prices. In this form, fundamental analysis or reacting to public news would also fail to produce abnormal returns, as markets adjust almost instantaneously once information becomes available.
+Strong-form efficiency takes this further, positing that all information, both public and private (e.g. insider knowledge), is already embedded in current prices. If markets were truly strong-form efficient, even investors with privileged or insider access would not be able to systematically outperform the market.\footnote{\ Cf.\ \citeauthor{Fama1970EMH} (\citeyear{Fama1970EMH})}
+
+The examination of the weak form of market efficiency using ARIMA models, as presented in this study for Bitcoin (BTC), Ethereum (ETH), Dogecoin (DOGE), and Solana (SOL), is closely connected to a broad academic discourse. Early analyses, particularly those focusing on Bitcoin, often pointed to inefficiencies in the market and thus to the possibility of achieving abnormal returns based on historical price data.\footnote{Cf. \citeauthor{Urquhart2016} (\citeyear{Urquhart2016}), p. 82; \citeauthor{cheah2015} (\citeyear{cheah2015}), p. 35.} However, as cryptocurrency markets have matured and become more liquid, the overall picture has become more nuanced. More recent studies frequently report mixed findings, indicating that the level of market efficiency can vary over time and across different crypto assets.\footnote{Cf. \citeauthor{Kyriazis2019} (\citeyear{Kyriazis2019}), pp. 2 ff.}
+
+Within this context, Brauneis and Mestel (2018) also observed that cryptocurrencies do not exhibit a uniform level of efficiency. More established and liquid assets such as Bitcoin tend to display stronger signs of weak form efficiency compared to smaller or newer coins. Cryptocurrencies with lower market capitalization and reduced liquidity are generally found to be less efficient, as they more frequently deviate from the random-walk hypothesis. Bitcoin, on the other hand, demonstrates the highest efficiency among the assets examined, which supports the earlier conclusions by Urquhart (2016) that the efficiency of Bitcoin has improved over time.\footnote{Cf. \citeauthor{BrauneisMestel2018} (\citeyear{BrauneisMestel2018}), p. 60.}
+ 
+  %%%%%
+These empirical observations of time-varying and asset-specific efficiency suggest that a static concept of efficiency may not adequately capture the dynamics of emerging markets. In response to the limitations of the traditional Efficient Market Hypothesis (EMH) in light of such findings, and drawing from insights in behavioral economics, \citeauthor{Lo2004} (\citeyear{Lo2004}) developed the Adaptive Market Hypothesis (AMH). The Adaptive Market Hypothesis (AMH) posits that the degree of market efficiency changes over time, as market participants learn and adapt to shifting conditions through mechanisms similar to competition, adaptation, and natural selection. Instead of assuming consistent rationality, the AMH recognizes that investors may be influenced by cognitive biases such as overconfidence,\footnote{Cf. \citeauthor{BarberOdean2001} (\citeyear{BarberOdean2001}).} loss aversion,\footnote{Cf. \citeauthor{KahnemanTversky1979} (\citeyear{KahnemanTversky1979}).} or herd behavior.\footnote{Cf. \citeauthor{HubermanRegev2001} (\citeyear{HubermanRegev2001}).} As a result, market participants—and thus market efficiency—adapt to changing environmental conditions, competition, and learning processes. This can lead to cycles in which markets oscillate between phases of higher and lower efficiency.\footnote{Cf. \citeauthor{Lo2005ReconcilingEfficientMarkets} (\citeyear{Lo2005ReconcilingEfficientMarkets}), p. 22 ff.}
+These inefficiencies, however, may diminish as learning processes and arbitrage come into play.\footnote{Cf. \citeauthor{Lo2004} (\citeyear{Lo2004}), p. 15 ff.}
+ 
+Empirical support for the AMH in the context of cryptocurrencies can be found, for example, in the study by \citeauthor{Khuntia2018} (\citeyear{Khuntia2018}), which used a rolling-window approach to detect evidence of time-varying efficiency in the Bitcoin market, consistent with the AMH framework.\footnote{Cf. \citeauthor{Khuntia2018} (\citeyear{Khuntia2018}), p. 26 ff.}
+
+The AMH thus provides a plausible theoretical framework for analyzing the complex and evolving efficiency dynamics in cryptocurrency markets. It helps explain why more established cryptocurrencies like Bitcoin may exhibit higher levels of efficiency, whereas newer assets or those driven by specific narrative dynamics, such as Dogecoin,\footnote{Cf. \citeauthor{Nani2022Doge} (\citeyear{Nani2022Doge}), p. 1719 ff.} may undergo more pronounced phases of inefficiency.
+
+The examination of the forecasting accuracy of ARIMA-GARCH models in this study, particularly through the use of a rolling-window methodology that allows for some degree of adaptation to changing market conditions, can also be interpreted in the context of the AMH. If the models fail to produce consistently superior forecasts, this would support the notion of weak market efficiency during the investigated period.
+
+\section{Time Series Modeling in Financial Markets}
+\label{sec:lit_review_timeseries}
+Building on the notion that market efficiency may vary over time and across assets, it becomes essential to adopt statistical tools capable of capturing such evolving dynamics. In particular, financial time series require models that can account for the probabilistic structure of sequential data and reflect both short-term dependencies and long-term trends.
+ 
+Financial time series analysis combines theoretical valuation concepts with strongly empirical data work. In contrast to many other fields, an additional degree of uncertainty is always present - for example, because key parameters such as the volatility of a stock return process are not directly observable. This is precisely why statistical methods play a key role in drawing reliable conclusions from existing time series.\footnote{Cf.\ \citeauthor{tsay2010} (\citeyear{tsay2010}), p. 1.}
+
+A time series is typically viewed as a realization from a stochastic process, where the goal of analysis is to infer the probability distribution of future values based on past observations. To this end, time-series models allow to formalize patterns, identify structure, and assess predictability within the data. Among these, an important class is the group of stationary processes, which exhibit statistical properties — such as mean and variance — that remain stable over time. For such processes, tools like the autocorrelation function and the spectral density are commonly used to describe temporal behavior.\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), p. 25.}
+
+\section{Econometric Framework for Time Series Modeling}
+\label{sec:econometric_framework}
+
+Building on the notion that market efficiency may vary over time and across assets, it becomes essential to adopt statistical tools capable of capturing such evolving dynamics. The analysis of financial time series relies on stochastic models that describe the probability structure of sequential data, allowing for the identification of patterns and the assessment of predictability.\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), p.~25.} This is particularly crucial in finance, where key parameters such as the volatility of an asset's return are not directly observable and must be inferred from the data.\footnote{\ Cf.\ \citeauthor{tsay2010} (\citeyear{tsay2010}), p.~1.}
+
+This section details the two-part econometric framework employed in this thesis. First, it outlines the Autoregressive Integrated Moving Average (ARIMA) model class, a widely used method for capturing linear dependencies in the conditional mean of a time series. This includes a discussion of model identification using the autocorrelation function (ACF), partial autocorrelation function (PACF), and information criteria. Second, it addresses the limitations of the constant-variance assumption in ARIMA models by introducing the Generalized Autoregressive Conditional Heteroskedasticity (GARCH) framework. The GARCH model and its key extensions are presented as the primary tools for capturing the time-varying volatility and other stylized facts characteristic of financial asset returns.
+
+\subsection{Modeling the Conditional Mean: The ARIMA Framework}
+Stationary models are based on the assumption that a time series is in equilibrium around a constant mean value level. These models are particularly suitable if statistical properties such as expected value, variance and autocorrelation do not change over time. In economic practice, however, it is often the case that many time series do not exhibit such stability and must be classified as non-stationary. Particularly in economic forecasting models, it has been shown that methods such as exponentially weighted moving averages - for example according to Holt\footnote{\ \citeauthor{holt1963} (\citeyear{holt1963}).}, Winters\footnote{\ \citeauthor{winters1960} (\citeyear{winters1960}).} or Brown\footnote{\ \citeauthor{brown1962} (\citeyear{brown1962}), p. 324-342.} - can nevertheless be suitable for certain forms of non-stationary processes. The decisive factor here is the selection of a suitable stochastic model, which is either based on stationary properties or is converted into a stationary form by transformation - for example by means of difference formation. Within this framework, the ARIMA model plays a central role, as it combines both stationary and integrated non-stationary components in a uniform approach.\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), p. 7ff.}
+
+The autoregressive–integrated moving-average (ARIMA) framework of
+\textcite{BoxJenkins1976} remains established method for modeling
+linear dependence in time-series data.  Written in back-shift
+notation, where \(Bz_t = z_{t-1}\) the approach compresses long
+lag structures into compact operator polynomials and thus
+facilitates both theory and forecasting.\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), p.~6.}
+
+The ARIMA methodology is built upon two primary components for stationary time series: the autoregressive (AR) and the moving average (MA) parts.
+
+An \textbf{autoregressive (AR) process} of order \(p\), abbreviated as AR(\(p\)), models the current value of a time series \(z_t\) as a linear combination of its \(p\) most recent past values and an uncorrelated white noise term \(a_t\). This captures the internal memory structure of the process. Using the \textit{backshift operator} \(B\), defined by \(B z_t = z_{t-1}\), the model is compactly expressed as
+\begin{equation}
+\phi(B) z_t = a_t,
+\quad \text{with} \quad 
+\phi(B) = 1 - \phi_1 B - \phi_2 B^2 - \dots - \phi_p B^p,
+\end{equation}
+where \(\phi(B)\) is the \emph{autoregressive lag polynomial}.  
+The process is said to be \emph{(weakly) stationary} if all roots of \(\phi(B) = 0\) lie outside the unit circle, ensuring a stable dynamic structure over time.\footnote{For the formal development of AR models and the conditions for stationarity, see \textcite[pp.~46–57]{BoxJenkins1976}.}
+
+A key requirement for stationarity in AR(\(p\)) models is that all roots of the characteristic polynomial \(\phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p\) lie outside the unit circle. That is, all complex solutions \(\lambda\) to \(\phi(\lambda^{-1}) = 0\) must satisfy \(|\lambda| > 1\). This condition ensures that the infinite expansion \( \phi(B)^{-1}\) converges and that past shocks have a diminishing influence on future values.%
+\footnote{See \textcite[p.~51]{BoxJenkins1976} for a full discussion of the stationarity condition in autoregressive models.}
+
+NOTE:
+Wenn \(|\lambda| > 1\), dann dämpfen sich die Effekte vergangener Schocks, weil sie mit jeder Zeitstufe schwächer werden.
+Wenn \(|\lambda| \leq 1\), dann können Schocks dauerhaft wirken oder sogar explodieren → nicht-stationär.
+
+The corresponding one-step-ahead forecast is the conditional expectation, which is a weighted average of the last \(p\) observations:
+\begin{equation}
+\widehat{z}_{t|t-1} = \mathbb{E}[z_t \mid \mathcal{F}_{t-1}] = \phi_1 z_{t-1} + \dots + \phi_p z_{t-p},
+\end{equation}
+where \(\mathcal{F}_{t-1}\) denotes the information available up to time \(t-1\).\footnote{\ For the derivation and properties of ARIMA forecasts, see \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), Chapter 5, pp.~126 ff.}
+
+A \textbf{moving average (MA) process} of order \(q\), abbreviated as MA(\(q\)), expresses the current value \(z_t\) as a linear combination of the current and \(q\) lagged white-noise innovations. This formulation captures the influence of past shocks rather than past observations. Formally, the model is written as
+\begin{equation}
+z_t = \theta(B) a_t,
+\quad \text{with} \quad
+\theta(B) = 1 + \theta_1 B + \theta_2 B^2 + \dots + \theta_q B^q,
+\end{equation}
+where \(a_t \stackrel{\mathrm{iid}}{\sim} \text{WN}(0, \sigma_a^2)\) denotes a white-noise process with zero mean and constant variance, and \(\theta(B)\) is the \emph{moving-average lag polynomial}.\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), pp.~65-69.}
+
+In practice, many time series exhibit characteristics of both types, leading to the mixed \textbf{Autoregressive Moving Average (ARMA(\(p,q\)))} model. While the stationary AR and MA forms are sufficient for series whose
+second moments are time-invariant, many economic and financial
+sequences display stochastic trends.  These can be removed, or at least
+rendered weakly stationary, by differencing. true strength of the framework comes from the \textbf{ integrated (I)} component, which extends its applicability to non-stationary series. By applying the ARMA(\(p,q\)) model not to the original series \(z_t\) but to its \(d\)-th difference \(w_t = \nabla^d z_t\), where \(\nabla = (1-B)\) is the difference operator, the full \textbf{ARIMA(\(p,d,q\))} model is formed. After applying the difference operator a time series is considered (weakly) stationary if its statistical properties, such as the mean, variance, and autocorrelation structure, do not change over time.\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), p.~26 ff.}.
+ 
+Combining these yields the general ARIMA(\(p,d,q\)) model, which provides a robust foundation for forecasting the conditional mean of a time series:\footnote{\ Cf.\ \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), Chapter 4, pp.~85??? ff.}
+\begin{equation}
+\phi(B)(1 - B)^d z_t = \theta(B) a_t
+\label{eq:arima_general_form}
+\end{equation}
+
+
+The complete structure of an ARIMA process can be elegantly visualized as a cascade of three filters, as originally illustrated by Box and Jenkins and shown in Figure \ref{fig:arima_block_diagram_revised}.
+
+\begin{figure}[H]
+      \centering
+      % Ensure the path to your image is correct relative to your main .tex file
+      \includegraphics[width=0.75\linewidth]{Masterarbeit/figures/arima_block_diagram.png}
+       \caption{Block diagram for autoregressive integrated moving average (ARIMA) model, illustrating the three-step filter structure from white noise \(a_t\) to the time series \(z_t\).\protect\footnote{Adapted from \citeauthor{BoxJenkins1976} (\citeyear{BoxJenkins1976}), p.~12.}}
+      \label{fig:arima_block_diagram_revised}
+\end{figure}
+
+As shown in Figure~\ref{fig:arima_block_diagram_revised}, the generation of an ARIMA series can be understood as follows:
+\begin{enumerate}
+    \item A \textit{moving average filter} \(\theta(B)\), which transforms the fundamental white noise innovations \(a_t\) into correlated residuals \(e_t\),
+    \begin{equation}
+        e_t = \theta(B) a_t,
+    \end{equation}
+    
+    \item An \textit{autoregressive filter}, represented by \(\phi^{-1}(B)\), maps these residuals into a stationary process \(w_t\),
+    \begin{equation}
+        w_t = \phi^{-1}(B) e_t,
+    \end{equation}
+    
+    \item And a final \textit{summation filter} \(S^d\), which is the inverse of the differencing operator \(\nabla^d\), reintegrates the stationary signal \(w_t\) to produce the observed (potentially non-stationary) series \(z_t\),
+    \begin{equation}
+    z_t = S^d w_t,\footnote{%
+        The power series \(S = (1-B)^{-1} = 1 + B + B^{2} + \dots\) converges
+        in mean square for \(|B|<1\), i.e.\ for all stationary roots.}
+\end{equation}
+    where the operator \(S\) represents cumulative summation:
+    \[
+        S w_t = \sum_{j=0}^{\infty} w_{t-j} = w_t + w_{t-1} + w_{t-2} + \dots
+    \]
+\end{enumerate}
+
+This decomposition highlights the modular nature of ARIMA models: stationarity is achieved through differencing, short-term shock dynamics are captured by the moving average filter, and persistent memory is incorporated through the autoregressive component. The figure clarifies that, conceptually, an ARIMA process is built as a chain of transformations from pure noise to a structured, observable time series.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Masterarbeit//figures/vergleich.png}
+    \caption{Enter Caption}
+    \label{fig:enter-label}
+\end{figure}
+\subsection{Identifying Time Series Models via ACF and PACF Patterns}
+
+The ACF measures the correlation between a time series and its lagged values, while the PACF measures this correlation after removing the linear effects of the intermediate lags. These functions exhibit distinct theoretical patterns that help identify the underlying process. In practical model building, the shape of these plots provides a visual guide for determining the appropriate lag order of AR and MA components. This makes ACF and PACF plots a key diagnostic tool in the preliminary selection of model structure, especially within the Box-Jenkins framework:
+
+
+An \textbf{AR(\(p\))} process is characterized by a PACF that cuts off after lag \(p\) and an ACF that tails off exponentially.  This occurs because the AR(\(p\)) model includes direct linear relationships up to lag \(p\), which appear as significant spikes in the PACF. Beyond lag \(p\), partial autocorrelations drop to zero, since any further dependencies are only indirect. The ACF, on the other hand, captures both direct and indirect effects — leading to a gradual, often exponential decline.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Masterarbeit/figures/ar2_example.pdf}
+    \caption{Illustration of an AR(2) process. The PACF shows a distinct cutoff after lag 2, while the ACF decays gradually.
+    This pattern is characteristic for autoregressive processes of order \(p\), where the current value depends directly on the last \(p\) values.}
+    \label{fig:acf_pacf_ar2}
+
+    \vspace{0.5em}
+    \small\textit{Source: Own illustration based on simulated AR(2) data, as described by Box and Jenkins (1976).}
+\end{figure}
+
+
+An \textbf{MA(\(q\))} process is characterized by an ACF that cuts off after lag \(q\) and a PACF that tails off. This behavior reflects the structure of the MA(\(q\)) model, where the current observation is a linear function of past error terms up to lag \(q\). As a result, the ACF displays significant values only up to lag \(q\), while the PACF shows a more gradual decay due to the indirect correlations between the observed values.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Masterarbeit/figures/ma1_example.pdf}
+    \caption{Illustration of an MA(1) process. The ACF cuts off sharply after lag 1, while the PACF exhibits a gradual decay.
+    This reflects the property of moving average processes, in which current values are functions of past shocks.}
+    \label{fig:acf_pacf_ma1}
+
+    \vspace{0.5em}
+    \small\textit{Source: Own illustration based on simulated MA(1) data, as described by Box and Jenkins (1976).}
+\end{figure}
+
+
+An \textbf{ARMA(\(p,q\))} process is characterized by both the ACF and PACF tailing off. In ARMA models, the presence of both autoregressive and moving average components introduces a recursive dependency that extends over time. Consequently, neither the ACF nor the PACF exhibits a clear cutoff; instead, both functions decline gradually, reflecting the interplay of direct and indirect effects from both past values and past shocks.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Masterarbeit/figures/arma11_example.pdf}
+    \caption{Illustration of an ARMA(1,1) process. Both the ACF and PACF tail off gradually, with no clear cutoff.
+    This behavior is typical for models that include both autoregressive and moving average components.}
+    \label{fig:acf_pacf_arma11}
+
+    \vspace{0.5em}
+    \small\textit{Source: Own illustration based on simulated ARMA(1,1) data, as described by Box and Jenkins (1976).}
+\end{figure}
+
+Since sample patterns can be ambiguous, the visual inspection is complemented by statistical information criteria. 
+Two widely used metrics are the \textit{Akaike Information Criterion (AIC)} and the \textit{Bayesian Information Criterion (BIC)}.
+The AIC is defined as:
+\begin{equation}
+\text{AIC} = -2 \log L + 2k,
+\end{equation}
+and the BIC as:
+\begin{equation}
+\text{BIC} = -2 \log L + k \log T,
+\end{equation}
+where \(L\) is the maximum likelihood of the model, \(k\) is the number of estimated parameters, and \(T\) the sample size. 
+Both criteria penalize model complexity, but the BIC applies a stronger penalty as the sample size increases.
+
+The goal is to minimize AIC or BIC, thereby selecting the model that best balances goodness-of-fit and complexity.
+In particular, the BIC favors more \textit{parsimonious} models—that is, models that explain the data well using the fewest possible parameters.
+Such models are less likely to overfit and are generally preferred for forecasting purposes.
+\footnote{For a detailed comparison of model selection criteria, see \textcite{Burnham2002ModelSelection} and \textcite{Lutkepohl2005}.}\footnote{\ The practical application of information criteria in time series model selection is discussed in \citeauthor{tsay2010} (\citeyear{tsay2010}), pp.~46-48.}
+
+\subsection{Modeling Conditional Volatility: The GARCH Framework}
+\label{ssec:garch_modeling_final}
+
+While ARIMA models provide a robust framework for modeling the conditional mean of a time series, their core assumption that the variance of the error terms, \(a_t\), is constant over time (homoscedasticity) is a significant limitation in finance.\footnote{\ Cf.\ \citeauthor{tsay2010} (\citeyear{tsay2010}), p.~109.} Financial asset returns are universally characterized by distinct stylized facts, most notably \textbf{volatility clustering}—the tendency for large price changes to be followed by further large changes—and \textbf{leptokurtosis}, meaning the return distribution exhibits "fat tails" compared to a normal distribution.\footnote{\ These phenomena were famously described in the early work of \citeauthor{Mandelbrot1963} (\citeyear{Mandelbrot1963}), p.~394, and are summarized in \citeauthor{Cont2001StylizedFacts} (\citeyear{Cont2001StylizedFacts}), p.~228.} The presence of such time-varying volatility, or \textbf{conditional heteroskedasticity}, cannot be captured by standard ARIMA models but is of paramount importance for risk management, option pricing, and portfolio allocation.
+
+To address this, \citeauthor{engle1982} (\citeyear{engle1982}) introduced the groundbreaking \textbf{Autoregressive Conditional Heteroskedasticity (ARCH)} model. The ARCH(\(q\)) model specifies the conditional variance, \(\sigma_t^2\), as a linear function of the past \(q\) squared residuals (\(a_t = z_t - \mu_t\)):
+\begin{equation}
+    \sigma_t^2 = \alpha_0 + \sum_{i=1}^{q} \alpha_i a_{t-i}^2
+\end{equation}
+where \(\alpha_0 > 0\) and \(\alpha_i \ge 0\) to ensure a positive variance.\footnote{\ Cf.\ \citeauthor{engle1982} (\citeyear{engle1982}), p.~990.} However, in empirical applications, a high order \(q\) is often required to adequately capture the persistence of volatility, leading to a large number of parameters and potential issues with non-negativity constraints.\footnote{\ Cf.\ \citeauthor{Bollerslev1986} (\citeyear{Bollerslev1986}), p.~308.}
+
+As a more flexible and parsimonious generalization, \citeauthor{Bollerslev1986} (\citeyear{Bollerslev1986}) proposed the \textbf{Generalized ARCH (GARCH)} model, which incorporates lagged conditional variances into the equation. The standard GARCH(\(P,Q\)) model is defined as:
+\begin{equation}
+    \sigma_t^2 = \alpha_0 + \sum_{i=1}^{P} \alpha_i a_{t-i}^2 + \sum_{j=1}^{Q} \beta_j \sigma_{t-j}^2
+    \label{eq:garch_standard_form}
+\end{equation}
+In this formulation, the \(\alpha_i\) coefficients (ARCH terms) measure the immediate reaction of volatility to market shocks or "news", while the \(\beta_j\) coefficients (GARCH terms) measure the persistence in volatility. A high \(\beta_j\) indicates that volatility shocks are slow to die out. The sum of these coefficients, \(\sum \alpha_i + \sum \beta_j\), indicates the overall degree of volatility persistence; a value close to 1 suggests that shocks have a long-lasting impact on the conditional variance.\footnote{\ The condition for wide-sense stationarity of the GARCH process is \(\sum \alpha_i + \sum \beta_j < 1\). See \citeauthor{Bollerslev1986} (\citeyear{Bollerslev1986}), p.~310, Theorem 1.} In empirical applications, the simple GARCH(1,1) model has proven to be remarkably effective.\footnote{\ Cf.\ \citeauthor{HansenLunde2005GARCHComp} (\citeyear{HansenLunde2005GARCHComp}), p.~875.}
+
+For consistency with the ARIMA notation, we define the backshift-operator polynomials as
+\begin{equation}
+  \alpha(B) = \sum_{i=1}^{P}\alpha_i B^i, \quad
+  \beta(B) = 1 - \sum_{j=1}^{Q}\beta_j B^j
+  \label{eq:garch_polynomials}
+\end{equation}
+
+Then, the standard GARCH(\(p,q\)) variance equation  can be written more compactly in its ARMA-like form as:
+\begin{equation}
+\beta(B)\,\sigma_t^2 = \alpha_0 + \alpha(B)\,a_t^2
+\label{eq:garch_backshift_form}
+\end{equation}
+
+This representation highlights the analogy to an ARMA process for the conditional variance, which is a key insight of the GARCH framework.\footnote{As
+\citeauthor{Bollerslev1994ARCHModels} note, rearranging the GARCH equation shows that the squared residuals \(a_t^2\) follow an ARMA process, which allows for the use of standard time series techniques for model identification. Cf.\ \citeauthor{Bollerslev1994ARCHModels} (\citeyear{Bollerslev1994ARCHModels}), p.~2968.}
+
+\subsection{The Combined ARIMA-GARCH Model Specification}
+\label{ssec:combined_model_spec}
+
+The combination of both model classes into an \textbf{ARIMA-GARCH framework} allows for a comprehensive and simultaneous modeling of the conditional mean and conditional variance of a time series. For a given log return series \(r_t\), the complete ARIMA(\(p,d,q\))-GARCH(\(p,q\)) model is specified as a system of three interconnected equations.
+
+First, the \textbf{conditional mean equation} models the structure of the returns using the ARIMA(\(p,d,q\)) process. Letting \(w_t = (1-B)^d r_t\) be the stationary (differenced) return series, the model is:
+\begin{equation}
+    w_t = \mu + \sum_{i=1}^{p} \phi_i w_{t-i} + \sum_{j=1}^{q} \theta_j \epsilon_{t-j} + \epsilon_t
+    \label{eq:arima_mean_final}
+\end{equation}
+
+This is equivalent to the compact form \(\phi(B) (w_t - \mu) = \theta(B) \epsilon_t\), where \(\epsilon_t\) is the error term of the mean equation, which is no longer assumed to be simple white noise.
+
+Second, the \textbf{error term} \(\epsilon_t\) is defined as a product of a standardized, independent innovation \(z_t\) and the time-varying conditional standard deviation \(\sigma_t\). This equation links the mean model to the volatility model:
+\begin{equation}
+    \epsilon_t = z_t \sigma_t, \quad \text{where } z_t \sim \text{i.i.d. } D(0,1)
+    \label{eq:error_term_final}
+\end{equation}
+The innovations \(z_t\) are assumed to follow a specific distribution \(D\) (e.g., Normal, Student's t) with a mean of zero and a variance of one.
+
+Finally, the \textbf{conditional variance equation} models the evolution of \(\sigma_t^2\) using a GARCH(\(P,Q\)) process, driven by the past squared errors (\(\epsilon_{t-i}^2\)) and past conditional variances (\(\sigma_{t-j}^2\)):
+\begin{equation}
+    \sigma_t^2 = \alpha_0 + \sum_{i=1}^{p} \alpha_i \epsilon_{t-i}^2 + \sum_{j=1}^{q} \beta_j \sigma_{t-j}^2
+    \label{eq:garch_variance_final}
+\end{equation}
+In this complete system, the ARIMA component filters the linear dependencies from the returns, while the GARCH process captures the dynamic volatility structure of the resulting residuals.\footnote{\ For a practical overview of this combined approach, see \citeauthor{Brooks2019IntroductoryEconometrics} (\citeyear{Brooks2019IntroductoryEconometrics}), p.~468 ff.}
+
+%%%%%%%
+The combination of both model classes into an \textbf{ARIMA-GARCH framework} allows for a comprehensive and simultaneous modeling of the conditional mean and conditional variance of a time series. For a return series \(r_t\), the complete ARIMA(\(p,d,q\))-GARCH(\(p,q\)) model is specified through the following system of equations.
+
+The conditional mean is described by the ARIMA process:
+\begin{equation}
+    (1-B)^d r_t = c + \sum_{i=1}^{p} \phi_i (1-B)^d r_{t-i} + \sum_{j=1}^{q} \theta_j \epsilon_{t-j} + \epsilon_t
+    \label{eq:arima_mean_combined}
+\end{equation}
+The error term from the mean equation, \(\epsilon_t\), links the mean to the conditional variance:
+\begin{equation}
+    \epsilon_t = z_t \sigma_t, \quad \text{where } z_t \sim \text{i.i.d. } D(0,1)
+    \label{eq:error_term_combined}
+\end{equation}
+Finally, the conditional variance is modeled by the GARCH process:
+\begin{equation}
+    \sigma_t^2 = \alpha_0 + \sum_{i=1}^{P} \alpha_i \epsilon_{t-i}^2 + \sum_{j=1}^{Q} \beta_j \sigma_{t-j}^2
+    \label{eq:garch_variance_combined}
+\end{equation}
+In this system, \(r_t\) is the log return series, \(\sigma_t^2\) is its conditional variance, and \(z_t\) is an independently and identically distributed process with a specified distribution \(D\) (e.g., Normal, Student's t) with a mean of zero and variance of one. In this two-step conceptual approach, the ARIMA model first filters the linear dependencies from the returns, and the GARCH process then models the time-varying volatility of the resulting residuals.\footnote{\ For a practical overview of this combined approach, see \citeauthor{Brooks2019IntroductoryEconometrics} (\citeyear{Brooks2019IntroductoryEconometrics}), p.~468 ff.}
+
+\subsection{Extensions to the Standard GARCH Model}
+\label{ssec:garch_extensions_revised}
+
+While the standard GARCH model successfully captures volatility clustering, its symmetric nature and assumption of exponential decay limit its ability to replicate other well-documented stylized facts of financial returns. Consequently, a rich family of GARCH extensions has been developed to provide a more nuanced description of volatility dynamics. The most relevant for this study are those addressing the asymmetric impact of shocks, long-term persistence in volatility, and non-normal error distributions.
+
+A key empirical observation, particularly in equity markets, is the so-called \textbf{leverage effect}, where negative shocks ("bad news") tend to increase future volatility more than positive shocks ("good news") of the same magnitude.\footnote{\ First noted by \citeauthor{Black1976Leverage} (\citeyear{Black1976Leverage}), p.~177.} 
+ 
+To capture this asymmetry, several extensions have been proposed. The \textbf{Exponential GARCH (EGARCH)} model, introduced by \citeauthor{nelson1991} (\citeyear{nelson1991}), addresses this by modeling the logarithm of the conditional variance. This specification ensures that the variance remains positive without imposing non-negativity constraints on the model parameters. The EGARCH(\(p,q\)) process is given by:
+\begin{equation}
+    \ln(\sigma_t^2) = \alpha_0 + \sum_{i=1}^{p} \alpha_i \left( \left| z_{t-i} \right| - \mathbb{E}\left[ \left| z_{t-i} \right| \right] \right) + \sum_{i=1}^{p} \gamma_i z_{t-i} + \sum_{j=1}^{q} \beta_j \ln(\sigma_{t-j}^2),
+    \label{eq:egarch_model}
+\end{equation}
+where \(z_t = \epsilon_t / \sigma_t\) is the standardized residual. The \(\gamma_i\) parameter captures the leverage effect. A negative \(\gamma_i\) implies that a negative shock has a larger impact on future log-variance than a positive shock.
+ 
+Another widely used model is the \textbf{GJR-GARCH}, developed by \citeauthor{glosten1993} (\citeyear{glosten1993}), which adds an indicator function for negative shocks to the standard GARCH equation:
+\begin{equation}
+    \sigma_t^2 = \alpha_0 + \sum_{i=1}^{P} \epsilon_{t-i}^2 \left( \alpha_i + \gamma_i I( \epsilon_{t-i} < 0 ) \right) + \sum_{j=1}^{Q} \beta_j \sigma_{t-j}^2.
+    \label{eq:gjr_garch_revised}
+\end{equation}
+Here, \(I(\cdot)\) is an indicator function. A statistically significant positive coefficient \(\gamma_i\) indicates the presence of a leverage effect, as the total impact of a negative shock becomes \((\alpha_i + \gamma_i)\).\footnote{\ The Threshold ARCH (TARCH) model by \citeauthor{Zakoian1994} (\citeyear{Zakoian1994}) is conceptually very similar but models the conditional standard deviation instead of the variance.}
+
+The autocorrelation of squared financial returns often decays at a very slow, hyperbolic rate, a characteristic known as \textbf{long memory} or long-term persistence. This is in contrast to the faster, exponential decay implied by a stationary GARCH process. The \textbf{Fractionally Integrated GARCH (FIGARCH)} model, introduced by \citeauthor{Baillie1996FIGARCH} (\citeyear{Baillie1996FIGARCH}), explicitly addresses this by allowing for a fractional order of integration, \(d\), in the variance process. Using the backshift operator notation, the FIGARCH(\(p,d,q\)) model can be expressed as:
+\begin{equation}
+    \phi(B)(1-B)^d \epsilon_t^2 = \alpha_0 + (1-\beta(B))v_t,
+    \label{eq:figarch_representation}
+\end{equation}
+where \(0 < d < 1\) is the fractional differencing parameter and \(v_t = \epsilon_t^2 - \sigma_t^2\) is the zero-mean error term. This formulation allows the impact of past shocks on future volatility to decay at a slow hyperbolic rate, which is often more consistent with empirical data.\footnote{\ For a detailed derivation, see \citeauthor{Baillie1996FIGARCH} (\citeyear{Baillie1996FIGARCH}), pp.~7-9.}
+
+To visually illustrate the distinct dynamic properties of the GARCH model family, Figure \ref{fig:garch_model_comparison_btc} compares the estimated conditional volatility from four different specifications fitted to the daily log returns of BTC-USD. The top panel shows the return series, which exhibits characteristic periods of volatility clustering, such as in August 2024 and March 2025. The four lower panels display the corresponding one-step-ahead conditional standard deviation (\(\sigma_t\)) estimated by each model in response to these returns.
+
+\begin{figure}[H]
+    \centering
+    % Ensure the path to your image is correct relative to your main .tex file
+    \includegraphics[width=\textwidth]{Masterarbeit/figures/garch_familiy.png} 
+    \caption{Volatility Estimates Across GARCH-Type Models for BTC-USD Returns}
+\label{fig:garch_model_comparison_btc}
+    \caption*{\footnotesize{Source: Own illustration.}}
+\end{figure}
+The comparison in Figure \ref{fig:garch_model_comparison_btc} highlights several key aspects of volatility modeling. All four models successfully capture the general phenomenon of volatility clustering, with the estimated volatility \(\sigma_t\) rising during turbulent market phases (e.g., around August 2024 and March 2025) and subsiding during calmer periods.
+
+However, subtle but important differences in the estimated volatility paths are apparent. The \textbf{GARCH(1,1)} model provides a baseline estimate, showing a relatively smooth reaction to the return shocks. The \textbf{EGARCH(1,1)} and \textbf{GJR-GARCH(1,1)} models, designed to capture asymmetric effects, produce a visually "spikier" and more reactive volatility series. For example, during the sharp negative returns around November 2024, the GJR-GARCH and EGARCH estimates appear to react more sharply than the standard GARCH model, which is consistent with the presence of a leverage effect.
+
+The \textbf{FIGARCH(1,d,1)} model, with an estimated fractional integration parameter of \(d \approx 0.16\), demonstrates the highest degree of persistence. While it also reacts to the volatility clusters, its estimates tend to decay more slowly after a shock. This is visible after the volatility spike in August 2024, where the FIGARCH volatility level remains more elevated in the subsequent periods compared to the other models. This behavior reflects the long-memory property that the model is designed to capture, suggesting that the impact of shocks on Bitcoin's volatility is very persistent.
+
+This visual analysis underscores that the choice of a specific GARCH model is not merely a technical detail but has a tangible impact on the resulting risk assessment. The selection should therefore be guided by both empirical evidence found in the data (e.g., formal tests for asymmetry or long memory) and the specific research objective.
+
+\section{Application of ARIMA-GARCH to Cryptocurrencies}
+\label{sec:lit_review_crypto_app}
+
+Given the pronounced volatility and other stylized facts observed in cryptocurrency markets, GARCH models have become a natural tool for analysis. Numerous studies have applied various GARCH specifications to model and forecast the volatility of Bitcoin and other cryptocurrencies.
+
+Early work often focused on Bitcoin. \citeauthor{dyhrberg2016} (\citeyear{dyhrberg2016}) used GARCH models to compare Bitcoin's volatility characteristics to gold and the US dollar, finding similarities with gold. \citeauthor{katsiampa2017} (\citeyear{katsiampa2017}) compared different GARCH models for Bitcoin volatility, finding that an AR-CGARCH model provided the best fit. Studies have also explored volatility spillovers between Bitcoin and other assets or between different cryptocurrencies using multivariate GARCH frameworks.\footnote{\ Cf.\ \citeauthor{bouri2016} (\citeyear{bouri2016}); \citeauthor{mensi2018} (\citeyear{mensi2018}).}
+
+More recent research continues to explore the optimal GARCH specifications and the predictability of crypto volatility. \citeauthor{shahzad2019} (\citeyear{shahzad2019}) provide a survey and find that asymmetric GARCH models often outperform symmetric ones for Bitcoin. \citeauthor{huang2024} (\citeyear{huang2024}) specifically employed an integrated ARMA-GARCH approach alongside Value-at-Risk (VaR) to assess cryptocurrency market risk. Their study confirmed the higher volatility of cryptocurrencies compared to traditional assets and underscored the utility of ARMA-GARCH for risk assessment, highlighting the importance of capturing both linear dependencies (ARMA) and volatility clustering (GARCH).\footnote{\ Cf.\ \citeauthor{huang2024} (\citeyear{huang2024}), p.~84ff.}
+
+Regarding the combined ARIMA-GARCH model for forecasting, \citeauthor{wang2023} (\citeyear{wang2023}) discussed its strengths, noting its potential reliability and performance, sometimes exceeding that of neural networks for financial time series like Bitcoin. They emphasized the model's scalability, adaptability across datasets, and efficiency with large data volumes, making it suitable for complex assets including cryptocurrencies.\footnote{\ Cf.\ \citeauthor{wang2023} (\citeyear{wang2023}), p.~977ff.} Similarly, \citeauthor{Udom2019} (\citeyear{Udom2019}) highlighted the value of time series analysis, including ARIMA-GARCH, for examining cryptocurrency price and return characteristics as these assets become more integrated into financial portfolios.\footnote{\ Cf.\ \citeauthor{Udom2019} (\citeyear{Udom2019}), p.~379.}
+
+\section{Research Gap and Contribution}
+\label{sec:lit_review_gap}
+
+While the literature demonstrates active research in applying GARCH models to cryptocurrencies, a gap remains concerning the systematic comparative evaluation of the standard ARIMA-GARCH framework's forecasting performance, specifically forreturns, across a set of cryptocurrencies with markedly different characteristics (market leader, platform, meme coin, competitor).
+
+Many studies focus on fitting models in-sample or forecasting volatility itself, which is crucial for risk management.\footnote{As emphasized by \citeauthor{huang2024} (\citeyear{huang2024}).} Fewer studies rigorously assess the out-of-sample return forecasting power against simple benchmarks across multiple, diverse coins using a consistent methodology. While \citeauthor{wang2023} (\citeyear{wang2023}) lauded the model's flexibility, empirical evidence on its practical return predictability advantage over naive models in the crypto context remains inconclusive and requires asset-specific verification. \citeauthor{Udom2019} (\citeyear{Udom2019}) applied the model but focused primarily on Bitcoin.
+
+This thesis aims to bridge this gap by:
+\begin{enumerate}
+    \item Applying a consistent ARIMA-GARCH methodology (including model selection based on information criteria, appropriate error distributions, and rigorous backtesting) to four distinct cryptocurrencies (BTC, ETH, DOGE, SOL).
+    \item Focusing specifically on the out-of-sample forecasting accuracy for daily log returns, comparing directly against a naive benchmark using statistical significance tests (Diebold-Mariano).
+   \item Systematically comparing the model's performance across these diverse assets to understand if its effectiveness varies based on coin characteristics.
+   \item Providing insights into the practical utility of this standard econometric tool for return prediction in contemporary cryptocurrency markets.
+\end{enumerate}
+By doing so, this study contributes a focused, comparative assessment of the ARIMA-GARCH model's return forecasting limitations and strengths in the unique and evolving cryptocurrency landscape.
